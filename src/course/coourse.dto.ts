@@ -5,5 +5,6 @@ export class CourseBodyDto {
   requirements: string[];
   tags: string[];
   description: string;
+  level: string;
   category: string;
 }

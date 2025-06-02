@@ -61,6 +61,7 @@ export declare class CourseService {
     getCourses(language: string, limit: string): Promise<{
         title: string;
         previewImage: string;
+        level: string;
         category: string;
         _id: import("mongoose").Types.ObjectId;
         author: {
@@ -86,6 +87,7 @@ export declare class CourseService {
         allStudents: number;
         title: string;
         previewImage: string;
+        level: string;
         category: string;
         _id: import("mongoose").Types.ObjectId;
         author: {
@@ -110,6 +112,7 @@ export declare class CourseService {
     }): {
         title: string;
         previewImage: string;
+        level: string;
         category: string;
         _id: import("mongoose").Types.ObjectId;
         author: {

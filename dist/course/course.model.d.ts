@@ -35,6 +35,7 @@ export declare class Course {
     requirements: string[];
     tags: string[];
     description: string;
+    level: string;
     category: string;
     previewImage: string;
     title: string;

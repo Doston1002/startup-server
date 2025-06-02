@@ -57,6 +57,7 @@ export declare class CourseController {
     getCourses(language: string, limit: string): Promise<{
         title: string;
         previewImage: string;
+        level: string;
         category: string;
         _id: import("mongoose").Types.ObjectId;
         author: {
@@ -89,6 +90,7 @@ export declare class CourseController {
         allStudents: number;
         title: string;
         previewImage: string;
+        level: string;
         category: string;
         _id: import("mongoose").Types.ObjectId;
         author: {

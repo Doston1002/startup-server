@@ -157,7 +157,9 @@ export class CourseService {
             requirements: 1,
             tags: 1,
             description: 1,
+            level: 1,
             category: 1,
+            price: 1,
             previewImage: 1,
             title: 1,
             exerpt: 1,
@@ -214,6 +216,7 @@ export class CourseService {
     return {
       title: course.title,
       previewImage: course.previewImage,
+      level: course.level,
       category: course.category,
       _id: course._id,
       author: {

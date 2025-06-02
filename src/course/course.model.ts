@@ -32,6 +32,9 @@ export class Course {
   description: string;
 
   @Prop()
+  level: string;
+
+  @Prop()
   category: string;
 
   @Prop()

@@ -50,6 +50,10 @@ __decorate([
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
+], Course.prototype, "level", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
 ], Course.prototype, "category", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
