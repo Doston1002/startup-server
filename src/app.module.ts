@@ -12,10 +12,8 @@ import { SectionModule } from './section/section.module';
 import { LessonModule } from './lesson/lesson.module';
 import { AdminModule } from './admin/admin.module';
 import { BooksModule } from './books/books.module';
-// import { CustomerModule } from './customer/customer.module';
 import { ReviewModule } from './review/review.module';
-import { OpenAiModule } from './openai/openai.module';
-//import { LangdockController } from './langdock/langdock.controller';
+import { OpenaiModule } from './openai/openai.module';
 
 @Module({
   imports: [
@@ -35,9 +33,7 @@ import { OpenAiModule } from './openai/openai.module';
     LessonModule,
     AdminModule,
     BooksModule,
-    OpenAiModule,
-    //LangdockController,
-    // CustomerModule,
+    OpenaiModule,
     ReviewModule,
   ],
 })

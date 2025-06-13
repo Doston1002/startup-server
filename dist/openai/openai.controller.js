@@ -12,27 +12,33 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ChatController = void 0;
+exports.OpenaiController = void 0;
 const common_1 = require("@nestjs/common");
+const create_chat_completion_request_1 = require("./dto/create-chat-completion.request");
 const openai_service_1 = require("./openai.service");
-let ChatController = class ChatController {
-    constructor(openAiService) {
-        this.openAiService = openAiService;
+let OpenaiController = class OpenaiController {
+    constructor(openaiService) {
+        this.openaiService = openaiService;
     }
-    async chat(message) {
-        return this.openAiService.chat(message);
+    async createChatCompletion(body) {
+        try {
+            return await this.openaiService.createChatCompletion(body.messages);
+        }
+        catch (error) {
+            throw new common_1.HttpException('AI xizmatida muammo yuz berdi: ' + error.message, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 };
 __decorate([
-    (0, common_1.Post)('chat'),
-    __param(0, (0, common_1.Body)('message')),
+    (0, common_1.Post)('chatCompletion'),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [create_chat_completion_request_1.CreateChatCompletionRequest]),
     __metadata("design:returntype", Promise)
-], ChatController.prototype, "chat", null);
-ChatController = __decorate([
-    (0, common_1.Controller)('api/ai'),
-    __metadata("design:paramtypes", [openai_service_1.OpenAiService])
-], ChatController);
-exports.ChatController = ChatController;
-//# sourceMappingURL=chat.controller.js.map
+], OpenaiController.prototype, "createChatCompletion", null);
+OpenaiController = __decorate([
+    (0, common_1.Controller)('openai'),
+    __metadata("design:paramtypes", [openai_service_1.OpenaiService])
+], OpenaiController);
+exports.OpenaiController = OpenaiController;
+//# sourceMappingURL=openai.controller.js.map

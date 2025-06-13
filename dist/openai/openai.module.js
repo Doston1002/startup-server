@@ -6,18 +6,27 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OpenAiModule = void 0;
+exports.OpenaiModule = void 0;
 const common_1 = require("@nestjs/common");
-const config_1 = require("@nestjs/config");
+const openai_controller_1 = require("./openai.controller");
 const openai_service_1 = require("./openai.service");
-let OpenAiModule = class OpenAiModule {
+const openai_1 = require("openai");
+const config_1 = require("@nestjs/config");
+let OpenaiModule = class OpenaiModule {
 };
-OpenAiModule = __decorate([
+OpenaiModule = __decorate([
     (0, common_1.Module)({
+        controllers: [openai_controller_1.OpenaiController],
         imports: [config_1.ConfigModule],
-        providers: [openai_service_1.OpenAiService],
-        exports: [openai_service_1.OpenAiService],
+        providers: [
+            openai_service_1.OpenaiService,
+            {
+                provide: openai_1.default,
+                useFactory: (configService) => new openai_1.default({ apiKey: configService.getOrThrow('OPENAI_API_KEY') }),
+                inject: [config_1.ConfigService],
+            },
+        ],
     })
-], OpenAiModule);
-exports.OpenAiModule = OpenAiModule;
+], OpenaiModule);
+exports.OpenaiModule = OpenaiModule;
 //# sourceMappingURL=openai.module.js.map

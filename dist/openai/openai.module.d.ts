@@ -1,2 +1,2 @@
-export declare class OpenAiModule {
+export declare class OpenaiModule {
 }

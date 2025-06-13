@@ -44,7 +44,7 @@ AppModule = __decorate([
             lesson_module_1.LessonModule,
             admin_module_1.AdminModule,
             books_module_1.BooksModule,
-            openai_module_1.OpenAiModule,
+            openai_module_1.OpenaiModule,
             review_module_1.ReviewModule,
         ],
     })

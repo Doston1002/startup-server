@@ -9,28 +9,23 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OpenAiService = void 0;
+exports.OpenaiService = void 0;
 const common_1 = require("@nestjs/common");
-const config_1 = require("@nestjs/config");
 const openai_1 = require("openai");
-let OpenAiService = class OpenAiService {
-    constructor(configService) {
-        this.configService = configService;
-        this.openai = new openai_1.OpenAI({
-            apiKey: this.configService.get('OPENAI_API_KEY'),
-        });
+let OpenaiService = class OpenaiService {
+    constructor(openai) {
+        this.openai = openai;
     }
-    async chat(prompt) {
-        const response = await this.openai.chat.completions.create({
-            model: 'gpt-4',
-            messages: [{ role: 'user', content: prompt }],
+    async createChatCompletion(messages) {
+        return this.openai.chat.completions.create({
+            messages: messages,
+            model: 'gpt-3.5-turbo',
         });
-        return response.choices[0].message.content;
     }
 };
-OpenAiService = __decorate([
+OpenaiService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [config_1.ConfigService])
-], OpenAiService);
-exports.OpenAiService = OpenAiService;
+    __metadata("design:paramtypes", [openai_1.default])
+], OpenaiService);
+exports.OpenaiService = OpenaiService;
 //# sourceMappingURL=openai.service.js.map

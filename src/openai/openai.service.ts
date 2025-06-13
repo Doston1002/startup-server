@@ -1,23 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { OpenAI } from 'openai';
+import OpenAI from 'openai';
+import { ChatCompletionMessageDto } from './dto/create-chat-completion.request';
+import { ChatCompletionMessageParam } from 'openai/resources';
 
 @Injectable()
-export class OpenAiService {
-  private openai: OpenAI;
+export class OpenaiService {
+  constructor(private readonly openai: OpenAI) {}
 
-  constructor(private configService: ConfigService) {
-    this.openai = new OpenAI({
-      apiKey: this.configService.get<string>('OPENAI_API_KEY'),
+  async createChatCompletion(messages: ChatCompletionMessageDto[]) {
+    return this.openai.chat.completions.create({
+      messages: messages as ChatCompletionMessageParam[],
+      model: 'gpt-3.5-turbo',
     });
-  }
-
-  async chat(prompt: string): Promise<string> {
-    const response = await this.openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [{ role: 'user', content: prompt }],
-    });
-
-    return response.choices[0].message.content;
   }
 }
