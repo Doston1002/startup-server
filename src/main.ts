@@ -8,6 +8,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:3000',
       'https://uyda-talim.uz',
+      'http://213.230.99.101:2246',
     ],
     methods: ["GET", "POST"],
     credentials: true,
