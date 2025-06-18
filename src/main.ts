@@ -4,7 +4,14 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
-  app.enableCors();
+  app.enableCors({
+    origin: [
+      'http://localhost:3000',
+      'https://uyda-talim.uz',
+    ],
+    methods: ["GET", "POST"],
+    credentials: true,
+  });
   await app.listen(parseInt(process.env.PORT) || 8000, "0.0.0.0");
 }
 bootstrap();
