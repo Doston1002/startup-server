@@ -6,7 +6,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.enableCors({
     origin: [
-      'http://localhost:3000',
+      'https://uyda-talim.uz',
       'https://uyda-talim.uz',
     ],
     methods: ["GET", "POST"],
