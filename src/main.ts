@@ -26,7 +26,10 @@ async function bootstrap() {
   
   app.enableCors({
     origin: (origin, callback) => {
-      const allowedOrigins = ['https://uyda-talim.uz'];
+      const allowedOrigins = [
+        'https://uydatalim.uzedu.uz',
+        'http://localhost:3000'
+      ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -37,6 +40,6 @@ async function bootstrap() {
     credentials: true,
   });
 
-  await app.listen(parseInt(process.env.PORT) || 8000, '0.0.0.0');
+  await app.listen(parseInt(process.env.PORT) || 5000, '0.0.0.0');
 }
 bootstrap();

@@ -9,13 +9,10 @@ export class Books {
   title: string;
 
   @Prop()
-  image: string;
+  pdf: string; // PDF fayl manzili
 
   @Prop()
-  pdf: string;
-
-  @Prop()
-  category: string;
+  category: string; // sinf yoki turkum
 }
 
 export const BooksSchema = SchemaFactory.createForClass(Books);
