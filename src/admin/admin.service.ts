@@ -50,8 +50,8 @@ export class AdminService {
 
     const accountLinks = await this.stripeClient.accountLinks.create({
       account: account.id,
-      refresh_url: 'http://localhost:3000',
-      return_url: 'http://localhost:3000',
+      refresh_url: 'https://uydatalim.uzedu.uz',
+      return_url: 'https://uydatalim.uzedu.uz',
       type: 'account_onboarding',
     });
 
