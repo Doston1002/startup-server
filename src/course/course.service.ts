@@ -159,7 +159,6 @@ export class CourseService {
             description: 1,
             level: 1,
             category: 1,
-            price: 1,
             previewImage: 1,
             title: 1,
             exerpt: 1,

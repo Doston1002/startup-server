@@ -1,5 +1,5 @@
 export class CreateBookDto {
   title: string;
-  pdf: string;
+  image: string;
   category: string;
 }
