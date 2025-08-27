@@ -1,56 +1,76 @@
-import { Controller, Post, Body, Res, Logger } from '@nestjs/common';
-import { OneIdService } from './oneid.service';
+import { Controller, Get, Post, Query, Body, Res, Logger } from '@nestjs/common';
 import { Response } from 'express';
+import { OneIdService } from './oneid.service';
 
-@Controller('api/oneid')
+@Controller('oneid')
 export class OneIdController {
   private readonly logger = new Logger(OneIdController.name);
 
   constructor(private readonly oneIdService: OneIdService) {}
 
-  @Post('login')
-  async oneIdLogin(@Body('code') code: string, @Body('state') state: string, @Res() res: Response) {
+  /**
+   * Step 1: Login URL qaytarish
+   */
+  @Get('login-url')
+  getLoginUrl(@Query('state') state: string) {
+    return { url: this.oneIdService.getAuthorizationUrl(state || 'random_state') };
+  }
+
+  /**
+   * Step 2: Callback (OneID redirect qiladi shu yerga)
+   */
+  @Get('callback')
+  async callback(@Query('code') code: string, @Query('state') state: string, @Res() res: Response) {
     try {
       if (!code) {
-        return res.status(400).json({ error: 'Code topilmadi' });
+        return res.status(400).send("Code yo'q");
       }
 
-      // 1) code → token
+      // 1) Code -> Token
       const tokenData = await this.oneIdService.exchangeCodeForToken(code);
-      if (!tokenData.access_token) {
-        return res.status(400).json({ error: 'Access token olinmadi' });
-      }
+      const accessToken = tokenData.access_token;
 
-      // 2) token → user info
-      const userInfo = await this.oneIdService.identifyAccessToken(tokenData.access_token);
+      // 2) Token -> User Info
+      const userInfo = await this.oneIdService.getUserInfo(accessToken);
 
-      // 3) JWT payload
-      const payload = {
+      // 3) JWT yaratish
+      const jwt = this.oneIdService.signJwt({
         pin: userInfo.pin,
-        user_id: userInfo.user_id,
         full_name: userInfo.full_name,
-      };
+        user_id: userInfo.user_id,
+      });
 
-      // 4) JWT yasash
-      const jwt = this.oneIdService.signJwt(payload);
-
-      // 5) Cookie ga yozish
+      // 4) Cookie saqlash
       res.cookie('auth_token', jwt, {
         httpOnly: true,
         secure: true,
         sameSite: 'lax',
-        maxAge: 24 * 60 * 60 * 1000, // 1 kun
+        maxAge: 24 * 60 * 60 * 1000,
       });
 
-      // 6) Frontendga javob
-      return res.json({
-        success: true,
-        message: 'Login muvaffaqiyatli',
-        user: payload,
-      });
+      // 5) Asosiy sahifaga redirect
+      return res.redirect('/');
     } catch (err) {
-      this.logger.error('OneID login error', err);
-      return res.status(500).json({ error: 'OneID bilan ishlashda xatolik' });
+      this.logger.error(err);
+      return res.status(500).send('OneID xatolik');
     }
+  }
+
+  /**
+   * Step 3: Token orqali user info olish (API orqali)
+   */
+  @Post('userinfo')
+  async userInfo(@Body('access_token') accessToken: string) {
+    return await this.oneIdService.getUserInfo(accessToken);
+  }
+
+  /**
+   * Step 4: Logout qilish
+   */
+  @Post('logout')
+  async logout(@Body('access_token') accessToken: string, @Res() res: Response) {
+    const result = await this.oneIdService.logout(accessToken);
+    res.clearCookie('auth_token');
+    return res.json(result);
   }
 }

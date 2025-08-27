@@ -5,46 +5,84 @@ import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class OneIdService {
   private readonly logger = new Logger(OneIdService.name);
+  private readonly authUrl = process.env.ONEID_AUTH_URL!; // https://sso.egov.uz/sso/oauth/Authorization.do
 
   constructor(private readonly jwtService: JwtService) {}
 
-  // STEP 1: code → access_token
+  /**
+   * 1. Avtorizatsiya URL yaratish
+   */
+  getAuthorizationUrl(state: string) {
+    const params = new URLSearchParams({
+      response_type: 'one_code',
+      client_id: process.env.ONEID_CLIENT_ID!,
+      redirect_uri: process.env.ONEID_REDIRECT_URI!,
+      scope: process.env.ONEID_SCOPE!,
+      state,
+    });
+    return `${this.authUrl}?${params.toString()}`;
+  }
+
+  /**
+   * 2. CODE -> ACCESS TOKEN
+   */
   async exchangeCodeForToken(code: string) {
-    const params = new URLSearchParams();
-    params.append('grant_type', 'one_authorization_code');
-    params.append('client_id', process.env.ONEID_CLIENT_ID!);
-    params.append('client_secret', process.env.ONEID_CLIENT_SECRET!);
-    params.append('redirect_uri', process.env.ONEID_REDIRECT_URI!);
-    params.append('code', code);
+    const params = new URLSearchParams({
+      grant_type: 'one_authorization_code',
+      client_id: process.env.ONEID_CLIENT_ID!,
+      client_secret: process.env.ONEID_CLIENT_SECRET!,
+      redirect_uri: process.env.ONEID_REDIRECT_URI!,
+      code,
+    });
 
-    const { data } = await axios.post(
-      process.env.ONEID_AUTH_URL!, // https://sso.egov.uz/sso/oauth/Authorization.do
-      params.toString(),
-      { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
-    );
+    const { data } = await axios.post(this.authUrl, params.toString(), {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
 
-    return data; // { access_token, refresh_token, ... }
+    return data; // { access_token, refresh_token, expires_in, ... }
   }
 
-  // STEP 2: access_token → user info
-  async identifyAccessToken(accessToken: string) {
-    const params = new URLSearchParams();
-    params.append('grant_type', 'one_access_token_identify');
-    params.append('client_id', process.env.ONEID_CLIENT_ID!);
-    params.append('client_secret', process.env.ONEID_CLIENT_SECRET!);
-    params.append('access_token', accessToken);
-    params.append('scope', process.env.ONEID_CLIENT_ID!);
+  /**
+   * 3. ACCESS TOKEN -> USER INFO
+   */
+  async getUserInfo(accessToken: string) {
+    const params = new URLSearchParams({
+      grant_type: 'one_access_token_identify',
+      client_id: process.env.ONEID_CLIENT_ID!,
+      client_secret: process.env.ONEID_CLIENT_SECRET!,
+      access_token: accessToken,
+      scope: process.env.ONEID_SCOPE!,
+    });
 
-    const { data } = await axios.post(
-      process.env.ONEID_USERINFO_URL!, // https://sso.egov.uz/sso/oauth/UserInfoByToken.do
-      params.toString(),
-      { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
-    );
+    const { data } = await axios.post(this.authUrl, params.toString(), {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
 
-    return data; // foydalanuvchi ma’lumotlari
+    return data; // foydalanuvchi haqida JSON
   }
 
-  // STEP 3: JWT yasash
+  /**
+   * 4. LOGOUT (access_token invalid qilish)
+   */
+  async logout(accessToken: string) {
+    const params = new URLSearchParams({
+      grant_type: 'one_log_out',
+      client_id: process.env.ONEID_CLIENT_ID!,
+      client_secret: process.env.ONEID_CLIENT_SECRET!,
+      access_token: accessToken,
+      scope: process.env.ONEID_SCOPE!,
+    });
+
+    const { data } = await axios.post(this.authUrl, params.toString(), {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
+
+    return data;
+  }
+
+  /**
+   * JWT yaratish
+   */
   signJwt(payload: any) {
     return this.jwtService.sign(payload);
   }
