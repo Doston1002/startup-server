@@ -8,7 +8,7 @@ export class OneIdService {
 
   constructor(private readonly jwtService: JwtService) {}
 
-  // STEP 1: code -> access_token
+  // STEP 1: code → access_token
   async exchangeCodeForToken(code: string) {
     const params = new URLSearchParams();
     params.append('grant_type', 'one_authorization_code');
@@ -26,13 +26,14 @@ export class OneIdService {
     return data; // { access_token, refresh_token, ... }
   }
 
-  // STEP 2: access_token -> user info
+  // STEP 2: access_token → user info
   async identifyAccessToken(accessToken: string) {
     const params = new URLSearchParams();
     params.append('grant_type', 'one_access_token_identify');
     params.append('client_id', process.env.ONEID_CLIENT_ID!);
     params.append('client_secret', process.env.ONEID_CLIENT_SECRET!);
     params.append('access_token', accessToken);
+    params.append('scope', process.env.ONEID_CLIENT_ID!);
 
     const { data } = await axios.post(
       process.env.ONEID_USERINFO_URL!, // https://sso.egov.uz/sso/oauth/UserInfoByToken.do
