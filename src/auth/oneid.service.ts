@@ -161,7 +161,7 @@ export class OneIdService {
 
     async getAccessToken(code: string): Promise<string> {
         try {
-            const tokenUrl = `${this.oneIdBaseUrl}/oauth2/token`;
+            const tokenUrl = `${this.oneIdBaseUrl}`;
 
             const params = new URLSearchParams({
                 grant_type: 'authorization_code',
@@ -195,7 +195,7 @@ export class OneIdService {
 
     async getUserInfo(accessToken: string): Promise<OneIdUserData> {
         try {
-            const userInfoUrl = `${this.oneIdBaseUrl}/oauth2/userinfo`;
+            const userInfoUrl = `${this.oneIdBaseUrl}`;
 
             const response = await firstValueFrom(
                 this.httpService.post(
