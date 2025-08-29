@@ -29,6 +29,9 @@ export class User {
   customerId: string;
 
   @Prop()
+  pin: string;
+
+  @Prop()
   instructorAccountId: string;
 
   @Prop()

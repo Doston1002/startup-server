@@ -239,14 +239,16 @@ export class AuthService {
     try {
       // OneID ma'lumotlarini User modeliga moslashtirish
       const mappedUserData = this.mapOneIdToUser(oneIdData);
-
+      console.log("mappedUserData", mappedUserData)
+      
       // PIN yoki custom email orqali mavjud foydalanuvchini qidirish
       let user = await this.userModel.findOne({
         $or: [
-          { customerId: oneIdData.pin }, // PIN ni customerId sifatida saqlash
+          { pin: oneIdData.pin }, // PIN ni customerId sifatida saqlash
           { email: mappedUserData.email }, // Generated email orqali qidirish
         ],
       });
+      console.log("user", user)
 
       if (!user) {
         // Yangi foydalanuvchi yaratish
@@ -254,12 +256,13 @@ export class AuthService {
           ...mappedUserData,
           createdAt: new Date().toISOString(),
         });
+        console.log("CREATED", user)
       } else {
         // Mavjud foydalanuvchini yangilash (ma'lumotlarni refresh qilish)
         Object.assign(user, {
           fullName: mappedUserData.fullName,
           birthday: mappedUserData.birthday,
-          customerId: mappedUserData.customerId,
+          pin: mappedUserData.pin,
         });
         await user.save();
       }
@@ -295,7 +298,7 @@ export class AuthService {
     return {
       email,
       fullName: oneIdData.full_name,
-      customerId: oneIdData.pin, // PIN ni customerId sifatida saqlash
+      pin: oneIdData.pin, // PIN ni customerId sifatida saqlash
       birthday: birthDate,
       role: 'USER', // Default role
       password: '', // OneID orqali kirganlar uchun password kerak emas

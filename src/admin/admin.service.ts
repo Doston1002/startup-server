@@ -3,11 +3,11 @@ import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import * as SendGrid from '@sendgrid/mail';
 import { Model } from 'mongoose';
-import { InjectStripe } from 'nestjs-stripe';
+// import { InjectStripe } from 'nestjs-stripe';
 import { Course, CourseDocument } from 'src/course/course.model';
 import { Instructor, InstructorDocument } from 'src/instructor/instructor.model';
 import { User, UserDocument } from 'src/user/user.model';
-import Stripe from 'stripe';
+// import Stripe from 'stripe';
 
 @Injectable()
 export class AdminService {
@@ -15,7 +15,7 @@ export class AdminService {
     @InjectModel(Instructor.name) private instructorModel: Model<InstructorDocument>,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(Course.name) private courseModel: Model<CourseDocument>,
-    @InjectStripe() private readonly stripeClient: Stripe,
+    // @InjectStripe() private readonly stripeClient: Stripe,
     private readonly configService: ConfigService,
   ) {
     SendGrid.setApiKey(this.configService.get<string>('SEND_GRID_KEY'));
@@ -38,28 +38,28 @@ export class AdminService {
 
     const user = await this.userModel.findById(instructor.author);
 
-    const account = await this.stripeClient.accounts.create({
-      type: 'express',
-      country: 'US',
-      email: user.email,
-      capabilities: {
-        card_payments: { requested: true },
-        transfers: { requested: true },
-      },
-    });
+    // const account = await this.stripeClient.accounts.create({
+    //   type: 'express',
+    //   country: 'US',
+    //   email: user.email,
+    //   capabilities: {
+    //     card_payments: { requested: true },
+    //     transfers: { requested: true },
+    //   },
+    // });
 
-    const accountLinks = await this.stripeClient.accountLinks.create({
-      account: account.id,
-      refresh_url: 'https://uydatalim.uzedu.uz',
-      return_url: 'https://uydatalim.uzedu.uz',
-      type: 'account_onboarding',
-    });
+    // const accountLinks = await this.stripeClient.accountLinks.create({
+    //   account: account.id,
+    //   refresh_url: 'https://uydatalim.uzedu.uz',
+    //   return_url: 'https://uydatalim.uzedu.uz',
+    //   type: 'account_onboarding',
+    // });
 
-    await this.userModel.findByIdAndUpdate(
-      instructor.author,
-      { $set: { role: 'INSTRUCTOR', instructorAccountId: account.id } },
-      { new: true },
-    );
+    // await this.userModel.findByIdAndUpdate(
+    //   instructor.author,
+    //   { $set: { role: 'INSTRUCTOR', instructorAccountId: account.id } },
+    //   { new: true },
+    // );
 
     const emailData = {
       to: user.email,
@@ -67,7 +67,7 @@ export class AdminService {
       from: 'dilbarxudoyberdiyeva71@gmail.com',
       html: `
         <p>Hi dear ${user.fullName}, you approved to our platform like Instructor, follow the bellow steps.</p>
-				<a href="${accountLinks.url}">Full finish your instructor account</a>
+				<a href="${1111}">Full finish your instructor account</a>
 			`,
     };
 

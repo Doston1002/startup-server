@@ -152,9 +152,12 @@ export class AuthController {
 
       // 1. OneID serveridan access_token olish
       const accessToken = await this.oneIdService.getAccessToken(code);
+      console.log("FROM accessToken");
+      
 
       // 2. Access token orqali user ma'lumotlarini olish
       const oneIdUserData = await this.oneIdService.getUserInfo(accessToken);
+      console.log("FROM oneIdUserData");
 
       // 3. User ma'lumotlarini database ga saqlash va JWT token generatsiya qilish
       const result = await this.authService.processOneIdUser(oneIdUserData);

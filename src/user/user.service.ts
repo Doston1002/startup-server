@@ -2,8 +2,8 @@ import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/co
 import { InjectModel } from '@nestjs/mongoose';
 import { genSalt, hash } from 'bcryptjs';
 import { Model } from 'mongoose';
-import { InjectStripe } from 'nestjs-stripe';
-import Stripe from 'stripe';
+// import { InjectStripe } from 'nestjs-stripe';
+// import Stripe from 'stripe';
 import { InterfaceEmailAndPassword, UpdateUserDto } from './user.interface';
 import { User, UserDocument } from './user.model';
 
@@ -11,7 +11,7 @@ import { User, UserDocument } from './user.model';
 export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
-    @InjectStripe() private readonly stripeClient: Stripe,
+    // @InjectStripe() private readonly stripeClient: Stripe,
   ) {}
 
   async byId(id: string) {
@@ -55,12 +55,12 @@ export class UserService {
   }
 
   async allTransactions(customerId: string) {
-    const transactions = await this.stripeClient.charges.list({
-      customer: customerId,
-      limit: 100,
-    });
+    // const transactions = await this.stripeClient.charges.list({
+    //   customer: customerId,
+    //   limit: 100,
+    // });
 
-    return transactions.data;
+    return {};
   }
 
   async myCourses(userId: string) {
