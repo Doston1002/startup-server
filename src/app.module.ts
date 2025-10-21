@@ -16,6 +16,7 @@ import { ReviewModule } from './review/review.module';
 import { OpenaiModule } from './openai/openai.module';
 import { OneIdModule } from './oneid/oneid.module';
 import { NewsletterModule } from './newsletter/newsletter.module';
+import { ContactModule } from './contact/contact.module';
 
 
 @Module({
@@ -40,6 +41,7 @@ import { NewsletterModule } from './newsletter/newsletter.module';
     ReviewModule,
     OneIdModule,
     NewsletterModule,
+    ContactModule,
   ],
 })
 export class AppModule {}
