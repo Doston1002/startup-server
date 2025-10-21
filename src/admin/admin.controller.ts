@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, Put, Query } from '@nestjs/common';
 import { Auth } from 'src/auth/decorators/auth.decorator';
-import { ApproveInstructorDto } from './admin.dto';
+import { ApproveInstructorDto, UpdateUserRoleDto } from './admin.dto';
 import { AdminService } from './admin.service';
 
 @Controller('admin')
@@ -47,5 +47,12 @@ export class AdminController {
   @Auth('ADMIN')
   async deleteCourse(@Query('courseId') courseId: string) {
     return this.adminService.deleteCourse(courseId);
+  }
+
+  @HttpCode(200)
+  @Put('update-user-role')
+  @Auth('ADMIN')
+  async updateUserRole(@Body() body: UpdateUserRoleDto) {
+    return this.adminService.updateUserRole(body.userId, body.role);
   }
 }

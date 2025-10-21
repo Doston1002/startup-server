@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, Put } from '@nestjs/common';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { User } from './decorators/user.decorator';
-import { InterfaceEmailAndPassword, UpdateUserDto } from './user.interface';
+import { InterfaceEmailAndPassword, UpdateUserDto, ChangeRoleDto } from './user.interface';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -39,5 +39,12 @@ export class UserController {
   @Auth()
   myCourses(@User('_id') _id: string) {
     return this.userService.myCourses(_id);
+  }
+
+  @HttpCode(200)
+  @Put('change-role')
+  @Auth('ADMIN')
+  changeRole(@Body() dto: ChangeRoleDto) {
+    return this.userService.changeRole(dto);
   }
 }

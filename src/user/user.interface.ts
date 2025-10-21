@@ -16,3 +16,8 @@ export class UpdateUserDto {
   bio: string;
   avatar: string;
 }
+
+export class ChangeRoleDto {
+  userId: string;
+  role: RoleUser;
+}

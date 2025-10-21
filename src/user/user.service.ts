@@ -4,7 +4,7 @@ import { genSalt, hash } from 'bcryptjs';
 import { Model } from 'mongoose';
 // import { InjectStripe } from 'nestjs-stripe';
 // import Stripe from 'stripe';
-import { InterfaceEmailAndPassword, UpdateUserDto } from './user.interface';
+import { InterfaceEmailAndPassword, UpdateUserDto, ChangeRoleDto } from './user.interface';
 import { User, UserDocument } from './user.model';
 
 @Injectable()
@@ -67,5 +67,29 @@ export class UserService {
     const user = await this.userModel.findById(userId).populate('courses').exec();
 
     return user.courses;
+  }
+
+  async changeRole(dto: ChangeRoleDto) {
+    const { userId, role } = dto;
+
+    const user = await this.userModel.findByIdAndUpdate(
+      userId,
+      { $set: { role } },
+      { new: true }
+    );
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return {
+      message: 'Role updated successfully',
+      user: {
+        id: user._id,
+        email: user.email,
+        fullName: user.fullName,
+        role: user.role
+      }
+    };
   }
 }

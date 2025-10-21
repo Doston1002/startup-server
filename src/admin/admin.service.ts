@@ -126,6 +126,20 @@ export class AdminService {
     return courses.map(course => this.getSpecificFieldCourse(course));
   }
 
+  async updateUserRole(userId: string, role: 'ADMIN' | 'INSTRUCTOR' | 'USER') {
+    const user = await this.userModel.findByIdAndUpdate(
+      userId,
+      { $set: { role } },
+      { new: true }
+    );
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return this.getUserSpecificFiled(user);
+  }
+
   getSpecificField(instructor: InstructorDocument) {
     return {
       approved: instructor.approved,
@@ -143,7 +157,7 @@ export class AdminService {
     return {
       email: user.email,
       fullName: user.fullName,
-      _id: user._id,
+      id: user._id,
       role: user.role,
       createdAt: user.createdAt,
     };
