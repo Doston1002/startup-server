@@ -15,6 +15,7 @@ import { BooksModule } from './books/books.module';
 import { ReviewModule } from './review/review.module';
 import { OpenaiModule } from './openai/openai.module';
 import { OneIdModule } from './oneid/oneid.module';
+import { NewsletterModule } from './newsletter/newsletter.module';
 
 
 @Module({
@@ -38,6 +39,7 @@ import { OneIdModule } from './oneid/oneid.module';
     OpenaiModule,
     ReviewModule,
     OneIdModule,
+    NewsletterModule,
   ],
 })
 export class AppModule {}
