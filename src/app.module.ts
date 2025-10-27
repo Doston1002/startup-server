@@ -13,7 +13,7 @@ import { LessonModule } from './lesson/lesson.module';
 import { AdminModule } from './admin/admin.module';
 import { BooksModule } from './books/books.module';
 import { ReviewModule } from './review/review.module';
-import { OpenaiModule } from './openai/openai.module';
+// import { OpenaiModule } from './openai/openai.module';
 import { OneIdModule } from './oneid/oneid.module';
 import { NewsletterModule } from './newsletter/newsletter.module';
 import { ContactModule } from './contact/contact.module';
@@ -37,7 +37,7 @@ import { ContactModule } from './contact/contact.module';
     LessonModule,
     AdminModule,
     BooksModule,
-    OpenaiModule,
+    // OpenaiModule,
     ReviewModule,
     OneIdModule,
     NewsletterModule,
