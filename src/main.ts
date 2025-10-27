@@ -28,7 +28,7 @@ async function bootstrap() {
     origin: (origin, callback) => {
       const allowedOrigins = [
         'https://uydatalim.uzedu.uz',
-        'http://localhost:3000'
+        'http://localhost:3001'
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
@@ -40,6 +40,6 @@ async function bootstrap() {
     credentials: true,
   });
 
-  await app.listen(parseInt(process.env.PORT) || 8000, '0.0.0.0');
+  await app.listen(parseInt(process.env.PORT) || 8001, '0.0.0.0');
 }
 bootstrap();

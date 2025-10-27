@@ -1,0 +1,119 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AuthController = void 0;
+const common_1 = require("@nestjs/common");
+const user_decorator_1 = require("../user/decorators/user.decorator");
+const auth_service_1 = require("./auth.service");
+const auth_decorator_1 = require("./decorators/auth.decorator");
+const login_dto_1 = require("./dto/login.dto");
+const token_dto_1 = require("./dto/token.dto");
+const oneid_service_1 = require("./oneid.service");
+let AuthController = class AuthController {
+    constructor(authService, oneIdService) {
+        this.authService = authService;
+        this.oneIdService = oneIdService;
+    }
+    async register(dto) {
+        return this.authService.register(dto);
+    }
+    async login(dto) {
+        return this.authService.login(dto);
+    }
+    async getNewTokens(dto) {
+        return this.authService.getNewTokens(dto);
+    }
+    async checkUser(dto) {
+        return this.authService.checkUser(dto.email);
+    }
+    async checkInstructor(_id) {
+        return _id ? true : false;
+    }
+    async handleOneIdCallback(body) {
+        try {
+            const { code } = body;
+            if (!code) {
+                throw new common_1.HttpException('Authorization code is required', common_1.HttpStatus.BAD_REQUEST);
+            }
+            const accessToken = await this.oneIdService.getAccessToken(code);
+            console.log("FROM accessToken");
+            const oneIdUserData = await this.oneIdService.getUserInfo(accessToken);
+            console.log("FROM oneIdUserData");
+            const result = await this.authService.processOneIdUser(oneIdUserData);
+            return Object.assign({ success: true }, result);
+        }
+        catch (error) {
+            throw new common_1.HttpException(error.message || 'OneID authentication failed', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+};
+__decorate([
+    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
+    (0, common_1.HttpCode)(200),
+    (0, common_1.Post)('register'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [login_dto_1.LoginAuthDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "register", null);
+__decorate([
+    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
+    (0, common_1.HttpCode)(200),
+    (0, common_1.Post)('login'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [login_dto_1.LoginAuthDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "login", null);
+__decorate([
+    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
+    (0, common_1.HttpCode)(200),
+    (0, common_1.Post)('access'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [token_dto_1.TokenDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "getNewTokens", null);
+__decorate([
+    (0, common_1.HttpCode)(200),
+    (0, common_1.Post)('check-user'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "checkUser", null);
+__decorate([
+    (0, common_1.HttpCode)(200),
+    (0, common_1.Get)('check-instructor'),
+    (0, auth_decorator_1.Auth)('INSTRUCTOR'),
+    __param(0, (0, user_decorator_1.User)('_id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "checkInstructor", null);
+__decorate([
+    (0, common_1.HttpCode)(200),
+    (0, common_1.Post)('oneid/callback'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "handleOneIdCallback", null);
+AuthController = __decorate([
+    (0, common_1.Controller)('auth'),
+    __metadata("design:paramtypes", [auth_service_1.AuthService,
+        oneid_service_1.OneIdService])
+], AuthController);
+exports.AuthController = AuthController;
+//# sourceMappingURL=auth.controller.js.map
