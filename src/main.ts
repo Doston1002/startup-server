@@ -18,17 +18,12 @@
 
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe, VersioningType } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // ✅ LOW PRIORITY FIX: API Versioning qo'shildi
   app.setGlobalPrefix('api');
-  app.enableVersioning({
-    type: VersioningType.URI,
-    defaultVersion: '1',
-  });
   
   // ✅ SECURITY FIX: Global validation pipe qo'shildi
   app.useGlobalPipes(
