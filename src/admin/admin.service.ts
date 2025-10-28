@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import * as SendGrid from '@sendgrid/mail';
 import { Model } from 'mongoose';
+import { genSalt, hash } from 'bcryptjs';
 // import { InjectStripe } from 'nestjs-stripe';
 import { Course, CourseDocument } from 'src/course/course.model';
 import { Instructor, InstructorDocument } from 'src/instructor/instructor.model';
@@ -138,6 +139,61 @@ export class AdminService {
     }
 
     return this.getUserSpecificFiled(user);
+  }
+
+  async createUser(email: string, fullName: string, password: string, role?: 'ADMIN' | 'INSTRUCTOR' | 'USER') {
+    const existUser = await this.userModel.findOne({ email });
+    
+    if (existUser) {
+      throw new Error('User with this email already exists');
+    }
+
+    const salt = await genSalt(10);
+    const hashedPassword = await hash(password, salt);
+
+    const user = await this.userModel.create({
+      email,
+      fullName,
+      password: hashedPassword,
+      role: role || 'USER',
+    });
+
+    return this.getUserSpecificFiled(user);
+  }
+
+  async updateUser(userId: string, email?: string, fullName?: string, password?: string, role?: 'ADMIN' | 'INSTRUCTOR' | 'USER') {
+    const updateData: any = {};
+
+    if (email) updateData.email = email;
+    if (fullName) updateData.fullName = fullName;
+    if (role) updateData.role = role;
+
+    if (password) {
+      const salt = await genSalt(10);
+      updateData.password = await hash(password, salt);
+    }
+
+    const user = await this.userModel.findByIdAndUpdate(
+      userId,
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return this.getUserSpecificFiled(user);
+  }
+
+  async deleteUser(userId: string) {
+    const user = await this.userModel.findByIdAndDelete(userId);
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return { message: 'User deleted successfully' };
   }
 
   getSpecificField(instructor: InstructorDocument) {

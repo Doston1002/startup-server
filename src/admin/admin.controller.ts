@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, Get, HttpCode, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Post, Put, Query } from '@nestjs/common';
 import { Auth } from 'src/auth/decorators/auth.decorator';
-import { ApproveInstructorDto, UpdateUserRoleDto } from './admin.dto';
+import { ApproveInstructorDto, CreateUserDto, DeleteUserDto, UpdateUserDto, UpdateUserRoleDto } from './admin.dto';
 import { AdminService } from './admin.service';
 
 @Controller('admin')
@@ -54,5 +54,26 @@ export class AdminController {
   @Auth('ADMIN')
   async updateUserRole(@Body() body: UpdateUserRoleDto) {
     return this.adminService.updateUserRole(body.userId, body.role);
+  }
+
+  @HttpCode(201)
+  @Post('create-user')
+  @Auth('ADMIN')
+  async createUser(@Body() body: CreateUserDto) {
+    return this.adminService.createUser(body.email, body.fullName, body.password, body.role);
+  }
+
+  @HttpCode(200)
+  @Put('update-user')
+  @Auth('ADMIN')
+  async updateUser(@Body() body: UpdateUserDto) {
+    return this.adminService.updateUser(body.userId, body.email, body.fullName, body.password, body.role);
+  }
+
+  @HttpCode(200)
+  @Delete('delete-user')
+  @Auth('ADMIN')
+  async deleteUser(@Body() body: DeleteUserDto) {
+    return this.adminService.deleteUser(body.userId);
   }
 }
