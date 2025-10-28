@@ -10,19 +10,22 @@ export class FileController {
   @HttpCode(200)
   @UseInterceptors(
     FileInterceptor('image', {
-      // ✅ SECURITY FIX: File type validation - faqat rasmlar
+      // ✅ SECURITY FIX: File type validation - rasmlar va PDF (books uchun)
       fileFilter: (req, file, cb) => {
-        if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/)) {
+        const allowedImageTypes = /\/(jpg|jpeg|png|gif|webp)$/;
+        const isPdf = file.mimetype === 'application/pdf';
+        
+        if (!file.mimetype.match(allowedImageTypes) && !isPdf) {
           return cb(
-            new BadRequestException('Faqat rasm fayllar ruxsat etilgan (jpg, jpeg, png, gif, webp)'),
+            new BadRequestException('Faqat rasm fayllar (jpg, jpeg, png, gif, webp) yoki PDF ruxsat etilgan'),
             false
           );
         }
         cb(null, true);
       },
-      // ✅ SECURITY FIX: File size limit - max 5MB
+      // ✅ SECURITY FIX: File size limit - 10MB (PDF fayllar uchun)
       limits: {
-        fileSize: 5 * 1024 * 1024, // 5MB
+        fileSize: 10 * 1024 * 1024, // 10MB
       },
     })
   )
