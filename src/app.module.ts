@@ -17,6 +17,7 @@ import { OpenaiModule } from './openai/openai.module';
 import { OneIdModule } from './oneid/oneid.module';
 import { NewsletterModule } from './newsletter/newsletter.module';
 import { ContactModule } from './contact/contact.module';
+import { QuestionModule } from './question/question.module';
 
 
 @Module({
@@ -42,6 +43,7 @@ import { ContactModule } from './contact/contact.module';
     OneIdModule,
     NewsletterModule,
     ContactModule,
+    QuestionModule,
   ],
 })
 export class AppModule {}
