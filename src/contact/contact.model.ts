@@ -8,11 +8,39 @@ export class Contact {
   @Prop({ required: true })
   fullName: string;
 
-  @Prop({ required: true })
+  @Prop()
   phone: string;
 
-  @Prop({ required: true })
+  @Prop()
   message: string;
+
+  // Attendance specific fields
+  @Prop()
+  teacherName: string;
+
+  @Prop()
+  region: string;
+
+  @Prop()
+  district: string;
+
+  @Prop()
+  school: string;
+
+  @Prop()
+  schoolClass: string;
+
+  @Prop()
+  subject: string;
+
+  @Prop()
+  teachingMethod: string;
+
+  @Prop({ default: false })
+  isAbsent: boolean;
+
+  @Prop({ default: 'contact' })
+  type: 'contact' | 'attendance';
 
   @Prop({ default: false })
   isRead: boolean;
