@@ -7,16 +7,16 @@ export type CourseDocument = HydratedDocument<Course>;
 
 @Schema({ timestamps: true })
 export class Course {
-  @Prop({ type: SchemaMS.Types.ObjectId, ref: 'User' })
+  @Prop({ type: SchemaMS.Types.ObjectId, ref: 'User', index: true }) // ✅ LOW PRIORITY FIX: Index
   author: User;
 
   @Prop([{ type: SchemaMS.Types.ObjectId, ref: 'Section' }])
   sections: Section[];
 
-  @Prop({ unique: true, required: true })
+  @Prop({ unique: true, required: true, index: true }) // ✅ LOW PRIORITY FIX: Index
   slug: string;
 
-  @Prop({ type: Boolean, default: false })
+  @Prop({ type: Boolean, default: false, index: true }) // ✅ LOW PRIORITY FIX: Index
   isActive: boolean;
 
   @Prop([String])
@@ -34,7 +34,7 @@ export class Course {
   @Prop()
   level: string;
 
-  @Prop()
+  @Prop({ index: true }) // ✅ LOW PRIORITY FIX: Index (filter uchun)
   category: string;
 
   @Prop()
@@ -46,7 +46,7 @@ export class Course {
   @Prop()
   exerpt: string;
 
-  @Prop()
+  @Prop({ index: true }) // ✅ LOW PRIORITY FIX: Index (filter uchun)
   language: string;
 
   @Prop()
@@ -54,3 +54,8 @@ export class Course {
 }
 
 export const CourseSchema = SchemaFactory.createForClass(Course);
+
+// ✅ LOW PRIORITY FIX: Compound indexes qo'shildi
+CourseSchema.index({ category: 1, language: 1 }); // Category va language bo'yicha filter
+CourseSchema.index({ author: 1, isActive: 1 }); // Instructor kurslarini filter
+CourseSchema.index({ isActive: 1, language: 1 }); // Active kurslar filter

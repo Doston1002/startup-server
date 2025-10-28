@@ -7,7 +7,7 @@ export type UserDocument = HydratedDocument<User>;
 
 @Schema({ timestamps: true })
 export class User {
-  @Prop({ unique: true, required: true })
+  @Prop({ unique: true, required: true, index: true })
   email: string;
 
   @Prop()
@@ -16,7 +16,7 @@ export class User {
   @Prop()
   password: string;
 
-  @Prop()
+  @Prop({ default: 'USER' })
   role: RoleUser;
 
   @Prop()
@@ -25,13 +25,13 @@ export class User {
   @Prop()
   job: string;
 
-  @Prop()
+  @Prop({ index: true }) // ✅ LOW PRIORITY FIX: Index qo'shildi
   customerId: string;
 
-  @Prop()
+  @Prop({ index: true }) // ✅ LOW PRIORITY FIX: Index qo'shildi (OneID uchun)
   pin: string;
 
-  @Prop()
+  @Prop({ index: true }) // ✅ LOW PRIORITY FIX: Index qo'shildi (Instructor uchun)
   instructorAccountId: string;
 
   @Prop()
@@ -48,3 +48,6 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+// ✅ LOW PRIORITY FIX: Compound index qo'shildi (email + role)
+UserSchema.index({ email: 1, role: 1 });
