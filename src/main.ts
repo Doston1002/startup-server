@@ -29,8 +29,11 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // DTO'da bo'lmagan propertylarni olib tashlaydi
-      forbidNonWhitelisted: true, // DTO'da bo'lmagan propertylar xato beradi
+      forbidNonWhitelisted: false, // ⚠️ false qilindi - DTO'da bo'lmagan propertylarni olib tashlaydi lekin xato bermaydi
       transform: true, // Typeni avtomatik convert qiladi
+      transformOptions: {
+        enableImplicitConversion: true, // String'dan number/boolean ga avtomatik o'zgartiradi
+      },
     })
   );
   
