@@ -16,16 +16,20 @@ export class ContactService {
     return contact.save();
   }
 
-  async findAll(limit: number = 10, page: number = 1) {
+  async findAll(limit: number = 10, page: number = 1, type?: 'contact' | 'attendance') {
     const skip = (page - 1) * limit;
+    
+    // Filter query
+    const filter = type ? { type } : {};
+    
     const contacts = await this.contactModel
-      .find()
+      .find(filter)
       .sort({ createdAt: -1 })
       .limit(limit)
       .skip(skip)
       .exec();
 
-    const total = await this.contactModel.countDocuments();
+    const total = await this.contactModel.countDocuments(filter);
     
     return {
       contacts: contacts.map(contact => this.transformContact(contact)),

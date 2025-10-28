@@ -21,8 +21,9 @@ export class ContactController {
   async getMessages(
     @Query('limit') limit: string = '10',
     @Query('page') page: string = '1',
+    @Query('type') type?: 'contact' | 'attendance',
   ) {
-    return this.contactService.findAll(Number(limit), Number(page));
+    return this.contactService.findAll(Number(limit), Number(page), type);
   }
 
   @HttpCode(200)
