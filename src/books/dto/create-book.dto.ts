@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, MinLength, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsString, MinLength, MaxLength, IsOptional } from 'class-validator';
 
 export class CreateBookDto {
   @IsString()
@@ -7,9 +7,9 @@ export class CreateBookDto {
   @MaxLength(200, { message: 'Kitob nomi 200 belgidan oshmasligi kerak' })
   title: string;
 
-  @IsString()
-  @IsNotEmpty({ message: 'Rasm bo\'sh bo\'lmasligi kerak' })
-  image: string;
+  @IsOptional() // ✅ Rasm ixtiyoriy (faqat PDF yuklanadi)
+  @IsString({ message: 'Rasm matn ko\'rinishida bo\'lishi kerak' })
+  image?: string;
 
   @IsString()
   @IsNotEmpty({ message: 'PDF fayl bo\'sh bo\'lmasligi kerak' })
