@@ -224,9 +224,19 @@ export class AuthService {
     const existUser = await this.isExistUser(dto.email);
     if (!existUser) throw new BadRequestException('user_not_found');
 
-    if (dto.password.length) {
+    // ✅ SECURITY FIX: Empty password login bloklandi
+    // Agar user parol bilan ro'yxatdan o'tgan bo'lsa (existUser.password mavjud)
+    if (existUser.password && existUser.password.length > 0) {
+      // Password talab qilinadi
+      if (!dto.password || dto.password.length === 0) {
+        throw new BadRequestException('password_required');
+      }
+      
       const currentPassword = await compare(dto.password, existUser.password);
       if (!currentPassword) throw new BadRequestException('incorrect_password');
+    } else {
+      // OneID/Google user - parolsiz login mumkin emas
+      throw new BadRequestException('use_oneid_or_google_login');
     }
 
     await this.customerService.getCustomer(String(existUser._id));

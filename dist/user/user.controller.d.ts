@@ -35,7 +35,7 @@ export declare class UserController {
     } & Required<{
         _id: import("mongoose").Types.ObjectId;
     }>>;
-    editPassword(dto: InterfaceEmailAndPassword): Promise<string>;
+    editPassword(dto: InterfaceEmailAndPassword, _id: string): Promise<string>;
     updateUser(dto: UpdateUserDto, _id: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./user.model").User> & import("./user.model").User & {
         _id: import("mongoose").Types.ObjectId;
     }> & import("mongoose").Document<unknown, {}, import("./user.model").User> & import("./user.model").User & {

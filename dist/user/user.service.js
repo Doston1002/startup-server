@@ -28,11 +28,14 @@ let UserService = class UserService {
             throw new common_1.NotFoundException('User not found');
         return user;
     }
-    async editPassword(dto) {
+    async editPassword(dto, userId) {
         const { email, password } = dto;
-        const existUser = await this.userModel.findOne({ email });
+        const existUser = await this.userModel.findById(userId);
         if (!existUser)
             throw new common_1.UnauthorizedException('user_not_found');
+        if (existUser.email !== email) {
+            throw new common_1.UnauthorizedException('cannot_change_other_user_password');
+        }
         const salt = await (0, bcryptjs_1.genSalt)(10);
         const hashPassword = await (0, bcryptjs_1.hash)(password, salt);
         await this.userModel.findByIdAndUpdate(existUser._id, { $set: { password: hashPassword } }, { new: true });

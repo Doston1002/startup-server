@@ -19,5 +19,24 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], LoginAuthDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)({ message: 'Parol bo\'sh bo\'lmasligi kerak' }),
+    (0, class_validator_1.MinLength)(8, { message: 'Parol kamida 8 belgidan iborat bo\'lishi kerak' }),
+    (0, class_validator_1.Matches)(/^(?=.*[A-Za-z])(?=.*\d)/, {
+        message: 'Parol kamida 1 harf va 1 raqamdan iborat bo\'lishi kerak. Masalan: mypass123',
+    }),
+    __metadata("design:type", String)
+], LoginAuthDto.prototype, "password", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], LoginAuthDto.prototype, "fullName", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], LoginAuthDto.prototype, "avatar", void 0);
 exports.LoginAuthDto = LoginAuthDto;
 //# sourceMappingURL=login.dto.js.map

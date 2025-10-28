@@ -25,8 +25,8 @@ let CourseController = class CourseController {
     async createCourse(dto, _id) {
         return this.courseService.createCourse(dto, _id);
     }
-    async editCourse(dto, courseId) {
-        return this.courseService.editCourse(dto, courseId);
+    async editCourse(dto, courseId, _id) {
+        return this.courseService.editCourse(dto, courseId, _id);
     }
     async deleteCourse(courseId, _id) {
         return this.courseService.deleteCourse(courseId, _id);
@@ -69,8 +69,9 @@ __decorate([
     (0, auth_decorator_1.Auth)('INSTRUCTOR'),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Param)('courseId')),
+    __param(2, (0, user_decorator_1.User)('_id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [coourse_dto_1.CourseBodyDto, String]),
+    __metadata("design:paramtypes", [coourse_dto_1.CourseBodyDto, String, String]),
     __metadata("design:returntype", Promise)
 ], CourseController.prototype, "editCourse", null);
 __decorate([

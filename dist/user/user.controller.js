@@ -25,8 +25,8 @@ let UserController = class UserController {
     async getProfile(_id) {
         return this.userService.byId(_id);
     }
-    async editPassword(dto) {
-        return this.userService.editPassword(dto);
+    async editPassword(dto, _id) {
+        return this.userService.editPassword(dto, _id);
     }
     updateUser(dto, _id) {
         return this.userService.updateUser(dto, _id);
@@ -52,9 +52,11 @@ __decorate([
 __decorate([
     (0, common_1.HttpCode)(200),
     (0, common_1.Put)('edit-password'),
+    (0, auth_decorator_1.Auth)(),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, user_decorator_1.User)('_id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [user_interface_1.InterfaceEmailAndPassword, String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "editPassword", null);
 __decorate([

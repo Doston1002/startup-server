@@ -26,8 +26,8 @@ let ContactController = class ContactController {
         const contact = await this.contactService.create(createContactDto);
         return { message: 'Message sent successfully', data: contact };
     }
-    async getMessages(limit = '10', page = '1') {
-        return this.contactService.findAll(Number(limit), Number(page));
+    async getMessages(limit = '10', page = '1', type) {
+        return this.contactService.findAll(Number(limit), Number(page), type);
     }
     async getUnreadCount() {
         const count = await this.contactService.getUnreadCount();
@@ -76,8 +76,9 @@ __decorate([
     (0, auth_decorator_1.Auth)('ADMIN'),
     __param(0, (0, common_1.Query)('limit')),
     __param(1, (0, common_1.Query)('page')),
+    __param(2, (0, common_1.Query)('type')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", Promise)
 ], ContactController.prototype, "getMessages", null);
 __decorate([

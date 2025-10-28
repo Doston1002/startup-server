@@ -21,16 +21,32 @@ let FileController = class FileController {
         this.fileService = fileService;
     }
     async saveFile(file, folder) {
+        if (!file) {
+            throw new common_1.BadRequestException('Fayl yuklanmadi');
+        }
         return this.fileService.saveFile(file, folder);
     }
     async savePdfFile(file, folder) {
+        if (!file) {
+            throw new common_1.BadRequestException('Fayl yuklanmadi');
+        }
         return this.fileService.saveFile(file, folder);
     }
 };
 __decorate([
     (0, common_1.Post)('save'),
     (0, common_1.HttpCode)(200),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image')),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image', {
+        fileFilter: (req, file, cb) => {
+            if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/)) {
+                return cb(new common_1.BadRequestException('Faqat rasm fayllar ruxsat etilgan (jpg, jpeg, png, gif, webp)'), false);
+            }
+            cb(null, true);
+        },
+        limits: {
+            fileSize: 5 * 1024 * 1024,
+        },
+    })),
     __param(0, (0, common_1.UploadedFile)()),
     __param(1, (0, common_1.Query)('folder')),
     __metadata("design:type", Function),
@@ -40,7 +56,17 @@ __decorate([
 __decorate([
     (0, common_1.Post)('save-pdf'),
     (0, common_1.HttpCode)(200),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('pdf')),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('pdf', {
+        fileFilter: (req, file, cb) => {
+            if (file.mimetype !== 'application/pdf') {
+                return cb(new common_1.BadRequestException('Faqat PDF fayllar ruxsat etilgan'), false);
+            }
+            cb(null, true);
+        },
+        limits: {
+            fileSize: 10 * 1024 * 1024,
+        },
+    })),
     __param(0, (0, common_1.UploadedFile)()),
     __param(1, (0, common_1.Query)('folder')),
     __metadata("design:type", Function),

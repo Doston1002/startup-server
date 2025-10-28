@@ -29,7 +29,7 @@ export declare class CourseController {
     private readonly courseService;
     constructor(courseService: CourseService);
     createCourse(dto: CourseBodyDto, _id: string): Promise<string>;
-    editCourse(dto: CourseBodyDto, courseId: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./course.model").Course> & import("./course.model").Course & {
+    editCourse(dto: CourseBodyDto, courseId: string, _id: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./course.model").Course> & import("./course.model").Course & {
         _id: import("mongoose").Types.ObjectId;
     }> & import("mongoose").Document<unknown, {}, import("./course.model").Course> & import("./course.model").Course & {
         _id: import("mongoose").Types.ObjectId;

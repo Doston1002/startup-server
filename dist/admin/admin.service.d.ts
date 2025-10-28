@@ -73,6 +73,23 @@ export declare class AdminService {
         role: import("../user/user.interface").RoleUser;
         createdAt: string;
     }>;
+    createUser(email: string, fullName: string, password: string, role?: 'ADMIN' | 'INSTRUCTOR' | 'USER'): Promise<{
+        email: string;
+        fullName: string;
+        id: import("mongoose").Types.ObjectId;
+        role: import("../user/user.interface").RoleUser;
+        createdAt: string;
+    }>;
+    updateUser(userId: string, email?: string, fullName?: string, password?: string, role?: 'ADMIN' | 'INSTRUCTOR' | 'USER'): Promise<{
+        email: string;
+        fullName: string;
+        id: import("mongoose").Types.ObjectId;
+        role: import("../user/user.interface").RoleUser;
+        createdAt: string;
+    }>;
+    deleteUser(userId: string): Promise<{
+        message: string;
+    }>;
     getSpecificField(instructor: InstructorDocument): {
         approved: boolean;
         socialMedia: string;

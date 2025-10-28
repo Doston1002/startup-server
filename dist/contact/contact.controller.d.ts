@@ -35,12 +35,21 @@ export declare class ContactController {
             _id: import("mongoose").Types.ObjectId;
         };
     }>;
-    getMessages(limit?: string, page?: string): Promise<{
+    getMessages(limit?: string, page?: string, type?: 'contact' | 'attendance'): Promise<{
         contacts: {
             id: any;
             fullName: string;
             phone: string;
             message: string;
+            teacherName: string;
+            region: string;
+            district: string;
+            school: string;
+            schoolClass: string;
+            subject: string;
+            teachingMethod: string;
+            isAbsent: boolean;
+            type: "contact" | "attendance";
             isRead: boolean;
             status: "pending" | "replied" | "closed";
             createdAt: Date;
@@ -59,6 +68,15 @@ export declare class ContactController {
             fullName: string;
             phone: string;
             message: string;
+            teacherName: string;
+            region: string;
+            district: string;
+            school: string;
+            schoolClass: string;
+            subject: string;
+            teachingMethod: string;
+            isAbsent: boolean;
+            type: "contact" | "attendance";
             isRead: boolean;
             status: "pending" | "replied" | "closed";
             createdAt: Date;
@@ -71,6 +89,15 @@ export declare class ContactController {
             fullName: string;
             phone: string;
             message: string;
+            teacherName: string;
+            region: string;
+            district: string;
+            school: string;
+            schoolClass: string;
+            subject: string;
+            teachingMethod: string;
+            isAbsent: boolean;
+            type: "contact" | "attendance";
             isRead: boolean;
             status: "pending" | "replied" | "closed";
             createdAt: Date;
@@ -83,6 +110,15 @@ export declare class ContactController {
             fullName: string;
             phone: string;
             message: string;
+            teacherName: string;
+            region: string;
+            district: string;
+            school: string;
+            schoolClass: string;
+            subject: string;
+            teachingMethod: string;
+            isAbsent: boolean;
+            type: "contact" | "attendance";
             isRead: boolean;
             status: "pending" | "replied" | "closed";
             createdAt: Date;

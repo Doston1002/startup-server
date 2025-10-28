@@ -25,15 +25,16 @@ let ContactService = class ContactService {
         const contact = new this.contactModel(createContactDto);
         return contact.save();
     }
-    async findAll(limit = 10, page = 1) {
+    async findAll(limit = 10, page = 1, type) {
         const skip = (page - 1) * limit;
+        const filter = type ? { type } : {};
         const contacts = await this.contactModel
-            .find()
+            .find(filter)
             .sort({ createdAt: -1 })
             .limit(limit)
             .skip(skip)
             .exec();
-        const total = await this.contactModel.countDocuments();
+        const total = await this.contactModel.countDocuments(filter);
         return {
             contacts: contacts.map(contact => this.transformContact(contact)),
             total,
@@ -76,6 +77,15 @@ let ContactService = class ContactService {
             fullName: contact.fullName,
             phone: contact.phone,
             message: contact.message,
+            teacherName: contact.teacherName,
+            region: contact.region,
+            district: contact.district,
+            school: contact.school,
+            schoolClass: contact.schoolClass,
+            subject: contact.subject,
+            teachingMethod: contact.teachingMethod,
+            isAbsent: contact.isAbsent,
+            type: contact.type || 'contact',
             isRead: contact.isRead,
             status: contact.status,
             createdAt: contact.createdAt || new Date(),

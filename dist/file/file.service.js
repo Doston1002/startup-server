@@ -10,15 +10,19 @@ exports.FileService = void 0;
 const common_1 = require("@nestjs/common");
 const app_root_path_1 = require("app-root-path");
 const fs_extra_1 = require("fs-extra");
+const pathModule = require("path");
 let FileService = class FileService {
     async saveFile(file, folder = 'default') {
-        const uploadFolder = `${app_root_path_1.path}/uploads/${folder}`;
+        const sanitizedFolder = pathModule.basename(folder);
+        const uploadFolder = `${app_root_path_1.path}/uploads/${sanitizedFolder}`;
         const uniqueId = Math.floor(Math.random() * 9999);
         await (0, fs_extra_1.ensureDir)(uploadFolder);
-        await (0, fs_extra_1.writeFile)(`${uploadFolder}/${uniqueId}-${file.originalname}`, file.buffer);
+        const safeFilename = pathModule.basename(file.originalname);
+        const filePath = `${uploadFolder}/${uniqueId}-${safeFilename}`;
+        await (0, fs_extra_1.writeFile)(filePath, file.buffer);
         const response = {
-            url: `/uploads/${folder}/${uniqueId}-${file.originalname}`,
-            name: file.originalname,
+            url: `/uploads/${sanitizedFolder}/${uniqueId}-${safeFilename}`,
+            name: safeFilename,
         };
         return response;
     }

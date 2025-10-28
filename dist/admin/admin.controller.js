@@ -42,6 +42,15 @@ let AdminController = class AdminController {
     async updateUserRole(body) {
         return this.adminService.updateUserRole(body.userId, body.role);
     }
+    async createUser(body) {
+        return this.adminService.createUser(body.email, body.fullName, body.password, body.role);
+    }
+    async updateUser(body) {
+        return this.adminService.updateUser(body.userId, body.email, body.fullName, body.password, body.role);
+    }
+    async deleteUser(body) {
+        return this.adminService.deleteUser(body.userId);
+    }
 };
 __decorate([
     (0, common_1.HttpCode)(200),
@@ -106,8 +115,36 @@ __decorate([
     __metadata("design:paramtypes", [admin_dto_1.UpdateUserRoleDto]),
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "updateUserRole", null);
+__decorate([
+    (0, common_1.HttpCode)(201),
+    (0, common_1.Post)('create-user'),
+    (0, auth_decorator_1.Auth)('ADMIN'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [admin_dto_1.CreateUserDto]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "createUser", null);
+__decorate([
+    (0, common_1.HttpCode)(200),
+    (0, common_1.Put)('update-user'),
+    (0, auth_decorator_1.Auth)('ADMIN'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [admin_dto_1.UpdateUserDto]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "updateUser", null);
+__decorate([
+    (0, common_1.HttpCode)(200),
+    (0, common_1.Delete)('delete-user'),
+    (0, auth_decorator_1.Auth)('ADMIN'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [admin_dto_1.DeleteUserDto]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "deleteUser", null);
 AdminController = __decorate([
     (0, common_1.Controller)('admin'),
+    (0, common_1.UsePipes)(new common_1.ValidationPipe({ whitelist: true, transform: true })),
     __metadata("design:paramtypes", [admin_service_1.AdminService])
 ], AdminController);
 exports.AdminController = AdminController;

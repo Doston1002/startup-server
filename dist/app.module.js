@@ -26,6 +26,7 @@ const openai_module_1 = require("./openai/openai.module");
 const oneid_module_1 = require("./oneid/oneid.module");
 const newsletter_module_1 = require("./newsletter/newsletter.module");
 const contact_module_1 = require("./contact/contact.module");
+const question_module_1 = require("./question/question.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -52,6 +53,7 @@ AppModule = __decorate([
             oneid_module_1.OneIdModule,
             newsletter_module_1.NewsletterModule,
             contact_module_1.ContactModule,
+            question_module_1.QuestionModule,
         ],
     })
 ], AppModule);

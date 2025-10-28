@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Instructor, InstructorDocument } from 'src/instructor/instructor.model';
@@ -35,7 +35,19 @@ export class CourseService {
     return 'Success';
   }
 
-  async editCourse(dto: CourseBodyDto, courseId: string) {
+  async editCourse(dto: CourseBodyDto, courseId: string, instructorId: string) {
+    // ✅ SECURITY FIX: Faqat kurs egasi edit qilishi mumkin
+    const course = await this.courseModel.findById(courseId);
+    
+    if (!course) {
+      throw new UnauthorizedException('course_not_found');
+    }
+    
+    // Kurs author'ini tekshirish
+    if (course.author.toString() !== instructorId.toString()) {
+      throw new UnauthorizedException('not_course_owner');
+    }
+    
     return await this.courseModel.findByIdAndUpdate(courseId, dto, { new: true });
   }
 

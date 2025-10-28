@@ -39,7 +39,14 @@ let CourseService = class CourseService {
         await this.instructorModel.findOneAndUpdate({ author: id }, { $push: { courses: course._id } }, { new: true });
         return 'Success';
     }
-    async editCourse(dto, courseId) {
+    async editCourse(dto, courseId, instructorId) {
+        const course = await this.courseModel.findById(courseId);
+        if (!course) {
+            throw new common_1.UnauthorizedException('course_not_found');
+        }
+        if (course.author.toString() !== instructorId.toString()) {
+            throw new common_1.UnauthorizedException('not_course_owner');
+        }
         return await this.courseModel.findByIdAndUpdate(courseId, dto, { new: true });
     }
     async deleteCourse(courseId, userId) {

@@ -18,6 +18,7 @@ const config_1 = require("@nestjs/config");
 const mongoose_1 = require("@nestjs/mongoose");
 const SendGrid = require("@sendgrid/mail");
 const mongoose_2 = require("mongoose");
+const bcryptjs_1 = require("bcryptjs");
 const course_model_1 = require("../course/course.model");
 const instructor_model_1 = require("../instructor/instructor.model");
 const user_model_1 = require("../user/user.model");
@@ -85,6 +86,54 @@ let AdminService = class AdminService {
             throw new Error('User not found');
         }
         return this.getUserSpecificFiled(user);
+    }
+    async createUser(email, fullName, password, role) {
+        const existUser = await this.userModel.findOne({ email });
+        if (existUser) {
+            throw new common_1.BadRequestException('Email allaqachon mavjud');
+        }
+        const salt = await (0, bcryptjs_1.genSalt)(10);
+        const hashedPassword = await (0, bcryptjs_1.hash)(password, salt);
+        const user = await this.userModel.create({
+            email,
+            fullName,
+            password: hashedPassword,
+            role: role || 'USER',
+        });
+        return this.getUserSpecificFiled(user);
+    }
+    async updateUser(userId, email, fullName, password, role) {
+        const updateData = {};
+        if (email) {
+            const existUser = await this.userModel.findOne({
+                email,
+                _id: { $ne: userId }
+            });
+            if (existUser) {
+                throw new common_1.BadRequestException('Email already exists');
+            }
+            updateData.email = email;
+        }
+        if (fullName)
+            updateData.fullName = fullName;
+        if (role)
+            updateData.role = role;
+        if (password) {
+            const salt = await (0, bcryptjs_1.genSalt)(10);
+            updateData.password = await (0, bcryptjs_1.hash)(password, salt);
+        }
+        const user = await this.userModel.findByIdAndUpdate(userId, { $set: updateData }, { new: true });
+        if (!user) {
+            throw new common_1.NotFoundException('User not found');
+        }
+        return this.getUserSpecificFiled(user);
+    }
+    async deleteUser(userId) {
+        const user = await this.userModel.findByIdAndDelete(userId);
+        if (!user) {
+            throw new common_1.NotFoundException('User not found');
+        }
+        return { message: 'User deleted successfully' };
     }
     getSpecificField(instructor) {
         return {

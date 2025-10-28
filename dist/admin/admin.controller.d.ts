@@ -23,7 +23,7 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose" />
 /// <reference types="mongoose/types/inferschematype" />
-import { ApproveInstructorDto, UpdateUserRoleDto } from './admin.dto';
+import { ApproveInstructorDto, CreateUserDto, DeleteUserDto, UpdateUserDto, UpdateUserRoleDto } from './admin.dto';
 import { AdminService } from './admin.service';
 export declare class AdminController {
     private readonly adminService;
@@ -67,5 +67,22 @@ export declare class AdminController {
         id: import("mongoose").Types.ObjectId;
         role: import("../user/user.interface").RoleUser;
         createdAt: string;
+    }>;
+    createUser(body: CreateUserDto): Promise<{
+        email: string;
+        fullName: string;
+        id: import("mongoose").Types.ObjectId;
+        role: import("../user/user.interface").RoleUser;
+        createdAt: string;
+    }>;
+    updateUser(body: UpdateUserDto): Promise<{
+        email: string;
+        fullName: string;
+        id: import("mongoose").Types.ObjectId;
+        role: import("../user/user.interface").RoleUser;
+        createdAt: string;
+    }>;
+    deleteUser(body: DeleteUserDto): Promise<{
+        message: string;
     }>;
 }

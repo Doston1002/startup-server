@@ -41,10 +41,16 @@ let AuthService = class AuthService {
         const existUser = await this.isExistUser(dto.email);
         if (!existUser)
             throw new common_1.BadRequestException('user_not_found');
-        if (dto.password.length) {
+        if (existUser.password && existUser.password.length > 0) {
+            if (!dto.password || dto.password.length === 0) {
+                throw new common_1.BadRequestException('password_required');
+            }
             const currentPassword = await (0, bcryptjs_1.compare)(dto.password, existUser.password);
             if (!currentPassword)
                 throw new common_1.BadRequestException('incorrect_password');
+        }
+        else {
+            throw new common_1.BadRequestException('use_oneid_or_google_login');
         }
         await this.customerService.getCustomer(String(existUser._id));
         const token = await this.issueTokenPair(String(existUser._id));

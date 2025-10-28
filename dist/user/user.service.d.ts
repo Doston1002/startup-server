@@ -35,7 +35,7 @@ export declare class UserService {
     } & Required<{
         _id: import("mongoose").Types.ObjectId;
     }>>;
-    editPassword(dto: InterfaceEmailAndPassword): Promise<string>;
+    editPassword(dto: InterfaceEmailAndPassword, userId: string): Promise<string>;
     updateUser(body: UpdateUserDto, userID: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, User> & User & {
         _id: import("mongoose").Types.ObjectId;
     }> & import("mongoose").Document<unknown, {}, User> & User & {

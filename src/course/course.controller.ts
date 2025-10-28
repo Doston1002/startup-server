@@ -29,8 +29,12 @@ export class CourseController {
   @HttpCode(200)
   @Patch('edit/:courseId')
   @Auth('INSTRUCTOR')
-  async editCourse(@Body() dto: CourseBodyDto, @Param('courseId') courseId: string) {
-    return this.courseService.editCourse(dto, courseId);
+  async editCourse(
+    @Body() dto: CourseBodyDto, 
+    @Param('courseId') courseId: string,
+    @User('_id') _id: string // ✅ SECURITY FIX: Instructor ID qo'shildi
+  ) {
+    return this.courseService.editCourse(dto, courseId, _id);
   }
 
   @HttpCode(200)

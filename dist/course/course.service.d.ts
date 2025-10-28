@@ -35,7 +35,7 @@ export declare class CourseService {
     private reviewModel;
     constructor(courseModel: Model<CourseDocument>, instructorModel: Model<InstructorDocument>, userModel: Model<UserDocument>, reviewModel: Model<ReviewDocument>);
     createCourse(dto: CourseBodyDto, id: string): Promise<string>;
-    editCourse(dto: CourseBodyDto, courseId: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Course> & Course & {
+    editCourse(dto: CourseBodyDto, courseId: string, instructorId: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Course> & Course & {
         _id: import("mongoose").Types.ObjectId;
     }> & import("mongoose").Document<unknown, {}, Course> & Course & {
         _id: import("mongoose").Types.ObjectId;

@@ -28,6 +28,15 @@ export declare class Contact {
     fullName: string;
     phone: string;
     message: string;
+    teacherName: string;
+    region: string;
+    district: string;
+    school: string;
+    schoolClass: string;
+    subject: string;
+    teachingMethod: string;
+    isAbsent: boolean;
+    type: 'contact' | 'attendance';
     isRead: boolean;
     status: 'pending' | 'replied' | 'closed';
     createdAt?: Date;

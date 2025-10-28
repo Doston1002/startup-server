@@ -32,12 +32,21 @@ export declare class ContactService {
     create(createContactDto: CreateContactDto): Promise<import("mongoose").Document<unknown, {}, ContactDocument> & Contact & import("mongoose").Document<any, any, any> & {
         _id: import("mongoose").Types.ObjectId;
     }>;
-    findAll(limit?: number, page?: number): Promise<{
+    findAll(limit?: number, page?: number, type?: 'contact' | 'attendance'): Promise<{
         contacts: {
             id: any;
             fullName: string;
             phone: string;
             message: string;
+            teacherName: string;
+            region: string;
+            district: string;
+            school: string;
+            schoolClass: string;
+            subject: string;
+            teachingMethod: string;
+            isAbsent: boolean;
+            type: "contact" | "attendance";
             isRead: boolean;
             status: "pending" | "replied" | "closed";
             createdAt: Date;
@@ -51,6 +60,15 @@ export declare class ContactService {
         fullName: string;
         phone: string;
         message: string;
+        teacherName: string;
+        region: string;
+        district: string;
+        school: string;
+        schoolClass: string;
+        subject: string;
+        teachingMethod: string;
+        isAbsent: boolean;
+        type: "contact" | "attendance";
         isRead: boolean;
         status: "pending" | "replied" | "closed";
         createdAt: Date;
@@ -60,6 +78,15 @@ export declare class ContactService {
         fullName: string;
         phone: string;
         message: string;
+        teacherName: string;
+        region: string;
+        district: string;
+        school: string;
+        schoolClass: string;
+        subject: string;
+        teachingMethod: string;
+        isAbsent: boolean;
+        type: "contact" | "attendance";
         isRead: boolean;
         status: "pending" | "replied" | "closed";
         createdAt: Date;
@@ -69,6 +96,15 @@ export declare class ContactService {
         fullName: string;
         phone: string;
         message: string;
+        teacherName: string;
+        region: string;
+        district: string;
+        school: string;
+        schoolClass: string;
+        subject: string;
+        teachingMethod: string;
+        isAbsent: boolean;
+        type: "contact" | "attendance";
         isRead: boolean;
         status: "pending" | "replied" | "closed";
         createdAt: Date;
@@ -78,6 +114,15 @@ export declare class ContactService {
         fullName: string;
         phone: string;
         message: string;
+        teacherName: string;
+        region: string;
+        district: string;
+        school: string;
+        schoolClass: string;
+        subject: string;
+        teachingMethod: string;
+        isAbsent: boolean;
+        type: "contact" | "attendance";
         isRead: boolean;
         status: "pending" | "replied" | "closed";
         createdAt: Date;
@@ -87,6 +132,15 @@ export declare class ContactService {
         fullName: string;
         phone: string;
         message: string;
+        teacherName: string;
+        region: string;
+        district: string;
+        school: string;
+        schoolClass: string;
+        subject: string;
+        teachingMethod: string;
+        isAbsent: boolean;
+        type: "contact" | "attendance";
         isRead: boolean;
         status: "pending" | "replied" | "closed";
         createdAt: Date;
