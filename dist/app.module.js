@@ -22,6 +22,7 @@ const lesson_module_1 = require("./lesson/lesson.module");
 const admin_module_1 = require("./admin/admin.module");
 const books_module_1 = require("./books/books.module");
 const review_module_1 = require("./review/review.module");
+const openai_module_1 = require("./openai/openai.module");
 const oneid_module_1 = require("./oneid/oneid.module");
 const newsletter_module_1 = require("./newsletter/newsletter.module");
 const contact_module_1 = require("./contact/contact.module");
@@ -46,6 +47,7 @@ AppModule = __decorate([
             lesson_module_1.LessonModule,
             admin_module_1.AdminModule,
             books_module_1.BooksModule,
+            openai_module_1.OpenaiModule,
             review_module_1.ReviewModule,
             oneid_module_1.OneIdModule,
             newsletter_module_1.NewsletterModule,

@@ -9,7 +9,7 @@ async function bootstrap() {
         origin: (origin, callback) => {
             const allowedOrigins = [
                 'https://uydatalim.uzedu.uz',
-                'http://localhost:3001'
+                'http://localhost:3000'
             ];
             if (!origin || allowedOrigins.includes(origin)) {
                 callback(null, true);
