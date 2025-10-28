@@ -145,7 +145,9 @@ export class AdminService {
     const existUser = await this.userModel.findOne({ email });
     
     if (existUser) {
-      throw new Error('User with this email already exists');
+      const error: any = new Error('Email already exists');
+      error.status = 400;
+      throw error;
     }
 
     const salt = await genSalt(10);
@@ -164,7 +166,22 @@ export class AdminService {
   async updateUser(userId: string, email?: string, fullName?: string, password?: string, role?: 'ADMIN' | 'INSTRUCTOR' | 'USER') {
     const updateData: any = {};
 
-    if (email) updateData.email = email;
+    // Email o'zgarganda, boshqa userda mavjud emasligini tekshirish
+    if (email) {
+      const existUser = await this.userModel.findOne({ 
+        email, 
+        _id: { $ne: userId } // O'zidan boshqa userlarni tekshirish
+      });
+      
+      if (existUser) {
+        const error: any = new Error('Email already exists');
+        error.status = 400;
+        throw error;
+      }
+      
+      updateData.email = email;
+    }
+    
     if (fullName) updateData.fullName = fullName;
     if (role) updateData.role = role;
 
