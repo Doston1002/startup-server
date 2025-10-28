@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import * as SendGrid from '@sendgrid/mail';
@@ -145,9 +145,7 @@ export class AdminService {
     const existUser = await this.userModel.findOne({ email });
     
     if (existUser) {
-      const error: any = new Error('Email already exists');
-      error.status = 400;
-      throw error;
+      throw new BadRequestException('Email allaqachon mavjud');
     }
 
     const salt = await genSalt(10);
@@ -174,9 +172,7 @@ export class AdminService {
       });
       
       if (existUser) {
-        const error: any = new Error('Email already exists');
-        error.status = 400;
-        throw error;
+        throw new BadRequestException('Email already exists');
       }
       
       updateData.email = email;
@@ -197,7 +193,7 @@ export class AdminService {
     );
 
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
 
     return this.getUserSpecificFiled(user);
@@ -207,7 +203,7 @@ export class AdminService {
     const user = await this.userModel.findByIdAndDelete(userId);
 
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
 
     return { message: 'User deleted successfully' };
