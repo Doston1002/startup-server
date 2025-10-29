@@ -23,9 +23,9 @@ export class FileController {
         }
         cb(null, true);
       },
-      // ✅ SECURITY FIX: File size limit - 10MB (PDF fayllar uchun)
+      // ✅ File size limit - 50MB (katta PDF fayllar uchun)
       limits: {
-        fileSize: 10 * 1024 * 1024, // 10MB
+        fileSize: 50 * 1024 * 1024, // 50MB
       },
     })
   )
@@ -50,9 +50,9 @@ export class FileController {
         }
         cb(null, true);
       },
-      // ✅ SECURITY FIX: File size limit - max 10MB for PDF
+      // ✅ File size limit - max 50MB for PDF
       limits: {
-        fileSize: 10 * 1024 * 1024, // 10MB
+        fileSize: 50 * 1024 * 1024, // 50MB
       },
     })
   )
