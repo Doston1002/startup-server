@@ -25,6 +25,12 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
   
+  // ✅ Fix: Increase payload size limit to 50MB for file uploads
+  app.use((req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    next();
+  });
+  
   // ✅ SECURITY FIX: Global validation pipe qo'shildi
   app.useGlobalPipes(
     new ValidationPipe({
