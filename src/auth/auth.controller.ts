@@ -1,3 +1,5 @@
+
+
 // import { Body, Controller, Get, HttpCode, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 // import { User } from 'src/user/decorators/user.decorator';
 // import { AuthService } from './auth.service';
@@ -90,32 +92,45 @@
 
 
 // ********************************
-import { Body, Controller, Get, HttpCode, Post, UsePipes, ValidationPipe, HttpException, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, UsePipes, ValidationPipe, HttpException, HttpStatus, Req } from '@nestjs/common';
 import { User } from 'src/user/decorators/user.decorator';
 import { AuthService } from './auth.service';
 import { Auth } from './decorators/auth.decorator';
-import { LoginAuthDto } from './dto/login.dto';
+import { LoginWithCaptchaDto } from './dto/login-with-captcha.dto';
 import { TokenDto } from './dto/token.dto';
 import { OneIdService } from './oneid.service';
+import { RecaptchaService } from './recaptcha.service';
+import { Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly oneIdService: OneIdService,
+    private readonly recaptchaService: RecaptchaService,
   ) {}
 
   @UsePipes(new ValidationPipe())
   @HttpCode(200)
   @Post('register')
-  async register(@Body() dto: LoginAuthDto) {
+  async register(@Body() dto: LoginWithCaptchaDto, @Req() req: Request) {
+    // reCAPTCHA verification for registration
+    const clientIp = req.ip || req.socket.remoteAddress || 
+                     (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || 
+                     req.headers['x-real-ip'] as string;
+    await this.recaptchaService.verifyToken(dto.captchaToken as string, clientIp);
     return this.authService.register(dto);
   }
 
   @UsePipes(new ValidationPipe())
   @HttpCode(200)
   @Post('login')
-  async login(@Body() dto: LoginAuthDto) {
+  async login(@Body() dto: LoginWithCaptchaDto, @Req() req: Request) {
+    // reCAPTCHA verification for login
+    const clientIp = req.ip || req.socket.remoteAddress || 
+                     (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || 
+                     req.headers['x-real-ip'] as string;
+    await this.recaptchaService.verifyToken(dto.captchaToken as string, clientIp);
     return this.authService.login(dto);
   }
 
