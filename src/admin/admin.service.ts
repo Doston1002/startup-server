@@ -65,7 +65,7 @@ export class AdminService {
     const emailData = {
       to: user.email,
       subject: 'Successfully approved',
-      from: 'dilbarxudoyberdiyeva71@gmail.com',
+      from: 'togaevn14@gmail.com',
       html: `
         <p>Hi dear ${user.fullName}, you approved to our platform like Instructor, follow the bellow steps.</p>
 				<a href="${1111}">Full finish your instructor account</a>
