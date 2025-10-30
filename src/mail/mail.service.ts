@@ -38,7 +38,7 @@ export class MailService {
     const emailData = {
       to: email,
       subject: 'Verification email',
-      from: 'info@uydatalim.uzedu.uz',
+      from: 'dilbarxudoyberdiyeva71@gmail.com',
       html: `
 				<h1>Verification Code: ${otp}</h1>
 			`,
@@ -73,7 +73,7 @@ export class MailService {
     const emailData = {
       to: user.email,
       subject: 'Ordered book',
-      from: 'info@uydatalim.uzedu.uz',
+      from: 'dilbarxudoyberdiyeva71@gmail.com',
       html: `
 				<a href="${book.pdf}">Your ordered book - ${book.title}</a>
 			`,
