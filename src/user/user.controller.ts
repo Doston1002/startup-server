@@ -16,7 +16,7 @@ export class UserController {
 
   @HttpCode(200)
   @Put('edit-password')
-  @Auth() // ✅ SECURITY FIX: Faqat login qilgan foydalanuvchi
+  @Auth() // Faqat avtorizatsiya qilgan foydalanuvchi
   async editPassword(@Body() dto: InterfaceEmailAndPassword, @User('_id') _id: string) {
     return this.userService.editPassword(dto, _id);
   }
