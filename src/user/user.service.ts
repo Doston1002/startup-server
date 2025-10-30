@@ -22,17 +22,11 @@ export class UserService {
     return user;
   }
 
-  async editPassword(dto: InterfaceEmailAndPassword, userId: string) {
+  async editPassword(dto: InterfaceEmailAndPassword) {
     const { email, password } = dto;
 
-    // ✅ SECURITY FIX: Faqat o'z email'ini o'zgartirishi mumkin
-    const existUser = await this.userModel.findById(userId);
+    const existUser = await this.userModel.findOne({ email });
     if (!existUser) throw new UnauthorizedException('user_not_found');
-
-    // Email tekshiruvi - faqat o'z emailini o'zgartirishi mumkin
-    if (existUser.email !== email) {
-      throw new UnauthorizedException('cannot_change_other_user_password');
-    }
 
     const salt = await genSalt(10);
     const hashPassword = await hash(password, salt);
