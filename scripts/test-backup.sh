@@ -46,7 +46,30 @@ echo ""
 
 echo "2️⃣  Script Fayllari Tekshiruvi"
 echo "──────────────────────────────────────────────────"
-BACKUP_SCRIPT="$HOME/uyda-talim/back/scripts/mongodb-backup.sh"
+# Script joylashuvini topish (avtomatik)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BACKUP_SCRIPT="${SCRIPT_DIR}/mongodb-backup.sh"
+
+# Agar hozirgi papkada topilmasa, boshqa joylarni qidirish
+if [ ! -f "$BACKUP_SCRIPT" ]; then
+    # Bir nechta mumkin bo'lgan joylarni tekshirish
+    POSSIBLE_PATHS=(
+        "$HOME/startup-server/scripts/mongodb-backup.sh"
+        "$HOME/uyda-talim/back/scripts/mongodb-backup.sh"
+        "./mongodb-backup.sh"
+        "mongodb-backup.sh"
+    )
+    
+    for path in "${POSSIBLE_PATHS[@]}"; do
+        if [ -f "$path" ]; then
+            BACKUP_SCRIPT="$path"
+            SCRIPT_DIR="$(cd "$(dirname "$BACKUP_SCRIPT")" && pwd)"
+            BACKUP_SCRIPT="${SCRIPT_DIR}/mongodb-backup.sh"
+            break
+        fi
+    done
+fi
+
 if [ -f "$BACKUP_SCRIPT" ]; then
     check_pass "Backup script mavjud: $BACKUP_SCRIPT"
     if [ -x "$BACKUP_SCRIPT" ]; then
@@ -55,13 +78,34 @@ if [ -f "$BACKUP_SCRIPT" ]; then
         check_warn "Script'ga execute huquq berish kerak: chmod +x $BACKUP_SCRIPT"
     fi
 else
-    check_fail "Backup script topilmadi: $BACKUP_SCRIPT"
+    check_fail "Backup script topilmadi! Quyidagi joylarda qidirildi:"
+    echo "   - $SCRIPT_DIR/mongodb-backup.sh"
+    echo "   - $HOME/startup-server/scripts/mongodb-backup.sh"
+    echo "   - $HOME/uyda-talim/back/scripts/mongodb-backup.sh"
+    echo "   Hozirgi papka: $(pwd)"
 fi
 echo ""
 
 echo "3️⃣  Konfiguratsiya Fayli Tekshiruvi"
 echo "──────────────────────────────────────────────────"
-CONFIG_FILE="$HOME/uyda-talim/back/scripts/.backup.env"
+CONFIG_FILE="${SCRIPT_DIR}/.backup.env"
+
+# Agar hozirgi papkada topilmasa, boshqa joylarni qidirish
+if [ ! -f "$CONFIG_FILE" ]; then
+    POSSIBLE_CONFIGS=(
+        "$HOME/startup-server/scripts/.backup.env"
+        "$HOME/uyda-talim/back/scripts/.backup.env"
+        "./.backup.env"
+    )
+    
+    for path in "${POSSIBLE_CONFIGS[@]}"; do
+        if [ -f "$path" ]; then
+            CONFIG_FILE="$path"
+            break
+        fi
+    done
+fi
+
 if [ -f "$CONFIG_FILE" ]; then
     check_pass "Konfiguratsiya fayli mavjud: $CONFIG_FILE"
     source "$CONFIG_FILE" 2>/dev/null || true
@@ -76,7 +120,8 @@ if [ -f "$CONFIG_FILE" ]; then
         check_warn "DB_NAME topilmadi"
     fi
 else
-    check_warn "Konfiguratsiya fayli topilmadi. Setup scriptni ishga tushiring!"
+    check_warn "Konfiguratsiya fayli topilmadi: $CONFIG_FILE"
+    echo "   Setup scriptni ishga tushiring: ./setup-backup.sh"
 fi
 echo ""
 

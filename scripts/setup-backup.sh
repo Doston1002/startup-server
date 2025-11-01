@@ -15,6 +15,16 @@ echo ""
 
 # Script papkasi
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Avtomatik topish - bir nechta mumkin bo'lgan joylarni tekshirish
+if [ ! -f "${SCRIPT_DIR}/mongodb-backup.sh" ]; then
+    # Boshqa joylarni qidirish
+    for path in "$HOME/startup-server/scripts" "$HOME/uyda-talim/back/scripts" "."; do
+        if [ -f "${path}/mongodb-backup.sh" ]; then
+            SCRIPT_DIR="$(cd "$path" && pwd)"
+            break
+        fi
+    done
+fi
 BACKUP_SCRIPT="${SCRIPT_DIR}/mongodb-backup.sh"
 CONFIG_FILE="${SCRIPT_DIR}/.backup.env"
 
