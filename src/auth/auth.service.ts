@@ -224,6 +224,11 @@ export class AuthService {
     const existUser = await this.isExistUser(dto.email);
     if (!existUser) throw new BadRequestException('user_not_found');
 
+    // ✅ BLOCK CHECK: Foydalanuvchi bloklangan bo'lsa login qilish mumkin emas
+    if (existUser.isBlocked) {
+      throw new UnauthorizedException('user_blocked');
+    }
+
     // ✅ SECURITY FIX: Empty password login bloklandi
     // Agar user parol bilan ro'yxatdan o'tgan bo'lsa (existUser.password mavjud)
     if (existUser.password && existUser.password.length > 0) {
@@ -277,6 +282,11 @@ export class AuthService {
         await user.save();
       }
 
+      // ✅ BLOCK CHECK: Foydalanuvchi bloklangan bo'lsa login qilish mumkin emas
+      if (user.isBlocked) {
+        throw new UnauthorizedException('user_blocked');
+      }
+
       // Customer yaratish yoki olish
       await this.customerService.getCustomer(String(user._id));
 
@@ -323,6 +333,11 @@ export class AuthService {
     if (!result) throw new UnauthorizedException('Invalid token or expired!');
 
     const user = await this.userModel.findById(result._id);
+
+    // ✅ BLOCK CHECK: Foydalanuvchi bloklangan bo'lsa token yangilash mumkin emas
+    if (user.isBlocked) {
+      throw new UnauthorizedException('user_blocked');
+    }
 
     const token = await this.issueTokenPair(String(user._id));
     return { user: this.getUserField(user), ...token };

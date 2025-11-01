@@ -78,3 +78,9 @@ export class DeleteUserDto {
   @IsMongoId({ message: 'Noto\'g\'ri foydalanuvchi ID' })
   userId: string;
 }
+
+export class BlockUserDto {
+  @IsNotEmpty({ message: 'Foydalanuvchi ID kiritilishi shart' })
+  @IsMongoId({ message: 'Noto\'g\'ri foydalanuvchi ID' })
+  userId: string;
+}

@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, Post, Put, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Auth } from 'src/auth/decorators/auth.decorator';
-import { ApproveInstructorDto, CreateUserDto, DeleteUserDto, UpdateUserDto, UpdateUserRoleDto } from './admin.dto';
+import { ApproveInstructorDto, BlockUserDto, CreateUserDto, DeleteUserDto, UpdateUserDto, UpdateUserRoleDto } from './admin.dto';
 import { AdminService } from './admin.service';
 
 @Controller('admin')
@@ -76,5 +76,19 @@ export class AdminController {
   @Auth('ADMIN')
   async deleteUser(@Body() body: DeleteUserDto) {
     return this.adminService.deleteUser(body.userId);
+  }
+
+  @HttpCode(200)
+  @Put('block-user')
+  @Auth('ADMIN')
+  async blockUser(@Body() body: BlockUserDto) {
+    return this.adminService.blockUser(body.userId);
+  }
+
+  @HttpCode(200)
+  @Put('unblock-user')
+  @Auth('ADMIN')
+  async unblockUser(@Body() body: BlockUserDto) {
+    return this.adminService.unblockUser(body.userId);
   }
 }

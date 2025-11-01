@@ -45,6 +45,9 @@ export class User {
 
   @Prop([{ type: SchemaMS.Types.ObjectId, ref: 'Course' }])
   courses: Course[];
+
+  @Prop({ default: false, index: true })
+  isBlocked: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

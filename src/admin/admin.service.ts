@@ -222,6 +222,34 @@ export class AdminService {
     };
   }
 
+  async blockUser(userId: string) {
+    const user = await this.userModel.findByIdAndUpdate(
+      userId,
+      { $set: { isBlocked: true } },
+      { new: true }
+    );
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return this.getUserSpecificFiled(user);
+  }
+
+  async unblockUser(userId: string) {
+    const user = await this.userModel.findByIdAndUpdate(
+      userId,
+      { $set: { isBlocked: false } },
+      { new: true }
+    );
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return this.getUserSpecificFiled(user);
+  }
+
   getUserSpecificFiled(user: UserDocument) {
     return {
       email: user.email,
@@ -229,6 +257,7 @@ export class AdminService {
       id: user._id,
       role: user.role,
       createdAt: user.createdAt,
+      isBlocked: user.isBlocked || false,
     };
   }
 
