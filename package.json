@@ -18,7 +18,10 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "fix-books-urls": "ts-node -r tsconfig-paths/register src/scripts/fix-books-pdf-urls.ts"
+    "fix-books-urls": "ts-node -r tsconfig-paths/register src/scripts/fix-books-pdf-urls.ts",
+    "backup-db": "ts-node -r tsconfig-paths/register src/scripts/backup-database.ts",
+    "backup-db:compress": "npm run backup-db -- --compress",
+    "backup-db:no-compress": "npm run backup-db -- --no-compress"
   },
   "dependencies": {
     "@nestjs/axios": "^4.0.1",
