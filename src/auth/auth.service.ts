@@ -226,7 +226,7 @@ export class AuthService {
 
     // ✅ BLOCK CHECK: Foydalanuvchi bloklangan bo'lsa login qilish mumkin emas
     if (existUser.isBlocked) {
-      throw new UnauthorizedException('user_blocked');
+      throw new UnauthorizedException('Foydalanuvchi bloklangan');
     }
 
     // ✅ SECURITY FIX: Empty password login bloklandi
@@ -284,7 +284,7 @@ export class AuthService {
 
       // ✅ BLOCK CHECK: Foydalanuvchi bloklangan bo'lsa login qilish mumkin emas
       if (user.isBlocked) {
-        throw new UnauthorizedException('user_blocked');
+        throw new UnauthorizedException('foydalanuvchi bloklangan');
       }
 
       // Customer yaratish yoki olish
@@ -336,7 +336,7 @@ export class AuthService {
 
     // ✅ BLOCK CHECK: Foydalanuvchi bloklangan bo'lsa token yangilash mumkin emas
     if (user.isBlocked) {
-      throw new UnauthorizedException('user_blocked');
+      throw new UnauthorizedException('foydalanuvchi bloklangan');
     }
 
     const token = await this.issueTokenPair(String(user._id));
