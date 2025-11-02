@@ -40,6 +40,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { OneIdService } from './oneid.service'; // OneID service import
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { UserActivityLogger } from 'src/logger/user-activity.logger';
 
 @Module({
   imports: [
@@ -58,7 +59,8 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     AuthService, 
     OneIdService, // OneID service provider sifatida qo'shildi
     JwtStrategy, 
-    CustomerService
+    CustomerService,
+    UserActivityLogger, // User activity logger
   ],
   exports: [AuthService, OneIdService], // Agar boshqa modullarda ishlatish kerak bo'lsa
 })

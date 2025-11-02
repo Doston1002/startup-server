@@ -90,8 +90,10 @@
 
 
 // ********************************
-import { Body, Controller, Get, HttpCode, Post, UsePipes, ValidationPipe, HttpException, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, UsePipes, ValidationPipe, HttpException, HttpStatus, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { User } from 'src/user/decorators/user.decorator';
+import { UserActivityLogger } from 'src/logger/user-activity.logger';
 import { AuthService } from './auth.service';
 import { Auth } from './decorators/auth.decorator';
 import { LoginAuthDto } from './dto/login.dto';
@@ -103,20 +105,67 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly oneIdService: OneIdService,
+    private readonly userActivityLogger: UserActivityLogger,
   ) {}
 
   @UsePipes(new ValidationPipe())
   @HttpCode(200)
   @Post('register')
-  async register(@Body() dto: LoginAuthDto) {
-    return this.authService.register(dto);
+  async register(@Body() dto: LoginAuthDto, @Req() req: Request) {
+    try {
+      const result = await this.authService.register(dto);
+      
+      // Muvaffaqiyatli registration log
+      this.userActivityLogger.logUserActivitySimple({
+        ip: req.ip || req.headers['x-forwarded-for'] as string || req.socket.remoteAddress,
+        email: dto.email,
+        action: 'REGISTER',
+        status: 'SUCCESS',
+        userId: result.user?.id?.toString() || '-',
+      });
+      
+      return result;
+    } catch (error) {
+      // Muvaffaqiyatsiz registration log
+      this.userActivityLogger.logUserActivitySimple({
+        ip: req.ip || req.headers['x-forwarded-for'] as string || req.socket.remoteAddress,
+        email: dto.email,
+        action: 'REGISTER',
+        status: 'FAILED',
+        error: error.message || 'Unknown error',
+      });
+      throw error;
+    }
   }
 
   @UsePipes(new ValidationPipe())
   @HttpCode(200)
   @Post('login')
-  async login(@Body() dto: LoginAuthDto) {
-    return this.authService.login(dto);
+  async login(@Body() dto: LoginAuthDto, @Req() req: Request) {
+    try {
+      const result = await this.authService.login(dto);
+      
+      // Muvaffaqiyatli login log
+      this.userActivityLogger.logUserActivitySimple({
+        ip: req.ip || req.headers['x-forwarded-for'] as string || req.socket.remoteAddress,
+        email: dto.email,
+        action: 'LOGIN',
+        status: 'SUCCESS',
+        userId: result.user?.id?.toString() || '-',
+      });
+      
+      return result;
+    } catch (error) {
+      // Muvaffaqiyatsiz login log
+      this.userActivityLogger.logUserActivitySimple({
+        ip: req.ip || req.headers['x-forwarded-for'] as string || req.socket.remoteAddress,
+        email: dto.email,
+        action: 'LOGIN',
+        status: 'FAILED',
+        error: error.message || 'Unknown error',
+      });
+      throw error;
+    }
   }
 
   @UsePipes(new ValidationPipe())
