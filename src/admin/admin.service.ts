@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import * as SendGrid from '@sendgrid/mail';
@@ -72,9 +72,24 @@ export class AdminService {
 			`,
     };
 
-    await SendGrid.send(emailData);
-
-    return 'Success';
+    try {
+      await SendGrid.send(emailData);
+      return 'Success';
+    } catch (error) {
+      // SendGrid xatolarni handle qilish
+      if (error.response) {
+        const { statusCode, body } = error.response;
+        console.error('SendGrid Error:', { statusCode, body });
+        
+        if (statusCode === 401 || statusCode === 403) {
+          throw new UnauthorizedException('Email xizmati sozlashda xatolik. Iltimos, administrator bilan bog\'laning.');
+        }
+      }
+      
+      // Email xatolik bo'lsa ham, instructor approval muvaffaqiyatli
+      console.error('Email yuborishda xatolik, lekin instructor tasdiqlandi:', error.message);
+      return 'Success';
+    }
   }
 
   async deleteIntructor(instructorId: string) {
