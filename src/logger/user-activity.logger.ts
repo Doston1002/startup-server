@@ -4,8 +4,8 @@ import { join } from 'path';
 
 @Injectable()
 export class UserActivityLogger {
-  private readonly logDir = '/var/log/uyda-talim';
-  private readonly logFile = join(this.logDir, 'user-activity.log');
+  private readonly logDir = '/var/log/users-log';
+  private readonly logFile = join(this.logDir, 'users-access.log');
 
   constructor() {
     // Log papkasini yaratish (agar mavjud bo'lmasa)
@@ -15,7 +15,7 @@ export class UserActivityLogger {
         console.log(`✅ Log papkasi yaratildi: ${this.logDir}`);
       } catch (error) {
         console.error('❌ Log papkasini yaratishda xatolik:', error);
-        console.error('Iltimos, qo\'lda yarating: sudo mkdir -p /var/log/uyda-talim && sudo chmod 755 /var/log/uyda-talim');
+        console.error('Iltimos, qo\'lda yarating: sudo mkdir -p /var/log/users-log && sudo chmod 755 /var/log/users-log');
       }
     } else {
       console.log(`✅ Log papkasi mavjud: ${this.logDir}`);
@@ -24,18 +24,23 @@ export class UserActivityLogger {
 
   /**
    * Nginx formatidagi log yozish
-   * Format: IP - - [DATE] "METHOD URL HTTP_VERSION" STATUS SIZE "REFERER" "USER_AGENT" "EMAIL" "ACTION"
+   * Format: IP - - [DATE] "METHOD URL HTTP_VERSION" STATUS SIZE "REFERER" "USER_AGENT" "EMAIL" "USER_ID" "ACTION"
+   * Nginx Combined Log Format: %h %l %u %t "%r" %s %b "%{Referer}i" "%{User-Agent}i"
    */
   logUserActivity(data: {
     ip?: string;
-    email: string;
-    action: 'REGISTER' | 'LOGIN' | 'LOGOUT';
+    email?: string;
+    userId?: string;
+    method?: string;
+    url?: string;
     userAgent?: string;
     referer?: string;
-    status: number;
-    userId?: string;
+    statusCode?: number;
+    responseSize?: number;
+    action?: string;
     fullName?: string;
     role?: string;
+    error?: string;
   }): void {
     try {
       const date = new Date();
@@ -44,11 +49,19 @@ export class UserActivityLogger {
       const userAgent = data.userAgent || '-';
       const referer = data.referer || '-';
       const userId = data.userId || '-';
+      const email = data.email || '-';
       const fullName = data.fullName || '-';
       const role = data.role || '-';
+      const method = data.method || 'GET';
+      const url = data.url || '/';
+      const statusCode = data.statusCode || 200;
+      const responseSize = data.responseSize || 0;
+      const action = data.action || '-';
+      const error = data.error || '-';
 
-      // Nginx o'xshash format
-      const logLine = `${ip} - - [${dateStr}] "${data.action} /api/auth/${data.action.toLowerCase()} HTTP/1.1" ${data.status} ${data.email.length} "${referer}" "${userAgent}" "EMAIL:${data.email}" "USER_ID:${userId}" "FULL_NAME:${fullName}" "ROLE:${role}" "ACTION:${data.action}"\n`;
+      // Nginx Combined Log Format + qo'shimcha user ma'lumotlari
+      // Format: IP - - [DATE] "METHOD URL HTTP_VERSION" STATUS SIZE "REFERER" "USER_AGENT" "EMAIL" "USER_ID" "FULL_NAME" "ROLE" "ACTION" "ERROR"
+      const logLine = `${ip} - - [${dateStr}] "${method} ${url} HTTP/1.1" ${statusCode} ${responseSize} "${referer}" "${userAgent}" "${email}" "${userId}" "${fullName}" "${role}" "${action}" "${error}"\n`;
 
       appendFileSync(this.logFile, logLine, { encoding: 'utf8', flag: 'a' });
     } catch (error) {
@@ -57,23 +70,36 @@ export class UserActivityLogger {
   }
 
   /**
-   * Soddalashtirilgan format (keyingi o'zgartirishlar uchun)
+   * Soddalashtirilgan format (auth harakatlar uchun)
    */
   logUserActivitySimple(data: {
     ip?: string;
     email: string;
-    action: 'REGISTER' | 'LOGIN' | 'LOGOUT';
+    action: 'REGISTER' | 'LOGIN' | 'LOGOUT' | string;
     status: 'SUCCESS' | 'FAILED';
     userId?: string;
     error?: string;
+    userAgent?: string;
+    url?: string;
+    method?: string;
+    fullName?: string;
+    role?: string;
   }): void {
     try {
-      const date = new Date().toISOString();
+      const date = new Date();
+      const dateStr = this.formatDate(date);
       const ip = data.ip || '-';
       const userId = data.userId || '-';
       const error = data.error || '-';
+      const userAgent = data.userAgent || '-';
+      const url = data.url || `/api/auth/${data.action.toLowerCase()}`;
+      const method = data.method || 'POST';
+      const fullName = data.fullName || '-';
+      const role = data.role || '-';
+      const statusCode = data.status === 'SUCCESS' ? 200 : 400;
 
-      const logLine = `[${date}] ${data.action} | IP: ${ip} | EMAIL: ${data.email} | USER_ID: ${userId} | STATUS: ${data.status} | ERROR: ${error}\n`;
+      // Nginx formatida log
+      const logLine = `${ip} - - [${dateStr}] "${method} ${url} HTTP/1.1" ${statusCode} ${data.email.length} "-" "${userAgent}" "${data.email}" "${userId}" "${fullName}" "${role}" "${data.action}" "${error}"\n`;
 
       appendFileSync(this.logFile, logLine, { encoding: 'utf8', flag: 'a' });
     } catch (error) {

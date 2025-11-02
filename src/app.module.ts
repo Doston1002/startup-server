@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
@@ -18,6 +19,8 @@ import { OneIdModule } from './oneid/oneid.module';
 import { NewsletterModule } from './newsletter/newsletter.module';
 import { ContactModule } from './contact/contact.module';
 import { QuestionModule } from './question/question.module';
+import { UserActivityInterceptor } from './logger/user-activity.interceptor';
+import { UserActivityLogger } from './logger/user-activity.logger';
 
 
 @Module({
@@ -44,6 +47,13 @@ import { QuestionModule } from './question/question.module';
     NewsletterModule,
     ContactModule,
     QuestionModule,
+  ],
+  providers: [
+    UserActivityLogger,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: UserActivityInterceptor,
+    },
   ],
 })
 export class AppModule {}

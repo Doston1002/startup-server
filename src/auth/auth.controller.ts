@@ -122,6 +122,11 @@ export class AuthController {
         action: 'REGISTER',
         status: 'SUCCESS',
         userId: result.user?.id?.toString() || '-',
+        userAgent: req.headers['user-agent'] || '-',
+        url: req.url,
+        method: req.method,
+        fullName: dto.fullName || '-',
+        role: result.user?.role || '-',
       });
       
       return result;
@@ -133,6 +138,10 @@ export class AuthController {
         action: 'REGISTER',
         status: 'FAILED',
         error: error.message || 'Unknown error',
+        userAgent: req.headers['user-agent'] || '-',
+        url: req.url,
+        method: req.method,
+        fullName: dto.fullName || '-',
       });
       throw error;
     }
@@ -152,6 +161,11 @@ export class AuthController {
         action: 'LOGIN',
         status: 'SUCCESS',
         userId: result.user?.id?.toString() || '-',
+        userAgent: req.headers['user-agent'] || '-',
+        url: req.url,
+        method: req.method,
+        fullName: result.user?.fullName || '-',
+        role: result.user?.role || '-',
       });
       
       return result;
@@ -163,6 +177,9 @@ export class AuthController {
         action: 'LOGIN',
         status: 'FAILED',
         error: error.message || 'Unknown error',
+        userAgent: req.headers['user-agent'] || '-',
+        url: req.url,
+        method: req.method,
       });
       throw error;
     }
