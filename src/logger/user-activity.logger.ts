@@ -12,9 +12,13 @@ export class UserActivityLogger {
     if (!existsSync(this.logDir)) {
       try {
         mkdirSync(this.logDir, { recursive: true, mode: 0o755 });
+        console.log(`✅ Log papkasi yaratildi: ${this.logDir}`);
       } catch (error) {
-        console.error('Log papkasini yaratishda xatolik:', error);
+        console.error('❌ Log papkasini yaratishda xatolik:', error);
+        console.error('Iltimos, qo\'lda yarating: sudo mkdir -p /var/log/uyda-talim && sudo chmod 755 /var/log/uyda-talim');
       }
+    } else {
+      console.log(`✅ Log papkasi mavjud: ${this.logDir}`);
     }
   }
 
