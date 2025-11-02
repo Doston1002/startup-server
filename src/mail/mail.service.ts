@@ -51,22 +51,21 @@ export class MailService {
       // SendGrid xatolarni handle qilish
       console.error('SendGrid Error:', error);
       
-      if (error.response) {
-        const { statusCode, body } = error.response;
-        console.error('SendGrid Error Details:', { statusCode, body });
-        
-        if (statusCode === 401 || statusCode === 403) {
-          throw new UnauthorizedException('Email xizmati sozlashda xatolik. Iltimos, administrator bilan bog\'laning.');
-        }
-        
-        // SendGrid error formatini to'g'ri handle qilish
-        const errorMessage = body?.errors?.[0]?.message || body?.message || 'Noma\'lum xatolik';
-        throw new BadRequestException(`Email yuborishda xatolik: ${errorMessage}`);
+      // Status code ni to'g'ri aniqlash
+      const statusCode = error?.code || error?.response?.statusCode || error?.statusCode;
+      const body = error?.response?.body || error?.body;
+      
+      console.error('SendGrid Error Details:', { statusCode, body });
+      
+      if (statusCode === 401 || statusCode === 403) {
+        // SendGrid error xabari
+        const errorMessage = body?.errors?.[0]?.message || 'Email xizmati sozlashda xatolik. API key noto\'g\'ri yoki muddati tugagan.';
+        throw new UnauthorizedException(errorMessage);
       }
       
-      // Umumiy xatolik
-      const errorMsg = error?.message || 'Email yuborishda xatolik yuz berdi';
-      throw new BadRequestException(errorMsg);
+      // SendGrid error formatini to'g'ri handle qilish
+      const errorMessage = body?.errors?.[0]?.message || body?.message || 'Noma\'lum xatolik';
+      throw new BadRequestException(`Email yuborishda xatolik: ${errorMessage}`);
     }
   }
 
@@ -108,22 +107,21 @@ export class MailService {
       // SendGrid xatolarni handle qilish
       console.error('SendGrid Error:', error);
       
-      if (error.response) {
-        const { statusCode, body } = error.response;
-        console.error('SendGrid Error Details:', { statusCode, body });
-        
-        if (statusCode === 401 || statusCode === 403) {
-          throw new UnauthorizedException('Email xizmati sozlashda xatolik. Iltimos, administrator bilan bog\'laning.');
-        }
-        
-        // SendGrid error formatini to'g'ri handle qilish
-        const errorMessage = body?.errors?.[0]?.message || body?.message || 'Noma\'lum xatolik';
-        throw new BadRequestException(`Email yuborishda xatolik: ${errorMessage}`);
+      // Status code ni to'g'ri aniqlash
+      const statusCode = error?.code || error?.response?.statusCode || error?.statusCode;
+      const body = error?.response?.body || error?.body;
+      
+      console.error('SendGrid Error Details:', { statusCode, body });
+      
+      if (statusCode === 401 || statusCode === 403) {
+        // SendGrid error xabari
+        const errorMessage = body?.errors?.[0]?.message || 'Email xizmati sozlashda xatolik. API key noto\'g\'ri yoki muddati tugagan.';
+        throw new UnauthorizedException(errorMessage);
       }
       
-      // Umumiy xatolik
-      const errorMsg = error?.message || 'Email yuborishda xatolik yuz berdi';
-      throw new BadRequestException(errorMsg);
+      // SendGrid error formatini to'g'ri handle qilish
+      const errorMessage = body?.errors?.[0]?.message || body?.message || 'Noma\'lum xatolik';
+      throw new BadRequestException(`Email yuborishda xatolik: ${errorMessage}`);
     }
   }
 }
