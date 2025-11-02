@@ -193,6 +193,7 @@ import { User, UserDocument } from 'src/user/user.model';
 import { LoginAuthDto } from './dto/login.dto';
 import { TokenDto } from './dto/token.dto';
 import { OneIdUserData } from './oneid.service';
+import { RecaptchaService } from './recaptcha.service';
 
 @Injectable()
 export class AuthService {
@@ -200,9 +201,13 @@ export class AuthService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private readonly jwtService: JwtService,
     private readonly customerService: CustomerService,
+    private readonly recaptchaService: RecaptchaService,
   ) { }
 
-  async register(dto: LoginAuthDto) {
+  async register(dto: LoginAuthDto, remoteip?: string) {
+    // reCAPTCHA verification
+    await this.recaptchaService.verifyToken(dto.recaptchaToken, remoteip);
+
     const existUser = await this.isExistUser(dto.email);
     if (existUser) throw new BadRequestException('already_exist');
 
@@ -220,7 +225,10 @@ export class AuthService {
     return { user: this.getUserField(newUser), ...token };
   }
 
-  async login(dto: LoginAuthDto) {
+  async login(dto: LoginAuthDto, remoteip?: string) {
+    // reCAPTCHA verification
+    await this.recaptchaService.verifyToken(dto.recaptchaToken, remoteip);
+
     const existUser = await this.isExistUser(dto.email);
     if (!existUser) throw new BadRequestException('user_not_found');
 

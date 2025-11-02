@@ -113,11 +113,12 @@ export class AuthController {
   @Post('register')
   async register(@Body() dto: LoginAuthDto, @Req() req: Request) {
     try {
-      const result = await this.authService.register(dto);
+      const ip = req.ip || req.headers['x-forwarded-for'] as string || req.socket.remoteAddress;
+      const result = await this.authService.register(dto, ip);
       
       // Muvaffaqiyatli registration log
       this.userActivityLogger.logUserActivitySimple({
-        ip: req.ip || req.headers['x-forwarded-for'] as string || req.socket.remoteAddress,
+        ip,
         email: dto.email,
         action: 'REGISTER',
         status: 'SUCCESS',
@@ -152,11 +153,12 @@ export class AuthController {
   @Post('login')
   async login(@Body() dto: LoginAuthDto, @Req() req: Request) {
     try {
-      const result = await this.authService.login(dto);
+      const ip = req.ip || req.headers['x-forwarded-for'] as string || req.socket.remoteAddress;
+      const result = await this.authService.login(dto, ip);
       
       // Muvaffaqiyatli login log
       this.userActivityLogger.logUserActivitySimple({
-        ip: req.ip || req.headers['x-forwarded-for'] as string || req.socket.remoteAddress,
+        ip,
         email: dto.email,
         action: 'LOGIN',
         status: 'SUCCESS',

@@ -31,7 +31,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
-import { HttpModule } from '@nestjs/axios'; // OneID uchun qo'shildi
+import { HttpModule } from '@nestjs/axios'; // OneID va reCAPTCHA uchun
 import { getJWTConfig } from 'src/config/jwt.config';
 import { CustomerModule } from 'src/customer/customer.module';
 import { CustomerService } from 'src/customer/customer.service';
@@ -39,6 +39,7 @@ import { User, UserSchema } from 'src/user/user.model';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { OneIdService } from './oneid.service'; // OneID service import
+import { RecaptchaService } from './recaptcha.service'; // reCAPTCHA service
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { UserActivityLogger } from 'src/logger/user-activity.logger';
 
@@ -47,7 +48,7 @@ import { UserActivityLogger } from 'src/logger/user-activity.logger';
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     ConfigModule,
     CustomerModule,
-    HttpModule, // OneID API chaqiruvlari uchun
+    HttpModule, // OneID va reCAPTCHA API chaqiruvlari uchun
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -58,10 +59,11 @@ import { UserActivityLogger } from 'src/logger/user-activity.logger';
   providers: [
     AuthService, 
     OneIdService, // OneID service provider sifatida qo'shildi
+    RecaptchaService, // reCAPTCHA service
     JwtStrategy, 
     CustomerService,
     UserActivityLogger, // User activity logger
   ],
-  exports: [AuthService, OneIdService], // Agar boshqa modullarda ishlatish kerak bo'lsa
+  exports: [AuthService, OneIdService, RecaptchaService], // Agar boshqa modullarda ishlatish kerak bo'lsa
 })
 export class AuthModule {}

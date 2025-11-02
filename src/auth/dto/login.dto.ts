@@ -22,4 +22,8 @@ export class LoginAuthDto {
   @IsOptional()
   @IsString()
   avatar: string;
+
+  @IsString()
+  @IsNotEmpty({ message: 'reCAPTCHA token talab qilinadi' })
+  recaptchaToken: string;
 }
