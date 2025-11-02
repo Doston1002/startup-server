@@ -43,26 +43,9 @@ export class MailService {
 				<h1>Verification Code: ${otp}</h1>
 			`,
     };
-    
-    try {
-      await this.otpModel.create({ email: email, otp: hashedOtp, expireAt: Date.now() + 3600000 });
-      await SendGrid.send(emailData);
-      return 'Success';
-    } catch (error) {
-      // SendGrid xatolarni handle qilish
-      if (error.response) {
-        const { statusCode, body } = error.response;
-        console.error('SendGrid Error:', { statusCode, body });
-        
-        if (statusCode === 401 || statusCode === 403) {
-          throw new UnauthorizedException('Email xizmati sozlashda xatolik. Iltimos, administrator bilan bog\'laning.');
-        }
-        
-        throw new BadRequestException(`Email yuborishda xatolik: ${body?.message || 'Noma'lum xatolik'}`);
-      }
-      
-      throw new BadRequestException('Email yuborishda xatolik yuz berdi');
-    }
+    await this.otpModel.create({ email: email, otp: hashedOtp, expireAt: Date.now() + 3600000 });
+    await SendGrid.send(emailData);
+    return 'Success';
   }
 
   async verifyOtp(email: string, otpVerification: string) {
@@ -96,23 +79,7 @@ export class MailService {
 			`,
     };
 
-    try {
-      await SendGrid.send(emailData);
-      return 'Success';
-    } catch (error) {
-      // SendGrid xatolarni handle qilish
-      if (error.response) {
-        const { statusCode, body } = error.response;
-        console.error('SendGrid Error:', { statusCode, body });
-        
-        if (statusCode === 401 || statusCode === 403) {
-          throw new UnauthorizedException('Email xizmati sozlashda xatolik. Iltimos, administrator bilan bog\'laning.');
-        }
-        
-        throw new BadRequestException(`Email yuborishda xatolik: ${body?.message || 'Noma'lum xatolik'}`);
-      }
-      
-      throw new BadRequestException('Email yuborishda xatolik yuz berdi');
-    }
+    await SendGrid.send(emailData);
+    return 'Success';
   }
 }
