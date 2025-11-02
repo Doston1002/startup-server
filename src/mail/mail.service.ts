@@ -47,21 +47,26 @@ export class MailService {
       await this.otpModel.create({ email: email, otp: hashedOtp, expireAt: Date.now() + 3600000 });
       await SendGrid.send(emailData);
       return 'Success';
-    } catch (error) {
+    } catch (error: any) {
       // SendGrid xatolarni handle qilish
+      console.error('SendGrid Error:', error);
+      
       if (error.response) {
         const { statusCode, body } = error.response;
-        console.error('SendGrid Error:', { statusCode, body });
+        console.error('SendGrid Error Details:', { statusCode, body });
         
         if (statusCode === 401 || statusCode === 403) {
           throw new UnauthorizedException('Email xizmati sozlashda xatolik. Iltimos, administrator bilan bog\'laning.');
         }
         
-        const errorMessage = body?.message || 'Noma\'lum xatolik';
+        // SendGrid error formatini to'g'ri handle qilish
+        const errorMessage = body?.errors?.[0]?.message || body?.message || 'Noma\'lum xatolik';
         throw new BadRequestException(`Email yuborishda xatolik: ${errorMessage}`);
       }
       
-      throw new BadRequestException('Email yuborishda xatolik yuz berdi');
+      // Umumiy xatolik
+      const errorMsg = error?.message || 'Email yuborishda xatolik yuz berdi';
+      throw new BadRequestException(errorMsg);
     }
   }
 
@@ -99,21 +104,26 @@ export class MailService {
     try {
       await SendGrid.send(emailData);
       return 'Success';
-    } catch (error) {
+    } catch (error: any) {
       // SendGrid xatolarni handle qilish
+      console.error('SendGrid Error:', error);
+      
       if (error.response) {
         const { statusCode, body } = error.response;
-        console.error('SendGrid Error:', { statusCode, body });
+        console.error('SendGrid Error Details:', { statusCode, body });
         
         if (statusCode === 401 || statusCode === 403) {
           throw new UnauthorizedException('Email xizmati sozlashda xatolik. Iltimos, administrator bilan bog\'laning.');
         }
         
-        const errorMessage = body?.message || 'Noma\'lum xatolik';
+        // SendGrid error formatini to'g'ri handle qilish
+        const errorMessage = body?.errors?.[0]?.message || body?.message || 'Noma\'lum xatolik';
         throw new BadRequestException(`Email yuborishda xatolik: ${errorMessage}`);
       }
       
-      throw new BadRequestException('Email yuborishda xatolik yuz berdi');
+      // Umumiy xatolik
+      const errorMsg = error?.message || 'Email yuborishda xatolik yuz berdi';
+      throw new BadRequestException(errorMsg);
     }
   }
 }

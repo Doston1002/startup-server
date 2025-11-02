@@ -75,20 +75,22 @@ export class AdminService {
     try {
       await SendGrid.send(emailData);
       return 'Success';
-    } catch (error) {
+    } catch (error: any) {
       // SendGrid xatolarni handle qilish
+      console.error('SendGrid Error:', error);
+      
       if (error.response) {
         const { statusCode, body } = error.response;
-        console.error('SendGrid Error:', { statusCode, body });
+        console.error('SendGrid Error Details:', { statusCode, body });
         
         if (statusCode === 401 || statusCode === 403) {
           // Email xatolik bo'lsa ham, instructor approval muvaffaqiyatli
-          console.error('Email yuborishda xatolik, lekin instructor tasdiqlandi');
+          console.error('Email xizmati sozlashda xatolik, lekin instructor tasdiqlandi');
         }
       }
       
       // Email xatolik bo'lsa ham, instructor approval muvaffaqiyatli
-      console.error('Email yuborishda xatolik:', error.message);
+      console.error('Email yuborishda xatolik:', error?.message || 'Noma\'lum xatolik');
       return 'Success';
     }
   }
