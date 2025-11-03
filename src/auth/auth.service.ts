@@ -186,14 +186,11 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
-import { compare, genSalt, hash } from 'bcryptjs';
 import { Model } from 'mongoose';
 import { CustomerService } from 'src/customer/customer.service';
 import { User, UserDocument } from 'src/user/user.model';
-import { LoginAuthDto } from './dto/login.dto';
 import { TokenDto } from './dto/token.dto';
 import { OneIdUserData } from './oneid.service';
-import { RecaptchaService } from './recaptcha.service';
 
 @Injectable()
 export class AuthService {
@@ -201,61 +198,7 @@ export class AuthService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private readonly jwtService: JwtService,
     private readonly customerService: CustomerService,
-    private readonly recaptchaService: RecaptchaService,
   ) { }
-
-  async register(dto: LoginAuthDto, remoteip?: string) {
-    // reCAPTCHA verification
-    await this.recaptchaService.verifyToken(dto.recaptchaToken, remoteip);
-
-    const existUser = await this.isExistUser(dto.email);
-    if (existUser) throw new BadRequestException('already_exist');
-
-    const salt = await genSalt(10);
-    const passwordHash = await hash(dto.password, salt);
-
-    const newUser = await this.userModel.create({
-      ...dto,
-      password: dto.password.length ? passwordHash : '',
-    });
-
-    await this.customerService.getCustomer(String(newUser._id));
-    const token = await this.issueTokenPair(String(newUser._id));
-
-    return { user: this.getUserField(newUser), ...token };
-  }
-
-  async login(dto: LoginAuthDto, remoteip?: string) {
-    // reCAPTCHA verification
-    await this.recaptchaService.verifyToken(dto.recaptchaToken, remoteip);
-
-    const existUser = await this.isExistUser(dto.email);
-    if (!existUser) throw new BadRequestException('user_not_found');
-
-    // ✅ BLOCK CHECK: Foydalanuvchi bloklangan bo'lsa login qilish mumkin emas
-    if (existUser.isBlocked) {
-      throw new UnauthorizedException('Foydalanuvchi bloklangan');
-    }
-
-    // ✅ SECURITY FIX: Empty password login bloklandi
-    // Agar user parol bilan ro'yxatdan o'tgan bo'lsa (existUser.password mavjud)
-    if (existUser.password && existUser.password.length > 0) {
-      // Password talab qilinadi
-      if (!dto.password || dto.password.length === 0) {
-        throw new BadRequestException('password_required');
-      }
-      
-      const currentPassword = await compare(dto.password, existUser.password);
-      if (!currentPassword) throw new BadRequestException('incorrect_password');
-    } else {
-      // OneID/Google user - parolsiz login mumkin emas
-      throw new BadRequestException('use_oneid_or_google_login');
-    }
-
-    await this.customerService.getCustomer(String(existUser._id));
-    const token = await this.issueTokenPair(String(existUser._id));
-    return { user: this.getUserField(existUser), ...token };
-  }
 
   // OneID uchun yangi method
   async processOneIdUser(oneIdData: OneIdUserData) {
@@ -351,15 +294,6 @@ export class AuthService {
     return { user: this.getUserField(user), ...token };
   }
 
-  async checkUser(email: string) {
-    const user = await this.isExistUser(email);
-
-    if (user) {
-      return 'user';
-    } else {
-      return 'no-user';
-    }
-  }
 
   async isExistUser(email: string): Promise<UserDocument> {
     const existUser = await this.userModel.findOne({ email });

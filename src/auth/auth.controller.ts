@@ -90,13 +90,10 @@
 
 
 // ********************************
-import { Body, Controller, Get, HttpCode, Post, UsePipes, ValidationPipe, HttpException, HttpStatus, Req } from '@nestjs/common';
-import { Request } from 'express';
+import { Body, Controller, Get, HttpCode, Post, UsePipes, ValidationPipe, HttpException, HttpStatus } from '@nestjs/common';
 import { User } from 'src/user/decorators/user.decorator';
-import { UserActivityLogger } from 'src/logger/user-activity.logger';
 import { AuthService } from './auth.service';
 import { Auth } from './decorators/auth.decorator';
-import { LoginAuthDto } from './dto/login.dto';
 import { TokenDto } from './dto/token.dto';
 import { OneIdService } from './oneid.service';
 
@@ -105,87 +102,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly oneIdService: OneIdService,
-    private readonly userActivityLogger: UserActivityLogger,
   ) {}
-
-  @UsePipes(new ValidationPipe())
-  @HttpCode(200)
-  @Post('register')
-  async register(@Body() dto: LoginAuthDto, @Req() req: Request) {
-    try {
-      const ip = req.ip || req.headers['x-forwarded-for'] as string || req.socket.remoteAddress;
-      const result = await this.authService.register(dto, ip);
-      
-      // Muvaffaqiyatli registration log
-      this.userActivityLogger.logUserActivitySimple({
-        ip,
-        email: dto.email,
-        action: 'REGISTER',
-        status: 'SUCCESS',
-        userId: result.user?.id?.toString() || '-',
-        userAgent: req.headers['user-agent'] || '-',
-        url: req.url,
-        method: req.method,
-        fullName: dto.fullName || '-',
-        role: result.user?.role || '-',
-      });
-      
-      return result;
-    } catch (error) {
-      // Muvaffaqiyatsiz registration log
-      this.userActivityLogger.logUserActivitySimple({
-        ip: req.ip || req.headers['x-forwarded-for'] as string || req.socket.remoteAddress,
-        email: dto.email,
-        action: 'REGISTER',
-        status: 'FAILED',
-        error: error.message || 'Unknown error',
-        userAgent: req.headers['user-agent'] || '-',
-        url: req.url,
-        method: req.method,
-        fullName: dto.fullName || '-',
-      });
-      throw error;
-    }
-  }
-
-  @UsePipes(new ValidationPipe())
-  @HttpCode(200)
-  @Post('login')
-  async login(@Body() dto: LoginAuthDto, @Req() req: Request) {
-    try {
-      const ip = req.ip || req.headers['x-forwarded-for'] as string || req.socket.remoteAddress;
-      const result = await this.authService.login(dto, ip);
-      
-      // Muvaffaqiyatli login log
-      this.userActivityLogger.logUserActivitySimple({
-        ip,
-        email: dto.email,
-        action: 'LOGIN',
-        status: 'SUCCESS',
-        userId: result.user?.id?.toString() || '-',
-        userAgent: req.headers['user-agent'] || '-',
-        url: req.url,
-        method: req.method,
-        fullName: result.user?.fullName || '-',
-        role: result.user?.role || '-',
-      });
-      
-      return result;
-    } catch (error) {
-      // Muvaffaqiyatsiz login log
-      this.userActivityLogger.logUserActivitySimple({
-        ip: req.ip || req.headers['x-forwarded-for'] as string || req.socket.remoteAddress,
-        email: dto.email,
-        action: 'LOGIN',
-        status: 'FAILED',
-        error: error.message || 'Unknown error',
-        userAgent: req.headers['user-agent'] || '-',
-        url: req.url,
-        method: req.method,
-      });
-      throw error;
-    }
-  }
 
   @UsePipes(new ValidationPipe())
   @HttpCode(200)
@@ -197,7 +114,8 @@ export class AuthController {
   @HttpCode(200)
   @Post('check-user')
   async checkUser(@Body() dto: { email: string }) {
-    return this.authService.checkUser(dto.email);
+    // Email bilan tekshirish endi qo'llab-quvvatlanmaydi
+    return { status: 'disabled' } as const;
   }
 
   @HttpCode(200)
