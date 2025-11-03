@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserController } from './user.controller';
 import { User, UserSchema } from './user.model';
 import { UserService } from './user.service';
+import { UserActivityLogger } from 'src/logger/user-activity.logger';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { UserService } from './user.service';
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     // StripeModule.forRoot({ apiKey: process.env.STRIPE_SECRET_KEY, apiVersion: '2022-11-15' }),
   ],
-  providers: [UserService],
+  providers: [UserService, UserActivityLogger],
   controllers: [UserController],
 })
 export class UserModule {}
