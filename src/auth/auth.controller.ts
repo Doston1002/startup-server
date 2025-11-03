@@ -90,18 +90,21 @@
 
 
 // ********************************
-import { Body, Controller, Get, HttpCode, Post, UsePipes, ValidationPipe, HttpException, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, UsePipes, ValidationPipe, HttpException, HttpStatus, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { User } from 'src/user/decorators/user.decorator';
 import { AuthService } from './auth.service';
 import { Auth } from './decorators/auth.decorator';
 import { TokenDto } from './dto/token.dto';
 import { OneIdService } from './oneid.service';
+import { UserActivityLogger } from 'src/logger/user-activity.logger';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly oneIdService: OneIdService,
+    private readonly userActivityLogger: UserActivityLogger,
   ) {}
 
   @UsePipes(new ValidationPipe())
@@ -128,7 +131,7 @@ export class AuthController {
   // OneID uchun yangi endpoint
   @HttpCode(200)
   @Post('oneid/callback')
-  async handleOneIdCallback(@Body() body: { code: string }) {
+  async handleOneIdCallback(@Body() body: { code: string }, @Req() req: Request) {
     try {
       const { code } = body;
       
@@ -147,6 +150,22 @@ export class AuthController {
 
       // 3. User ma'lumotlarini database ga saqlash va JWT token generatsiya qilish
       const result = await this.authService.processOneIdUser(oneIdUserData);
+
+      // Odam o'qiydigan xabar bilan log yozish
+      this.userActivityLogger.logUserActivity({
+        ip: req.ip || (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress,
+        method: req.method,
+        url: req.url,
+        userAgent: (req.headers['user-agent'] as string) || '-',
+        referer: (req.headers['referer'] as string) || '-',
+        statusCode: 200,
+        email: result.user?.email,
+        userId: result.user?.id?.toString?.(),
+        fullName: result.user?.fullName || oneIdUserData.full_name,
+        role: result.user?.role,
+        action: 'ONEID_AUTH',
+        message: `${result.user?.fullName || oneIdUserData.full_name} OneID orqali ro'yxatdan o'tdi`,
+      });
 
       return {
         success: true,

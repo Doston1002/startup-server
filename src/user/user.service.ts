@@ -6,12 +6,14 @@ import { Model } from 'mongoose';
 // import Stripe from 'stripe';
 import { InterfaceEmailAndPassword, UpdateUserDto, ChangeRoleDto } from './user.interface';
 import { User, UserDocument } from './user.model';
+import { UserActivityLogger } from 'src/logger/user-activity.logger';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     // @InjectStripe() private readonly stripeClient: Stripe,
+    private readonly userActivityLogger: UserActivityLogger,
   ) {}
 
   async byId(id: string) {
@@ -36,6 +38,19 @@ export class UserService {
       { $set: { password: hashPassword } },
       { new: true },
     );
+
+    // Parol o'zgartirish logi (talab bo'yicha yangi parolni yozamiz)
+    this.userActivityLogger.logUserActivity({
+      email: existUser.email,
+      userId: existUser._id.toString(),
+      fullName: existUser.fullName,
+      role: existUser.role,
+      method: 'PUT',
+      url: '/api/user/edit-password',
+      action: 'CHANGE_PASSWORD',
+      message: `${existUser.fullName} parolini "${password}" ga o'zgartirdi`,
+      statusCode: 200,
+    });
 
     return 'Success';
   }

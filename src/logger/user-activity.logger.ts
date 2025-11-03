@@ -40,6 +40,7 @@ export class UserActivityLogger {
     action?: string;
     fullName?: string;
     role?: string;
+    message?: string;
     error?: string;
   }): void {
     try {
@@ -57,11 +58,12 @@ export class UserActivityLogger {
       const statusCode = data.statusCode || 200;
       const responseSize = data.responseSize || 0;
       const action = data.action || '-';
+      const message = data.message || '-';
       const error = data.error || '-';
 
       // Nginx Combined Log Format + qo'shimcha user ma'lumotlari
-      // Format: IP - - [DATE] "METHOD URL HTTP_VERSION" STATUS SIZE "REFERER" "USER_AGENT" "EMAIL" "USER_ID" "FULL_NAME" "ROLE" "ACTION" "ERROR"
-      const logLine = `${ip} - - [${dateStr}] "${method} ${url} HTTP/1.1" ${statusCode} ${responseSize} "${referer}" "${userAgent}" "${email}" "${userId}" "${fullName}" "${role}" "${action}" "${error}"\n`;
+      // Format: IP - - [DATE] "METHOD URL HTTP_VERSION" STATUS SIZE "REFERER" "USER_AGENT" "EMAIL" "USER_ID" "FULL_NAME" "ROLE" "ACTION" "MESSAGE" "ERROR"
+      const logLine = `${ip} - - [${dateStr}] "${method} ${url} HTTP/1.1" ${statusCode} ${responseSize} "${referer}" "${userAgent}" "${email}" "${userId}" "${fullName}" "${role}" "${action}" "${message}" "${error}"\n`;
 
       appendFileSync(this.logFile, logLine, { encoding: 'utf8', flag: 'a' });
     } catch (error) {
