@@ -4,16 +4,31 @@ import { Model } from 'mongoose';
 import { Course } from 'src/course/course.model';
 import { SectionDto } from './section.dto';
 import { Section } from './section.model';
+import { Lesson } from 'src/lesson/lesson.model';
 
 @Injectable()
 export class SectionService {
   constructor(
     @InjectModel(Section.name) private sectionModel: Model<Section>,
     @InjectModel(Course.name) private courseModel: Model<Course>,
+    @InjectModel(Lesson.name) private lessonModel: Model<Lesson>,
   ) {}
 
-  async createSection({ title }: SectionDto, courseId: string) {
+  async createSection({ title, initialLesson }: SectionDto, courseId: string) {
     const section = await this.sectionModel.create({ title });
+
+    // Agar birlamchi dars berilgan bo'lsa, uni yaratib bo'limga qo'shamiz
+    if (initialLesson) {
+      const lesson = await this.lessonModel.create({
+        name: initialLesson.name,
+        material: initialLesson.material || '',
+        embedVideo: initialLesson.embedVideo,
+        hour: initialLesson.hour,
+        minute: initialLesson.minute,
+        second: initialLesson.second,
+      });
+      await this.sectionModel.findByIdAndUpdate(section._id, { $push: { lessons: lesson._id } });
+    }
     const course = await this.courseModel
       .findByIdAndUpdate(
         courseId,
