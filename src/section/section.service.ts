@@ -43,6 +43,13 @@ export class SectionService {
   }
 
   async deleteSection(sectionId: string, courseId: string) {
+    // Avval bo'limning barcha darslarini o'chiramiz
+    const section = await this.sectionModel.findById(sectionId).populate('lessons');
+    if (section && Array.isArray((section as any).lessons) && (section as any).lessons.length) {
+      const lessonIds = ((section as any).lessons as any[]).map(l => l._id);
+      await this.lessonModel.deleteMany({ _id: { $in: lessonIds } });
+    }
+
     await this.sectionModel.findByIdAndRemove(sectionId);
 
     const course = await this.courseModel
