@@ -24,6 +24,26 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
   
+  // ✅ SECURITY FIX: Clickjacking protection - X-Frame-Options va CSP headerlarini qo'shish
+  app.use((req, res, next) => {
+    // X-Frame-Options header - clickjacking hujumlaridan himoya qilish
+    res.setHeader('X-Frame-Options', 'DENY');
+    
+    // Content Security Policy - frame-ancestors direktivasi
+    res.setHeader(
+      'Content-Security-Policy',
+      "frame-ancestors 'none'; default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://uydatalim.uzedu.uz https://api.uydatalim.uzedu.uz;"
+    );
+    
+    // X-Content-Type-Options - MIME type sniffing'ni oldini olish
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    
+    // X-XSS-Protection - Eski brauzerlar uchun qo'shimcha himoya
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    
+    next();
+  });
+  
   app.enableCors({
     origin: (origin, callback) => {
       const allowedOrigins = [

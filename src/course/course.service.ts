@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { Instructor, InstructorDocument } from 'src/instructor/instructor.model';
 import { Review, ReviewDocument } from 'src/review/review.model';
 import { User, UserDocument } from 'src/user/user.model';
+import { sanitizeHtml, sanitizeText } from 'src/helpers/sanitize.helper';
 import { CourseBodyDto } from './coourse.dto';
 import { Course, CourseDocument } from './course.model';
 
@@ -25,8 +26,16 @@ export class CourseService {
         .replace(/[\s_-]+/g, '-')
         .replace(/^-+|-+$/g, '');
 
-    const slug = slugify(dto.title);
-    const course = await this.courseModel.create({ ...dto, slug: slug, author: id });
+    // ✅ SECURITY FIX: XSS/HTML Injection himoyasi - description va title fieldlarini sanitize qilish
+    const sanitizedDto = {
+      ...dto,
+      description: sanitizeHtml(dto.description),
+      title: sanitizeText(dto.title), // Title faqat text bo'lishi kerak
+      exerpt: sanitizeText(dto.exerpt), // Exerpt ham faqat text
+    };
+
+    const slug = slugify(sanitizedDto.title);
+    const course = await this.courseModel.create({ ...sanitizedDto, slug: slug, author: id });
     await this.instructorModel.findOneAndUpdate(
       { author: id },
       { $push: { courses: course._id } },
@@ -48,7 +57,15 @@ export class CourseService {
       throw new UnauthorizedException('not_course_owner');
     }
     
-    return await this.courseModel.findByIdAndUpdate(courseId, dto, { new: true });
+    // ✅ SECURITY FIX: XSS/HTML Injection himoyasi - description va title fieldlarini sanitize qilish
+    const sanitizedDto = {
+      ...dto,
+      description: sanitizeHtml(dto.description),
+      title: sanitizeText(dto.title), // Title faqat text bo'lishi kerak
+      exerpt: sanitizeText(dto.exerpt), // Exerpt ham faqat text
+    };
+    
+    return await this.courseModel.findByIdAndUpdate(courseId, sanitizedDto, { new: true });
   }
 
   async deleteCourse(courseId: string, userId: string) {

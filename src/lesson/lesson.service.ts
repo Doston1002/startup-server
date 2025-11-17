@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { sanitizeHtml, sanitizeText } from 'src/helpers/sanitize.helper';
 import { Section } from 'src/section/section.model';
 import { LessonDto } from './lesson.dto';
 import { Lesson } from './lesson.model';
@@ -13,7 +14,15 @@ export class LessonService {
   ) {}
 
   async createLesson(body: LessonDto, sectionId: string) {
-    const lesson = await this.lessonModel.create(body);
+    // ✅ SECURITY FIX: XSS/HTML Injection himoyasi - material va name fieldlarini sanitize qilish
+    const sanitizedBody = {
+      ...body,
+      material: sanitizeHtml(body.material),
+      name: sanitizeText(body.name), // Name faqat text bo'lishi kerak
+      embedVideo: sanitizeHtml(body.embedVideo), // Embed video HTML bo'lishi mumkin, lekin sanitize qilamiz
+    };
+    
+    const lesson = await this.lessonModel.create(sanitizedBody);
     const section = await this.sectionModel
       .findByIdAndUpdate(
         sectionId,
@@ -28,7 +37,15 @@ export class LessonService {
   }
 
   async editLesson(body: LessonDto, lessonId: string) {
-    const lesson = await this.lessonModel.findByIdAndUpdate(lessonId, body, { new: true });
+    // ✅ SECURITY FIX: XSS/HTML Injection himoyasi - material va name fieldlarini sanitize qilish
+    const sanitizedBody = {
+      ...body,
+      material: sanitizeHtml(body.material),
+      name: sanitizeText(body.name), // Name faqat text bo'lishi kerak
+      embedVideo: sanitizeHtml(body.embedVideo), // Embed video HTML bo'lishi mumkin, lekin sanitize qilamiz
+    };
+    
+    const lesson = await this.lessonModel.findByIdAndUpdate(lessonId, sanitizedBody, { new: true });
 
     return lesson;
   }

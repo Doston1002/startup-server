@@ -311,12 +311,16 @@ export class AuthService {
   }
 
   getUserField(user: UserDocument) {
+    // ✅ SECURITY FIX: Role manipulation himoyasi - faqat valid rollarni qaytarish
+    const validRoles: string[] = ['ADMIN', 'INSTRUCTOR', 'USER'];
+    const userRole = user.role && validRoles.includes(user.role) ? user.role : 'USER';
+    
     return {
       id: user._id,
       email: user.email,
       fullName: user.fullName,
       avatar: user.avatar,
-      role: user.role,
+      role: userRole as 'ADMIN' | 'INSTRUCTOR' | 'USER', // Faqat valid rollarni qaytarish
       courses: user.courses,
       createdAt: user.createdAt,
       birthday: user.birthday,
