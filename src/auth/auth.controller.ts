@@ -96,6 +96,7 @@ import { User } from 'src/user/decorators/user.decorator';
 import { AuthService } from './auth.service';
 import { Auth } from './decorators/auth.decorator';
 import { TokenDto } from './dto/token.dto';
+import { OneIdLogoutDto } from './dto/oneid-logout.dto';
 import { OneIdService } from './oneid.service';
 import { UserActivityLogger } from 'src/logger/user-activity.logger';
 
@@ -170,11 +171,67 @@ export class AuthController {
       return {
         success: true,
         ...result, // user va tokenlar
+        oneIdAccessToken: accessToken, // OneID access_token ni frontendga qaytarish (logout uchun)
       };
     } catch (error) {
       throw new HttpException(
         error.message || 'OneID authentication failed',
         HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  /**
+   * OneID orqali foydalanuvchini tizimdan chiqarish (logout)
+   * Access token orqali OneID serverida session ni invalid qilish
+   */
+  @UsePipes(new ValidationPipe())
+  @HttpCode(200)
+  @Post('oneid/logout')
+  async handleOneIdLogout(@Body() dto: OneIdLogoutDto, @Req() req: Request) {
+    try {
+      const { access_token } = dto;
+
+      if (!access_token) {
+        throw new HttpException('Access token talab qilinadi', HttpStatus.BAD_REQUEST);
+      }
+
+      // OneID serveriga logout so'rov yuborish
+      const logoutResult = await this.oneIdService.logout(access_token);
+
+      // Odam o'qiydigan xabar bilan log yozish
+      this.userActivityLogger.logUserActivity({
+        ip: req.ip || (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress,
+        method: req.method,
+        url: req.url,
+        userAgent: (req.headers['user-agent'] as string) || '-',
+        referer: (req.headers['referer'] as string) || '-',
+        statusCode: 200,
+        action: 'ONEID_LOGOUT',
+        message: 'OneID orqali foydalanuvchi tizimdan chiqdi',
+      });
+
+      return {
+        success: true,
+        message: 'Muvaffaqiyatli tizimdan chiqildi',
+        data: logoutResult,
+      };
+    } catch (error) {
+      // Xatolikni log qilish
+      this.userActivityLogger.logUserActivity({
+        ip: req.ip || (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress,
+        method: req.method,
+        url: req.url,
+        userAgent: (req.headers['user-agent'] as string) || '-',
+        referer: (req.headers['referer'] as string) || '-',
+        statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+        action: 'ONEID_LOGOUT_ERROR',
+        message: `OneID logout xatolik: ${error.message}`,
+      });
+
+      throw new HttpException(
+        error.message || 'OneID logout xatolik yuz berdi',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }

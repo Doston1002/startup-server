@@ -250,4 +250,45 @@ export class OneIdService {
             );
         }
     }
+
+    /**
+     * OneID orqali foydalanuvchini tizimdan chiqarish (logout)
+     * grant_type: one_log_out
+     * 
+     * @param accessToken - OneID serveridan olingan access_token
+     * @returns OneID serveridan qaytgan javob
+     */
+    async logout(accessToken: string): Promise<any> {
+        try {
+            const logoutUrl = `${this.oneIdBaseUrl}`;
+            console.log("FROM logoutUrl");
+
+            const params = new URLSearchParams({
+                grant_type: 'one_log_out',
+                client_id: this.clientId,
+                client_secret: this.clientSecret,
+                access_token: accessToken,
+                scope: this.configService.get('ONEID_SCOPE') || 'uydatalim_uzedu_uz',
+            });
+            console.log("FROM logout params");
+
+            const response = await axios.post(
+                logoutUrl,
+                params.toString(),
+                {
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                }
+            );
+
+            console.log("OneID logout response:", response.data);
+
+            return response.data;
+        } catch (error) {
+            console.error('OneID logout error:', error);
+            throw new HttpException(
+                error.response?.data?.message || 'OneID logout xatolik yuz berdi',
+                error.response?.status || HttpStatus.BAD_REQUEST,
+            );
+        }
+    }
 }
