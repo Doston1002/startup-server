@@ -5,7 +5,6 @@ import { Course, CourseSchema } from 'src/course/course.model';
 import { SectionController } from './section.controller';
 import { Section, SectionSchema } from './section.model';
 import { SectionService } from './section.service';
-import { Lesson, LessonSchema } from 'src/lesson/lesson.model';
 
 @Module({
   imports: [
@@ -13,7 +12,6 @@ import { Lesson, LessonSchema } from 'src/lesson/lesson.model';
     MongooseModule.forFeature([
       { name: Section.name, schema: SectionSchema },
       { name: Course.name, schema: CourseSchema },
-      { name: Lesson.name, schema: LessonSchema },
     ]),
   ],
   controllers: [SectionController],
