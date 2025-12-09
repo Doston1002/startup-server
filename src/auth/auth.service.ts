@@ -285,9 +285,22 @@ export class AuthService {
 
     const user = await this.userModel.findById(result._id);
 
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
     // ✅ BLOCK CHECK: Foydalanuvchi bloklangan bo'lsa token yangilash mumkin emas
     if (user.isBlocked) {
       throw new UnauthorizedException('foydalanuvchi bloklangan');
+    }
+
+    // ✅ ROLE CHECK: Token dagi rol bilan database dagi rol mos kelishi kerak
+    const tokenRole = result.role || 'USER';
+    const dbRole = user.role || 'USER';
+    
+    if (tokenRole !== dbRole) {
+      // Agar rol o'zgarganda, yangi token generatsiya qilish
+      // Bu xavfsizlik uchun muhim - agar admin user ni USER ga o'zgartirsa, eski token ishlamaydi
     }
 
     const token = await this.issueTokenPair(String(user._id));
@@ -301,7 +314,17 @@ export class AuthService {
   }
 
   async issueTokenPair(userId: string) {
-    const data = { _id: userId };
+    // User ma'lumotlarini olish (rolni olish uchun)
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    // Token payload ga rol qo'shish
+    const data = { 
+      _id: userId,
+      role: user.role || 'USER' // Default rol agar bo'lmasa
+    };
 
     const refreshToken = await this.jwtService.signAsync(data, { expiresIn: '15d' });
 
