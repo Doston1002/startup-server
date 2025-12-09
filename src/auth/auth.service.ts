@@ -191,6 +191,7 @@ import { CustomerService } from 'src/customer/customer.service';
 import { User, UserDocument } from 'src/user/user.model';
 import { TokenDto } from './dto/token.dto';
 import { OneIdUserData } from './oneid.service';
+import { TokenBlacklistService } from './token-blacklist.service';
 
 @Injectable()
 export class AuthService {
@@ -198,6 +199,7 @@ export class AuthService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private readonly jwtService: JwtService,
     private readonly customerService: CustomerService,
+    private readonly tokenBlacklistService: TokenBlacklistService,
   ) { }
 
   // OneID uchun yangi method
@@ -331,6 +333,48 @@ export class AuthService {
     const accessToken = await this.jwtService.signAsync(data, { expiresIn: '1m' });
 
     return { refreshToken, accessToken };
+  }
+
+  /**
+   * Logout - Token ni blacklist ga qo'shish
+   * @param accessToken - JWT access token
+   * @param refreshToken - JWT refresh token (optional)
+   */
+  async logout(accessToken: string, refreshToken?: string): Promise<void> {
+    try {
+      // Access token ni decode qilish va expire vaqtini olish
+      const decodedAccessToken = this.jwtService.decode(accessToken) as { exp?: number; iat?: number };
+      
+      if (decodedAccessToken && decodedAccessToken.exp) {
+        // Token expire bo'lish vaqtini hisoblash (seconds)
+        const expiresIn = decodedAccessToken.exp - Math.floor(Date.now() / 1000);
+        
+        // Agar token hali expire bo'lmagan bo'lsa, blacklist ga qo'shish
+        if (expiresIn > 0) {
+          this.tokenBlacklistService.addToBlacklist(accessToken, expiresIn);
+        }
+      }
+
+      // Refresh token ham bo'lsa, uni ham blacklist ga qo'shish
+      if (refreshToken) {
+        const decodedRefreshToken = this.jwtService.decode(refreshToken) as { exp?: number };
+        
+        if (decodedRefreshToken && decodedRefreshToken.exp) {
+          const refreshExpiresIn = decodedRefreshToken.exp - Math.floor(Date.now() / 1000);
+          
+          if (refreshExpiresIn > 0) {
+            this.tokenBlacklistService.addToBlacklist(refreshToken, refreshExpiresIn);
+          }
+        }
+      }
+    } catch (error) {
+      // Token decode qilishda xatolik bo'lsa ham, token ni blacklist ga qo'shish
+      // Bu xavfsizlik uchun muhim
+      this.tokenBlacklistService.addToBlacklist(accessToken, 3600); // 1 soat default
+      if (refreshToken) {
+        this.tokenBlacklistService.addToBlacklist(refreshToken, 3600);
+      }
+    }
   }
 
   getUserField(user: UserDocument) {

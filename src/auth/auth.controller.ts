@@ -129,6 +129,53 @@ export class AuthController {
     return _id ? true : false;
   }
 
+  /**
+   * Logout endpoint - Token ni blacklist ga qo'shish
+   * Logout qilganda token darhol invalid bo'ladi
+   */
+  @HttpCode(200)
+  @Post('logout')
+  @Auth() // JWT token talab qilinadi
+  async logout(@Req() req: Request) {
+    try {
+      // Request header dan token ni olish
+      const authHeader = req.headers.authorization;
+      const accessToken = authHeader?.replace('Bearer ', '');
+      
+      // Cookie dan refresh token ni olish
+      const refreshToken = req.cookies?.refresh || null;
+
+      if (!accessToken) {
+        throw new HttpException('Token topilmadi', HttpStatus.BAD_REQUEST);
+      }
+
+      // Token ni blacklist ga qo'shish
+      await this.authService.logout(accessToken, refreshToken);
+
+      // Log yozish
+      this.userActivityLogger.logUserActivity({
+        ip: req.ip || (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress,
+        method: req.method,
+        url: req.url,
+        userAgent: (req.headers['user-agent'] as string) || '-',
+        referer: (req.headers['referer'] as string) || '-',
+        statusCode: 200,
+        action: 'LOGOUT',
+        message: 'Foydalanuvchi tizimdan chiqdi',
+      });
+
+      return {
+        success: true,
+        message: 'Muvaffaqiyatli tizimdan chiqildi',
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Logout xatolik yuz berdi',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   // OneID uchun yangi endpoint
   @HttpCode(200)
   @Post('oneid/callback')

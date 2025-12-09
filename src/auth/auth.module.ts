@@ -41,6 +41,7 @@ import { AuthService } from './auth.service';
 import { OneIdService } from './oneid.service'; // OneID service import
 import { RecaptchaService } from './recaptcha.service'; // reCAPTCHA service
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { TokenBlacklistService } from './token-blacklist.service'; // Token blacklist service
 import { UserActivityLogger } from 'src/logger/user-activity.logger';
 
 @Module({
@@ -62,6 +63,7 @@ import { UserActivityLogger } from 'src/logger/user-activity.logger';
     RecaptchaService, // reCAPTCHA service
     JwtStrategy, 
     CustomerService,
+    TokenBlacklistService, // Token blacklist service
     UserActivityLogger, // User activity logger
   ],
   exports: [AuthService, OneIdService, RecaptchaService], // Agar boshqa modullarda ishlatish kerak bo'lsa
