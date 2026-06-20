@@ -2,8 +2,12 @@ import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AuthModule } from './auth/auth.module';
+
 import { getMongoDBConfig } from './config/mongo.config';
+
+import { DatabaseModule } from './database.module';
+
+import { AuthModule } from './auth/auth.module';
 import { CourseModule } from './course/course.module';
 import { MailModule } from './mail/mail.module';
 import { UserModule } from './user/user.module';
@@ -19,18 +23,29 @@ import { OneIdModule } from './oneid/oneid.module';
 import { NewsletterModule } from './newsletter/newsletter.module';
 import { ContactModule } from './contact/contact.module';
 import { QuestionModule } from './question/question.module';
+
+import { AppController } from './app.controller';
+import { StudentController } from './student.controller';
+import { DirektorController } from './direktor.controller';
+import { AuthController } from './auth.controller';
+
+import { AppService } from './app.service';
+
 import { UserActivityInterceptor } from './logger/user-activity.interceptor';
 import { UserActivityLogger } from './logger/user-activity.logger';
 
-
 @Module({
   imports: [
+    DatabaseModule,
+
     ConfigModule.forRoot(),
+
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: getMongoDBConfig,
     }),
+
     AuthModule,
     CourseModule,
     UserModule,
@@ -48,8 +63,18 @@ import { UserActivityLogger } from './logger/user-activity.logger';
     ContactModule,
     QuestionModule,
   ],
+
+  controllers: [
+    AppController,
+    StudentController,
+    DirektorController,
+    AuthController,
+  ],
+
   providers: [
+    AppService,
     UserActivityLogger,
+
     {
       provide: APP_INTERCEPTOR,
       useClass: UserActivityInterceptor,

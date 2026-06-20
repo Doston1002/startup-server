@@ -51,19 +51,21 @@ async function bootstrap() {
     origin: (origin, callback) => {
       const allowedOrigins = [
         'https://uydatalim.uzedu.uz',
-        'http://localhost:3000'
+        'http://localhost:3000',
+        'http://localhost:5173'
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'));
+        // Deny explicitly without throwing to avoid 500 on preflight
+        callback(null, false);
       }
     },
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true,
   });
 
-  await app.listen(parseInt(process.env.PORT) || 8001, '0.0.0.0');
+  await app.listen(parseInt(process.env.PORT) || 8000, '0.0.0.0');
 }
 bootstrap();
 
