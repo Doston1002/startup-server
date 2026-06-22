@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'uyda-talim',
+      name: 'startup-server',
       script: 'dist/main.js',
       cwd: __dirname,
       instances: 1,
