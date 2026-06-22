@@ -38,13 +38,15 @@ __decorate([
     (0, common_1.HttpCode)(200),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image', {
         fileFilter: (req, file, cb) => {
-            if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/)) {
-                return cb(new common_1.BadRequestException('Faqat rasm fayllar ruxsat etilgan (jpg, jpeg, png, gif, webp)'), false);
+            const allowedImageTypes = /\/(jpg|jpeg|png|gif|webp)$/;
+            const isPdf = file.mimetype === 'application/pdf';
+            if (!file.mimetype.match(allowedImageTypes) && !isPdf) {
+                return cb(new common_1.BadRequestException('Faqat rasm fayllar (jpg, jpeg, png, gif, webp) yoki PDF ruxsat etilgan'), false);
             }
             cb(null, true);
         },
         limits: {
-            fileSize: 5 * 1024 * 1024,
+            fileSize: 50 * 1024 * 1024,
         },
     })),
     __param(0, (0, common_1.UploadedFile)()),
@@ -64,7 +66,7 @@ __decorate([
             cb(null, true);
         },
         limits: {
-            fileSize: 10 * 1024 * 1024,
+            fileSize: 50 * 1024 * 1024,
         },
     })),
     __param(0, (0, common_1.UploadedFile)()),

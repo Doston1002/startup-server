@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DeleteUserDto = exports.UpdateUserDto = exports.CreateUserDto = exports.UpdateUserRoleDto = exports.DeleteCourseDto = exports.ApproveInstructorDto = void 0;
+exports.BlockUserDto = exports.DeleteUserDto = exports.UpdateUserDto = exports.CreateUserDto = exports.UpdateUserRoleDto = exports.DeleteCourseDto = exports.ApproveInstructorDto = void 0;
 const class_validator_1 = require("class-validator");
 class ApproveInstructorDto {
 }
@@ -104,4 +104,12 @@ __decorate([
     __metadata("design:type", String)
 ], DeleteUserDto.prototype, "userId", void 0);
 exports.DeleteUserDto = DeleteUserDto;
+class BlockUserDto {
+}
+__decorate([
+    (0, class_validator_1.IsNotEmpty)({ message: 'Foydalanuvchi ID kiritilishi shart' }),
+    (0, class_validator_1.IsMongoId)({ message: 'Noto\'g\'ri foydalanuvchi ID' }),
+    __metadata("design:type", String)
+], BlockUserDto.prototype, "userId", void 0);
+exports.BlockUserDto = BlockUserDto;
 //# sourceMappingURL=admin.dto.js.map

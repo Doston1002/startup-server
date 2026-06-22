@@ -40,6 +40,7 @@ export declare class User {
     bio: string;
     birthday: string;
     courses: Course[];
+    isBlocked: boolean;
 }
 export declare const UserSchema: SchemaMS<User, import("mongoose").Model<User, any, any, any, import("mongoose").Document<unknown, any, User> & User & {
     _id: import("mongoose").Types.ObjectId;

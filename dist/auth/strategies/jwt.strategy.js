@@ -20,18 +20,39 @@ const passport_1 = require("@nestjs/passport");
 const mongoose_2 = require("mongoose");
 const passport_jwt_1 = require("passport-jwt");
 const user_model_1 = require("../../user/user.model");
+const token_blacklist_service_1 = require("../token-blacklist.service");
 let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy) {
-    constructor(configService, userModel) {
+    constructor(configService, userModel, tokenBlacklistService) {
         super({
             jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
             secretOrKey: configService.get('SECRET_JWT'),
+            passReqToCallback: true,
         });
         this.configService = configService;
         this.userModel = userModel;
+        this.tokenBlacklistService = tokenBlacklistService;
     }
-    async validate({ _id }) {
+    async validate(request, payload) {
+        var _a, _b;
+        const authHeader = ((_a = request === null || request === void 0 ? void 0 : request.headers) === null || _a === void 0 ? void 0 : _a.authorization) || ((_b = request === null || request === void 0 ? void 0 : request.headers) === null || _b === void 0 ? void 0 : _b.Authorization);
+        const token = (authHeader === null || authHeader === void 0 ? void 0 : authHeader.replace('Bearer ', '')) || (authHeader === null || authHeader === void 0 ? void 0 : authHeader.replace('bearer ', ''));
+        if (token && this.tokenBlacklistService.isBlacklisted(token)) {
+            throw new common_1.UnauthorizedException('Token invalid - logout qilingan');
+        }
+        const { _id, role: tokenRole } = payload;
         const user = await this.userModel.findById(_id);
+        if (!user) {
+            return null;
+        }
+        if (user.isBlocked) {
+            return null;
+        }
+        const dbRole = user.role || 'USER';
+        const payloadRole = tokenRole || 'USER';
+        if (payloadRole !== dbRole) {
+            return null;
+        }
         return user;
     }
 };
@@ -39,7 +60,8 @@ JwtStrategy = __decorate([
     (0, common_1.Injectable)(),
     __param(1, (0, mongoose_1.InjectModel)(user_model_1.User.name)),
     __metadata("design:paramtypes", [config_1.ConfigService,
-        mongoose_2.Model])
+        mongoose_2.Model,
+        token_blacklist_service_1.TokenBlacklistService])
 ], JwtStrategy);
 exports.JwtStrategy = JwtStrategy;
 //# sourceMappingURL=jwt.strategy.js.map

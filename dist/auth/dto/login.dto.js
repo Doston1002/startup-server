@@ -38,5 +38,10 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], LoginAuthDto.prototype, "avatar", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)({ message: 'reCAPTCHA token talab qilinadi' }),
+    __metadata("design:type", String)
+], LoginAuthDto.prototype, "recaptchaToken", void 0);
 exports.LoginAuthDto = LoginAuthDto;
 //# sourceMappingURL=login.dto.js.map

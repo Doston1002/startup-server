@@ -51,6 +51,7 @@ export declare class AdminService {
         id: import("mongoose").Types.ObjectId;
         role: import("../user/user.interface").RoleUser;
         createdAt: string;
+        isBlocked: boolean;
     }[]>;
     searchUser(email: string, limit: number): Promise<{
         email: string;
@@ -58,6 +59,7 @@ export declare class AdminService {
         id: import("mongoose").Types.ObjectId;
         role: import("../user/user.interface").RoleUser;
         createdAt: string;
+        isBlocked: boolean;
     }[]>;
     deleteCourse(courseId: string): Promise<{
         title: string;
@@ -72,6 +74,7 @@ export declare class AdminService {
         id: import("mongoose").Types.ObjectId;
         role: import("../user/user.interface").RoleUser;
         createdAt: string;
+        isBlocked: boolean;
     }>;
     createUser(email: string, fullName: string, password: string, role?: 'ADMIN' | 'INSTRUCTOR' | 'USER'): Promise<{
         email: string;
@@ -79,6 +82,7 @@ export declare class AdminService {
         id: import("mongoose").Types.ObjectId;
         role: import("../user/user.interface").RoleUser;
         createdAt: string;
+        isBlocked: boolean;
     }>;
     updateUser(userId: string, email?: string, fullName?: string, password?: string, role?: 'ADMIN' | 'INSTRUCTOR' | 'USER'): Promise<{
         email: string;
@@ -86,6 +90,7 @@ export declare class AdminService {
         id: import("mongoose").Types.ObjectId;
         role: import("../user/user.interface").RoleUser;
         createdAt: string;
+        isBlocked: boolean;
     }>;
     deleteUser(userId: string): Promise<{
         message: string;
@@ -100,12 +105,29 @@ export declare class AdminService {
             job: string;
         };
     };
+    blockUser(userId: string): Promise<{
+        email: string;
+        fullName: string;
+        id: import("mongoose").Types.ObjectId;
+        role: import("../user/user.interface").RoleUser;
+        createdAt: string;
+        isBlocked: boolean;
+    }>;
+    unblockUser(userId: string): Promise<{
+        email: string;
+        fullName: string;
+        id: import("mongoose").Types.ObjectId;
+        role: import("../user/user.interface").RoleUser;
+        createdAt: string;
+        isBlocked: boolean;
+    }>;
     getUserSpecificFiled(user: UserDocument): {
         email: string;
         fullName: string;
         id: import("mongoose").Types.ObjectId;
         role: import("../user/user.interface").RoleUser;
         createdAt: string;
+        isBlocked: boolean;
     };
     getSpecificFieldCourse(course: CourseDocument): {
         title: string;

@@ -3,4 +3,5 @@ export declare class LoginAuthDto {
     password: string;
     fullName: string;
     avatar: string;
+    recaptchaToken: string;
 }

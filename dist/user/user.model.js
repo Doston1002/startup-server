@@ -15,7 +15,7 @@ const mongoose_2 = require("mongoose");
 let User = class User {
 };
 __decorate([
-    (0, mongoose_1.Prop)({ unique: true, required: true }),
+    (0, mongoose_1.Prop)({ unique: true, required: true, index: true }),
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
@@ -27,7 +27,7 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ default: 'USER' }),
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
 __decorate([
@@ -39,15 +39,15 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "job", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ index: true }),
     __metadata("design:type", String)
 ], User.prototype, "customerId", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ index: true }),
     __metadata("design:type", String)
 ], User.prototype, "pin", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ index: true }),
     __metadata("design:type", String)
 ], User.prototype, "instructorAccountId", void 0);
 __decorate([
@@ -66,9 +66,14 @@ __decorate([
     (0, mongoose_1.Prop)([{ type: mongoose_2.Schema.Types.ObjectId, ref: 'Course' }]),
     __metadata("design:type", Array)
 ], User.prototype, "courses", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: false, index: true }),
+    __metadata("design:type", Boolean)
+], User.prototype, "isBlocked", void 0);
 User = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], User);
 exports.User = User;
 exports.UserSchema = mongoose_1.SchemaFactory.createForClass(User);
+exports.UserSchema.index({ email: 1, role: 1 });
 //# sourceMappingURL=user.model.js.map

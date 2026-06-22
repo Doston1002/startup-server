@@ -80,6 +80,30 @@ let OneIdService = class OneIdService {
             throw new common_1.HttpException('Failed to get user information from OneID', common_1.HttpStatus.BAD_REQUEST);
         }
     }
+    async logout(accessToken) {
+        var _a, _b, _c;
+        try {
+            const logoutUrl = `${this.oneIdBaseUrl}`;
+            console.log("FROM logoutUrl");
+            const params = new URLSearchParams({
+                grant_type: 'one_log_out',
+                client_id: this.clientId,
+                client_secret: this.clientSecret,
+                access_token: accessToken,
+                scope: this.configService.get('ONEID_SCOPE') || 'uydatalim_uzedu_uz',
+            });
+            console.log("FROM logout params");
+            const response = await axios_2.default.post(logoutUrl, params.toString(), {
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            });
+            console.log("OneID logout response:", response.data);
+            return response.data;
+        }
+        catch (error) {
+            console.error('OneID logout error:', error);
+            throw new common_1.HttpException(((_b = (_a = error.response) === null || _a === void 0 ? void 0 : _a.data) === null || _b === void 0 ? void 0 : _b.message) || 'OneID logout xatolik yuz berdi', ((_c = error.response) === null || _c === void 0 ? void 0 : _c.status) || common_1.HttpStatus.BAD_REQUEST);
+        }
+    }
 };
 OneIdService = __decorate([
     (0, common_1.Injectable)(),

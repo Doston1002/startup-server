@@ -19,6 +19,7 @@ const mongoose_2 = require("mongoose");
 const instructor_model_1 = require("../instructor/instructor.model");
 const review_model_1 = require("../review/review.model");
 const user_model_1 = require("../user/user.model");
+const sanitize_helper_1 = require("../helpers/sanitize.helper");
 const course_model_1 = require("./course.model");
 let CourseService = class CourseService {
     constructor(courseModel, instructorModel, userModel, reviewModel) {
@@ -34,8 +35,9 @@ let CourseService = class CourseService {
             .replace(/[^\w\s-]/g, '')
             .replace(/[\s_-]+/g, '-')
             .replace(/^-+|-+$/g, '');
-        const slug = slugify(dto.title);
-        const course = await this.courseModel.create(Object.assign(Object.assign({}, dto), { slug: slug, author: id }));
+        const sanitizedDto = Object.assign(Object.assign({}, dto), { description: (0, sanitize_helper_1.sanitizeHtml)(dto.description), title: (0, sanitize_helper_1.sanitizeText)(dto.title), exerpt: (0, sanitize_helper_1.sanitizeText)(dto.exerpt) });
+        const slug = slugify(sanitizedDto.title);
+        const course = await this.courseModel.create(Object.assign(Object.assign({}, sanitizedDto), { slug: slug, author: id }));
         await this.instructorModel.findOneAndUpdate({ author: id }, { $push: { courses: course._id } }, { new: true });
         return 'Success';
     }
@@ -47,7 +49,8 @@ let CourseService = class CourseService {
         if (course.author.toString() !== instructorId.toString()) {
             throw new common_1.UnauthorizedException('not_course_owner');
         }
-        return await this.courseModel.findByIdAndUpdate(courseId, dto, { new: true });
+        const sanitizedDto = Object.assign(Object.assign({}, dto), { description: (0, sanitize_helper_1.sanitizeHtml)(dto.description), title: (0, sanitize_helper_1.sanitizeText)(dto.title), exerpt: (0, sanitize_helper_1.sanitizeText)(dto.exerpt) });
+        return await this.courseModel.findByIdAndUpdate(courseId, sanitizedDto, { new: true });
     }
     async deleteCourse(courseId, userId) {
         await this.courseModel.findByIdAndRemove(courseId);

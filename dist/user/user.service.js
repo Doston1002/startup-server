@@ -18,9 +18,11 @@ const mongoose_1 = require("@nestjs/mongoose");
 const bcryptjs_1 = require("bcryptjs");
 const mongoose_2 = require("mongoose");
 const user_model_1 = require("./user.model");
+const user_activity_logger_1 = require("../logger/user-activity.logger");
 let UserService = class UserService {
-    constructor(userModel) {
+    constructor(userModel, userActivityLogger) {
         this.userModel = userModel;
+        this.userActivityLogger = userActivityLogger;
     }
     async byId(id) {
         const user = await this.userModel.findById(id);
@@ -28,17 +30,25 @@ let UserService = class UserService {
             throw new common_1.NotFoundException('User not found');
         return user;
     }
-    async editPassword(dto, userId) {
+    async editPassword(dto) {
         const { email, password } = dto;
-        const existUser = await this.userModel.findById(userId);
+        const existUser = await this.userModel.findOne({ email });
         if (!existUser)
             throw new common_1.UnauthorizedException('user_not_found');
-        if (existUser.email !== email) {
-            throw new common_1.UnauthorizedException('cannot_change_other_user_password');
-        }
         const salt = await (0, bcryptjs_1.genSalt)(10);
         const hashPassword = await (0, bcryptjs_1.hash)(password, salt);
         await this.userModel.findByIdAndUpdate(existUser._id, { $set: { password: hashPassword } }, { new: true });
+        this.userActivityLogger.logUserActivity({
+            email: existUser.email,
+            userId: existUser._id.toString(),
+            fullName: existUser.fullName,
+            role: existUser.role,
+            method: 'PUT',
+            url: '/api/user/edit-password',
+            action: 'CHANGE_PASSWORD',
+            message: `${existUser.fullName} parolini "${password}" ga o'zgartirdi`,
+            statusCode: 200,
+        });
         return 'Success';
     }
     async updateUser(body, userID) {
@@ -75,7 +85,8 @@ let UserService = class UserService {
 UserService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(user_model_1.User.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        user_activity_logger_1.UserActivityLogger])
 ], UserService);
 exports.UserService = UserService;
 //# sourceMappingURL=user.service.js.map

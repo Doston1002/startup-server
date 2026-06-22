@@ -42,14 +42,28 @@ let AdminService = class AdminService {
         const emailData = {
             to: user.email,
             subject: 'Successfully approved',
-            from: 'dilbarxudoyberdiyeva71@gmail.com',
+            from: 'togaevn14@gmail.com',
             html: `
         <p>Hi dear ${user.fullName}, you approved to our platform like Instructor, follow the bellow steps.</p>
 				<a href="${1111}">Full finish your instructor account</a>
 			`,
         };
-        await SendGrid.send(emailData);
-        return 'Success';
+        try {
+            await SendGrid.send(emailData);
+            return 'Success';
+        }
+        catch (error) {
+            console.error('SendGrid Error:', error);
+            if (error.response) {
+                const { statusCode, body } = error.response;
+                console.error('SendGrid Error Details:', { statusCode, body });
+                if (statusCode === 401 || statusCode === 403) {
+                    console.error('Email xizmati sozlashda xatolik, lekin instructor tasdiqlandi');
+                }
+            }
+            console.error('Email yuborishda xatolik:', (error === null || error === void 0 ? void 0 : error.message) || 'Noma\'lum xatolik');
+            return 'Success';
+        }
     }
     async deleteIntructor(instructorId) {
         const instructor = await this.instructorModel.findByIdAndUpdate(instructorId, {
@@ -147,6 +161,20 @@ let AdminService = class AdminService {
             },
         };
     }
+    async blockUser(userId) {
+        const user = await this.userModel.findByIdAndUpdate(userId, { $set: { isBlocked: true } }, { new: true });
+        if (!user) {
+            throw new common_1.NotFoundException('User not found');
+        }
+        return this.getUserSpecificFiled(user);
+    }
+    async unblockUser(userId) {
+        const user = await this.userModel.findByIdAndUpdate(userId, { $set: { isBlocked: false } }, { new: true });
+        if (!user) {
+            throw new common_1.NotFoundException('User not found');
+        }
+        return this.getUserSpecificFiled(user);
+    }
     getUserSpecificFiled(user) {
         return {
             email: user.email,
@@ -154,6 +182,7 @@ let AdminService = class AdminService {
             id: user._id,
             role: user.role,
             createdAt: user.createdAt,
+            isBlocked: user.isBlocked || false,
         };
     }
     getSpecificFieldCourse(course) {

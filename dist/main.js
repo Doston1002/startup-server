@@ -2,36 +2,43 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
-const common_1 = require("@nestjs/common");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.setGlobalPrefix('api');
-    app.useGlobalPipes(new common_1.ValidationPipe({
-        whitelist: true,
-        forbidNonWhitelisted: true,
-        transform: true,
-    }));
-    const isDevelopment = process.env.NODE_ENV !== 'production';
+    app.use((req, res, next) => {
+        res.setHeader('X-Frame-Options', 'DENY');
+        const contentSecurityPolicy = [
+            "frame-ancestors 'none'",
+            "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com",
+            "default-src 'self'",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+            "style-src 'self' 'unsafe-inline'",
+            "img-src 'self' data: https:",
+            "font-src 'self' data:",
+            "connect-src 'self' https://uydatalim.uzedu.uz https://api.uydatalim.uzedu.uz",
+        ].join('; ');
+        res.setHeader('Content-Security-Policy', contentSecurityPolicy);
+        res.setHeader('X-Content-Type-Options', 'nosniff');
+        res.setHeader('X-XSS-Protection', '1; mode=block');
+        res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+        next();
+    });
     app.enableCors({
         origin: (origin, callback) => {
             const allowedOrigins = [
                 'https://uydatalim.uzedu.uz',
                 'http://localhost:3000',
-                'http://localhost:3001',
+                'http://localhost:5173'
             ];
-            if (isDevelopment && !origin) {
-                callback(null, true);
-            }
-            else if (allowedOrigins.includes(origin)) {
+            if (!origin || allowedOrigins.includes(origin)) {
                 callback(null, true);
             }
             else {
-                callback(new Error('Not allowed by CORS'));
+                callback(null, false);
             }
         },
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
         credentials: true,
-        allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     });
     await app.listen(parseInt(process.env.PORT) || 8000, '0.0.0.0');
 }

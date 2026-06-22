@@ -16,45 +16,16 @@ exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const mongoose_1 = require("@nestjs/mongoose");
-const bcryptjs_1 = require("bcryptjs");
 const mongoose_2 = require("mongoose");
 const customer_service_1 = require("../customer/customer.service");
 const user_model_1 = require("../user/user.model");
+const token_blacklist_service_1 = require("./token-blacklist.service");
 let AuthService = class AuthService {
-    constructor(userModel, jwtService, customerService) {
+    constructor(userModel, jwtService, customerService, tokenBlacklistService) {
         this.userModel = userModel;
         this.jwtService = jwtService;
         this.customerService = customerService;
-    }
-    async register(dto) {
-        const existUser = await this.isExistUser(dto.email);
-        if (existUser)
-            throw new common_1.BadRequestException('already_exist');
-        const salt = await (0, bcryptjs_1.genSalt)(10);
-        const passwordHash = await (0, bcryptjs_1.hash)(dto.password, salt);
-        const newUser = await this.userModel.create(Object.assign(Object.assign({}, dto), { password: dto.password.length ? passwordHash : '' }));
-        await this.customerService.getCustomer(String(newUser._id));
-        const token = await this.issueTokenPair(String(newUser._id));
-        return Object.assign({ user: this.getUserField(newUser) }, token);
-    }
-    async login(dto) {
-        const existUser = await this.isExistUser(dto.email);
-        if (!existUser)
-            throw new common_1.BadRequestException('user_not_found');
-        if (existUser.password && existUser.password.length > 0) {
-            if (!dto.password || dto.password.length === 0) {
-                throw new common_1.BadRequestException('password_required');
-            }
-            const currentPassword = await (0, bcryptjs_1.compare)(dto.password, existUser.password);
-            if (!currentPassword)
-                throw new common_1.BadRequestException('incorrect_password');
-        }
-        else {
-            throw new common_1.BadRequestException('use_oneid_or_google_login');
-        }
-        await this.customerService.getCustomer(String(existUser._id));
-        const token = await this.issueTokenPair(String(existUser._id));
-        return Object.assign({ user: this.getUserField(existUser) }, token);
+        this.tokenBlacklistService = tokenBlacklistService;
     }
     async processOneIdUser(oneIdData) {
         try {
@@ -78,6 +49,9 @@ let AuthService = class AuthService {
                     pin: mappedUserData.pin,
                 });
                 await user.save();
+            }
+            if (user.isBlocked) {
+                throw new common_1.UnauthorizedException('foydalanuvchi bloklangan');
             }
             await this.customerService.getCustomer(String(user._id));
             const token = await this.issueTokenPair(String(user._id));
@@ -109,35 +83,71 @@ let AuthService = class AuthService {
         if (!result)
             throw new common_1.UnauthorizedException('Invalid token or expired!');
         const user = await this.userModel.findById(result._id);
+        if (!user) {
+            throw new common_1.UnauthorizedException('User not found');
+        }
+        if (user.isBlocked) {
+            throw new common_1.UnauthorizedException('foydalanuvchi bloklangan');
+        }
+        const tokenRole = result.role || 'USER';
+        const dbRole = user.role || 'USER';
+        if (tokenRole !== dbRole) {
+        }
         const token = await this.issueTokenPair(String(user._id));
         return Object.assign({ user: this.getUserField(user) }, token);
-    }
-    async checkUser(email) {
-        const user = await this.isExistUser(email);
-        if (user) {
-            return 'user';
-        }
-        else {
-            return 'no-user';
-        }
     }
     async isExistUser(email) {
         const existUser = await this.userModel.findOne({ email });
         return existUser;
     }
     async issueTokenPair(userId) {
-        const data = { _id: userId };
+        const user = await this.userModel.findById(userId);
+        if (!user) {
+            throw new common_1.UnauthorizedException('User not found');
+        }
+        const data = {
+            _id: userId,
+            role: user.role || 'USER'
+        };
         const refreshToken = await this.jwtService.signAsync(data, { expiresIn: '15d' });
         const accessToken = await this.jwtService.signAsync(data, { expiresIn: '1m' });
         return { refreshToken, accessToken };
     }
+    async logout(accessToken, refreshToken) {
+        try {
+            const decodedAccessToken = this.jwtService.decode(accessToken);
+            if (decodedAccessToken && decodedAccessToken.exp) {
+                const expiresIn = decodedAccessToken.exp - Math.floor(Date.now() / 1000);
+                if (expiresIn > 0) {
+                    this.tokenBlacklistService.addToBlacklist(accessToken, expiresIn);
+                }
+            }
+            if (refreshToken) {
+                const decodedRefreshToken = this.jwtService.decode(refreshToken);
+                if (decodedRefreshToken && decodedRefreshToken.exp) {
+                    const refreshExpiresIn = decodedRefreshToken.exp - Math.floor(Date.now() / 1000);
+                    if (refreshExpiresIn > 0) {
+                        this.tokenBlacklistService.addToBlacklist(refreshToken, refreshExpiresIn);
+                    }
+                }
+            }
+        }
+        catch (error) {
+            this.tokenBlacklistService.addToBlacklist(accessToken, 3600);
+            if (refreshToken) {
+                this.tokenBlacklistService.addToBlacklist(refreshToken, 3600);
+            }
+        }
+    }
     getUserField(user) {
+        const validRoles = ['ADMIN', 'INSTRUCTOR', 'USER'];
+        const userRole = user.role && validRoles.includes(user.role) ? user.role : 'USER';
         return {
             id: user._id,
             email: user.email,
             fullName: user.fullName,
             avatar: user.avatar,
-            role: user.role,
+            role: userRole,
             courses: user.courses,
             createdAt: user.createdAt,
             birthday: user.birthday,
@@ -151,7 +161,8 @@ AuthService = __decorate([
     __param(0, (0, mongoose_1.InjectModel)(user_model_1.User.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         jwt_1.JwtService,
-        customer_service_1.CustomerService])
+        customer_service_1.CustomerService,
+        token_blacklist_service_1.TokenBlacklistService])
 ], AuthService);
 exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map

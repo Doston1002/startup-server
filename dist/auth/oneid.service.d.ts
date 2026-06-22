@@ -34,4 +34,5 @@ export declare class OneIdService {
     constructor(httpService: HttpService, configService: ConfigService);
     getAccessToken(code: string): Promise<string>;
     getUserInfo(accessToken: string): Promise<OneIdUserData>;
+    logout(accessToken: string): Promise<any>;
 }

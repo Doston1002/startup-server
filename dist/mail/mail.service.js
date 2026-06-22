@@ -31,6 +31,7 @@ let MailService = class MailService {
         SendGrid.setApiKey(this.configService.get('SEND_GRID_KEY'));
     }
     async sendOtpVerification(email, isUser) {
+        var _a, _b, _c, _d, _e, _f;
         if (!email)
             throw new common_1.ForbiddenException('email_is_required');
         if (isUser) {
@@ -44,14 +45,28 @@ let MailService = class MailService {
         const emailData = {
             to: email,
             subject: 'Verification email',
-            from: 'dilbarxudoyberdiyeva71@gmail.com',
+            from: 'togaevn14@gmail.com',
             html: `
 				<h1>Verification Code: ${otp}</h1>
 			`,
         };
-        await this.otpModel.create({ email: email, otp: hashedOtp, expireAt: Date.now() + 3600000 });
-        await SendGrid.send(emailData);
-        return 'Success';
+        try {
+            await this.otpModel.create({ email: email, otp: hashedOtp, expireAt: Date.now() + 3600000 });
+            await SendGrid.send(emailData);
+            return 'Success';
+        }
+        catch (error) {
+            console.error('SendGrid Error:', error);
+            const statusCode = (error === null || error === void 0 ? void 0 : error.code) || ((_a = error === null || error === void 0 ? void 0 : error.response) === null || _a === void 0 ? void 0 : _a.statusCode) || (error === null || error === void 0 ? void 0 : error.statusCode);
+            const body = ((_b = error === null || error === void 0 ? void 0 : error.response) === null || _b === void 0 ? void 0 : _b.body) || (error === null || error === void 0 ? void 0 : error.body);
+            console.error('SendGrid Error Details:', { statusCode, body });
+            if (statusCode === 401 || statusCode === 403) {
+                const errorMessage = ((_d = (_c = body === null || body === void 0 ? void 0 : body.errors) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d.message) || 'Email xizmati sozlashda xatolik. API key noto\'g\'ri yoki muddati tugagan.';
+                throw new common_1.UnauthorizedException(errorMessage);
+            }
+            const errorMessage = ((_f = (_e = body === null || body === void 0 ? void 0 : body.errors) === null || _e === void 0 ? void 0 : _e[0]) === null || _f === void 0 ? void 0 : _f.message) || (body === null || body === void 0 ? void 0 : body.message) || 'Noma\'lum xatolik';
+            throw new common_1.BadRequestException(`Email yuborishda xatolik: ${errorMessage}`);
+        }
     }
     async verifyOtp(email, otpVerification) {
         if (!otpVerification)
@@ -69,18 +84,33 @@ let MailService = class MailService {
         return 'Success';
     }
     async recieveBooks(bookId, userId) {
+        var _a, _b, _c, _d, _e, _f;
         const user = await this.userModel.findById(userId);
         const book = await this.booksModel.findById(bookId);
         const emailData = {
             to: user.email,
             subject: 'Ordered book',
-            from: 'dilbarxudoyberdiyeva71@gmail.com',
+            from: 'togaevn14@gmail.com',
             html: `
 				<a href="${book.pdf}">Your ordered book - ${book.title}</a>
 			`,
         };
-        await SendGrid.send(emailData);
-        return 'Success';
+        try {
+            await SendGrid.send(emailData);
+            return 'Success';
+        }
+        catch (error) {
+            console.error('SendGrid Error:', error);
+            const statusCode = (error === null || error === void 0 ? void 0 : error.code) || ((_a = error === null || error === void 0 ? void 0 : error.response) === null || _a === void 0 ? void 0 : _a.statusCode) || (error === null || error === void 0 ? void 0 : error.statusCode);
+            const body = ((_b = error === null || error === void 0 ? void 0 : error.response) === null || _b === void 0 ? void 0 : _b.body) || (error === null || error === void 0 ? void 0 : error.body);
+            console.error('SendGrid Error Details:', { statusCode, body });
+            if (statusCode === 401 || statusCode === 403) {
+                const errorMessage = ((_d = (_c = body === null || body === void 0 ? void 0 : body.errors) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d.message) || 'Email xizmati sozlashda xatolik. API key noto\'g\'ri yoki muddati tugagan.';
+                throw new common_1.UnauthorizedException(errorMessage);
+            }
+            const errorMessage = ((_f = (_e = body === null || body === void 0 ? void 0 : body.errors) === null || _e === void 0 ? void 0 : _e[0]) === null || _f === void 0 ? void 0 : _f.message) || (body === null || body === void 0 ? void 0 : body.message) || 'Noma\'lum xatolik';
+            throw new common_1.BadRequestException(`Email yuborishda xatolik: ${errorMessage}`);
+        }
     }
 };
 MailService = __decorate([

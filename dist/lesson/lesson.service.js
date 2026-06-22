@@ -16,6 +16,7 @@ exports.LessonService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const sanitize_helper_1 = require("../helpers/sanitize.helper");
 const section_model_1 = require("../section/section.model");
 const lesson_model_1 = require("./lesson.model");
 let LessonService = class LessonService {
@@ -24,7 +25,8 @@ let LessonService = class LessonService {
         this.lessonModel = lessonModel;
     }
     async createLesson(body, sectionId) {
-        const lesson = await this.lessonModel.create(body);
+        const sanitizedBody = Object.assign(Object.assign({}, body), { material: (0, sanitize_helper_1.sanitizeHtml)(body.material), name: (0, sanitize_helper_1.sanitizeText)(body.name), embedVideo: (0, sanitize_helper_1.sanitizeHtml)(body.embedVideo) });
+        const lesson = await this.lessonModel.create(sanitizedBody);
         const section = await this.sectionModel
             .findByIdAndUpdate(sectionId, {
             $push: { lessons: lesson._id },
@@ -33,7 +35,8 @@ let LessonService = class LessonService {
         return section;
     }
     async editLesson(body, lessonId) {
-        const lesson = await this.lessonModel.findByIdAndUpdate(lessonId, body, { new: true });
+        const sanitizedBody = Object.assign(Object.assign({}, body), { material: (0, sanitize_helper_1.sanitizeHtml)(body.material), name: (0, sanitize_helper_1.sanitizeText)(body.name), embedVideo: (0, sanitize_helper_1.sanitizeHtml)(body.embedVideo) });
+        const lesson = await this.lessonModel.findByIdAndUpdate(lessonId, sanitizedBody, { new: true });
         return lesson;
     }
     async deleteLesson(sectionId, lessonId) {

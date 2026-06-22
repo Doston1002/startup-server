@@ -25,9 +25,11 @@
 import { Model } from 'mongoose';
 import { InterfaceEmailAndPassword, UpdateUserDto, ChangeRoleDto } from './user.interface';
 import { User, UserDocument } from './user.model';
+import { UserActivityLogger } from 'src/logger/user-activity.logger';
 export declare class UserService {
     private userModel;
-    constructor(userModel: Model<UserDocument>);
+    private readonly userActivityLogger;
+    constructor(userModel: Model<UserDocument>, userActivityLogger: UserActivityLogger);
     byId(id: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, User> & User & {
         _id: import("mongoose").Types.ObjectId;
     }> & import("mongoose").Document<unknown, {}, User> & User & {
@@ -35,7 +37,7 @@ export declare class UserService {
     } & Required<{
         _id: import("mongoose").Types.ObjectId;
     }>>;
-    editPassword(dto: InterfaceEmailAndPassword, userId: string): Promise<string>;
+    editPassword(dto: InterfaceEmailAndPassword): Promise<string>;
     updateUser(body: UpdateUserDto, userID: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, User> & User & {
         _id: import("mongoose").Types.ObjectId;
     }> & import("mongoose").Document<unknown, {}, User> & User & {

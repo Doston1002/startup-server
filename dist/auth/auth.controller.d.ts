@@ -23,46 +23,17 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose" />
 /// <reference types="mongoose/types/inferschematype" />
+import { Request } from 'express';
 import { AuthService } from './auth.service';
-import { LoginAuthDto } from './dto/login.dto';
 import { TokenDto } from './dto/token.dto';
+import { OneIdLogoutDto } from './dto/oneid-logout.dto';
 import { OneIdService } from './oneid.service';
+import { UserActivityLogger } from 'src/logger/user-activity.logger';
 export declare class AuthController {
     private readonly authService;
     private readonly oneIdService;
-    constructor(authService: AuthService, oneIdService: OneIdService);
-    register(dto: LoginAuthDto): Promise<{
-        refreshToken: string;
-        accessToken: string;
-        user: {
-            id: import("mongoose").Types.ObjectId;
-            email: string;
-            fullName: string;
-            avatar: string;
-            role: import("../user/user.interface").RoleUser;
-            courses: import("../course/course.model").Course[];
-            createdAt: string;
-            birthday: string;
-            bio: string;
-            job: string;
-        };
-    }>;
-    login(dto: LoginAuthDto): Promise<{
-        refreshToken: string;
-        accessToken: string;
-        user: {
-            id: import("mongoose").Types.ObjectId;
-            email: string;
-            fullName: string;
-            avatar: string;
-            role: import("../user/user.interface").RoleUser;
-            courses: import("../course/course.model").Course[];
-            createdAt: string;
-            birthday: string;
-            bio: string;
-            job: string;
-        };
-    }>;
+    private readonly userActivityLogger;
+    constructor(authService: AuthService, oneIdService: OneIdService, userActivityLogger: UserActivityLogger);
     getNewTokens(dto: TokenDto): Promise<{
         refreshToken: string;
         accessToken: string;
@@ -71,7 +42,7 @@ export declare class AuthController {
             email: string;
             fullName: string;
             avatar: string;
-            role: import("../user/user.interface").RoleUser;
+            role: "ADMIN" | "INSTRUCTOR" | "USER";
             courses: import("../course/course.model").Course[];
             createdAt: string;
             birthday: string;
@@ -81,11 +52,18 @@ export declare class AuthController {
     }>;
     checkUser(dto: {
         email: string;
-    }): Promise<"user" | "no-user">;
+    }): Promise<{
+        readonly status: "disabled";
+    }>;
     checkInstructor(_id: string): Promise<boolean>;
+    logout(req: Request): Promise<{
+        success: boolean;
+        message: string;
+    }>;
     handleOneIdCallback(body: {
         code: string;
-    }): Promise<{
+    }, req: Request): Promise<{
+        oneIdAccessToken: string;
         refreshToken: string;
         accessToken: string;
         user: {
@@ -93,7 +71,7 @@ export declare class AuthController {
             email: string;
             fullName: string;
             avatar: string;
-            role: import("../user/user.interface").RoleUser;
+            role: "ADMIN" | "INSTRUCTOR" | "USER";
             courses: import("../course/course.model").Course[];
             createdAt: string;
             birthday: string;
@@ -101,5 +79,10 @@ export declare class AuthController {
             job: string;
         };
         success: boolean;
+    }>;
+    handleOneIdLogout(dto: OneIdLogoutDto, req: Request): Promise<{
+        success: boolean;
+        message: string;
+        data: any;
     }>;
 }

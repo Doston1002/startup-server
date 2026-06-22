@@ -31,8 +31,57 @@ __decorate([
 exports.InterfaceEmailAndPassword = InterfaceEmailAndPassword;
 class UpdateUserDto {
 }
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.MinLength)(2),
+    (0, class_validator_1.MaxLength)(50),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "firstName", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.MinLength)(2),
+    (0, class_validator_1.MaxLength)(50),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "lastName", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "birthday", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MaxLength)(100),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "job", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MaxLength)(500),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "bio", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "avatar", void 0);
 exports.UpdateUserDto = UpdateUserDto;
 class ChangeRoleDto {
 }
+__decorate([
+    (0, class_validator_1.IsMongoId)({ message: 'User ID noto\'g\'ri formatda' }),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], ChangeRoleDto.prototype, "userId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsIn)(['ADMIN', 'INSTRUCTOR', 'USER'], { message: 'Role faqat ADMIN, INSTRUCTOR yoki USER bo\'lishi mumkin' }),
+    __metadata("design:type", String)
+], ChangeRoleDto.prototype, "role", void 0);
 exports.ChangeRoleDto = ChangeRoleDto;
 //# sourceMappingURL=user.interface.js.map

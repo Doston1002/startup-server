@@ -24,3 +24,6 @@ export declare class UpdateUserDto {
 export declare class DeleteUserDto {
     userId: string;
 }
+export declare class BlockUserDto {
+    userId: string;
+}

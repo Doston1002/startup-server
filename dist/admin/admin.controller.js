@@ -51,6 +51,12 @@ let AdminController = class AdminController {
     async deleteUser(body) {
         return this.adminService.deleteUser(body.userId);
     }
+    async blockUser(body) {
+        return this.adminService.blockUser(body.userId);
+    }
+    async unblockUser(body) {
+        return this.adminService.unblockUser(body.userId);
+    }
 };
 __decorate([
     (0, common_1.HttpCode)(200),
@@ -142,6 +148,24 @@ __decorate([
     __metadata("design:paramtypes", [admin_dto_1.DeleteUserDto]),
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "deleteUser", null);
+__decorate([
+    (0, common_1.HttpCode)(200),
+    (0, common_1.Put)('block-user'),
+    (0, auth_decorator_1.Auth)('ADMIN'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [admin_dto_1.BlockUserDto]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "blockUser", null);
+__decorate([
+    (0, common_1.HttpCode)(200),
+    (0, common_1.Put)('unblock-user'),
+    (0, auth_decorator_1.Auth)('ADMIN'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [admin_dto_1.BlockUserDto]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "unblockUser", null);
 AdminController = __decorate([
     (0, common_1.Controller)('admin'),
     (0, common_1.UsePipes)(new common_1.ValidationPipe({ whitelist: true, transform: true })),

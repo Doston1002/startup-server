@@ -19,7 +19,10 @@ const user_model_1 = require("../user/user.model");
 const auth_controller_1 = require("./auth.controller");
 const auth_service_1 = require("./auth.service");
 const oneid_service_1 = require("./oneid.service");
+const recaptcha_service_1 = require("./recaptcha.service");
 const jwt_strategy_1 = require("./strategies/jwt.strategy");
+const token_blacklist_service_1 = require("./token-blacklist.service");
+const user_activity_logger_1 = require("../logger/user-activity.logger");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
@@ -39,10 +42,13 @@ AuthModule = __decorate([
         providers: [
             auth_service_1.AuthService,
             oneid_service_1.OneIdService,
+            recaptcha_service_1.RecaptchaService,
             jwt_strategy_1.JwtStrategy,
-            customer_service_1.CustomerService
+            customer_service_1.CustomerService,
+            token_blacklist_service_1.TokenBlacklistService,
+            user_activity_logger_1.UserActivityLogger,
         ],
-        exports: [auth_service_1.AuthService, oneid_service_1.OneIdService],
+        exports: [auth_service_1.AuthService, oneid_service_1.OneIdService, recaptcha_service_1.RecaptchaService],
     })
 ], AuthModule);
 exports.AuthModule = AuthModule;

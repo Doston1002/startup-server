@@ -13,6 +13,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const user_controller_1 = require("./user.controller");
 const user_model_1 = require("./user.model");
 const user_service_1 = require("./user.service");
+const user_activity_logger_1 = require("../logger/user-activity.logger");
 let UserModule = class UserModule {
 };
 UserModule = __decorate([
@@ -21,7 +22,7 @@ UserModule = __decorate([
             config_1.ConfigModule.forRoot(),
             mongoose_1.MongooseModule.forFeature([{ name: user_model_1.User.name, schema: user_model_1.UserSchema }]),
         ],
-        providers: [user_service_1.UserService],
+        providers: [user_service_1.UserService, user_activity_logger_1.UserActivityLogger],
         controllers: [user_controller_1.UserController],
     })
 ], UserModule);

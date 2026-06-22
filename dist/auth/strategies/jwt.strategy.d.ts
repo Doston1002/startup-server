@@ -26,12 +26,17 @@ import { ConfigService } from '@nestjs/config';
 import { Model } from 'mongoose';
 import { Strategy } from 'passport-jwt';
 import { User, UserDocument } from 'src/user/user.model';
+import { TokenBlacklistService } from '../token-blacklist.service';
 declare const JwtStrategy_base: new (...args: any[]) => Strategy;
 export declare class JwtStrategy extends JwtStrategy_base {
     private readonly configService;
     private userModel;
-    constructor(configService: ConfigService, userModel: Model<UserDocument>);
-    validate({ _id }: Pick<UserDocument, '_id'>): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, User> & User & {
+    private readonly tokenBlacklistService;
+    constructor(configService: ConfigService, userModel: Model<UserDocument>, tokenBlacklistService: TokenBlacklistService);
+    validate(request: any, payload: {
+        _id: string;
+        role?: string;
+    }): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, User> & User & {
         _id: import("mongoose").Types.ObjectId;
     }> & import("mongoose").Document<unknown, {}, User> & User & {
         _id: import("mongoose").Types.ObjectId;

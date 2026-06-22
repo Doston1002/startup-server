@@ -23,7 +23,7 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose" />
 /// <reference types="mongoose/types/inferschematype" />
-import { ApproveInstructorDto, CreateUserDto, DeleteUserDto, UpdateUserDto, UpdateUserRoleDto } from './admin.dto';
+import { ApproveInstructorDto, BlockUserDto, CreateUserDto, DeleteUserDto, UpdateUserDto, UpdateUserRoleDto } from './admin.dto';
 import { AdminService } from './admin.service';
 export declare class AdminController {
     private readonly adminService;
@@ -46,6 +46,7 @@ export declare class AdminController {
         id: import("mongoose").Types.ObjectId;
         role: import("../user/user.interface").RoleUser;
         createdAt: string;
+        isBlocked: boolean;
     }[]>;
     searchUser(email: string, limit: string): Promise<{
         email: string;
@@ -53,6 +54,7 @@ export declare class AdminController {
         id: import("mongoose").Types.ObjectId;
         role: import("../user/user.interface").RoleUser;
         createdAt: string;
+        isBlocked: boolean;
     }[]>;
     deleteCourse(courseId: string): Promise<{
         title: string;
@@ -67,6 +69,7 @@ export declare class AdminController {
         id: import("mongoose").Types.ObjectId;
         role: import("../user/user.interface").RoleUser;
         createdAt: string;
+        isBlocked: boolean;
     }>;
     createUser(body: CreateUserDto): Promise<{
         email: string;
@@ -74,6 +77,7 @@ export declare class AdminController {
         id: import("mongoose").Types.ObjectId;
         role: import("../user/user.interface").RoleUser;
         createdAt: string;
+        isBlocked: boolean;
     }>;
     updateUser(body: UpdateUserDto): Promise<{
         email: string;
@@ -81,8 +85,25 @@ export declare class AdminController {
         id: import("mongoose").Types.ObjectId;
         role: import("../user/user.interface").RoleUser;
         createdAt: string;
+        isBlocked: boolean;
     }>;
     deleteUser(body: DeleteUserDto): Promise<{
         message: string;
+    }>;
+    blockUser(body: BlockUserDto): Promise<{
+        email: string;
+        fullName: string;
+        id: import("mongoose").Types.ObjectId;
+        role: import("../user/user.interface").RoleUser;
+        createdAt: string;
+        isBlocked: boolean;
+    }>;
+    unblockUser(body: BlockUserDto): Promise<{
+        email: string;
+        fullName: string;
+        id: import("mongoose").Types.ObjectId;
+        role: import("../user/user.interface").RoleUser;
+        createdAt: string;
+        isBlocked: boolean;
     }>;
 }

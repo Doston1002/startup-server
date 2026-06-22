@@ -8,10 +8,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
+const core_1 = require("@nestjs/core");
 const config_1 = require("@nestjs/config");
 const mongoose_1 = require("@nestjs/mongoose");
-const auth_module_1 = require("./auth/auth.module");
 const mongo_config_1 = require("./config/mongo.config");
+const database_module_1 = require("./database.module");
+const auth_module_1 = require("./auth/auth.module");
 const course_module_1 = require("./course/course.module");
 const mail_module_1 = require("./mail/mail.module");
 const user_module_1 = require("./user/user.module");
@@ -27,11 +29,19 @@ const oneid_module_1 = require("./oneid/oneid.module");
 const newsletter_module_1 = require("./newsletter/newsletter.module");
 const contact_module_1 = require("./contact/contact.module");
 const question_module_1 = require("./question/question.module");
+const app_controller_1 = require("./app.controller");
+const student_controller_1 = require("./student.controller");
+const direktor_controller_1 = require("./direktor.controller");
+const auth_controller_1 = require("./auth.controller");
+const app_service_1 = require("./app.service");
+const user_activity_interceptor_1 = require("./logger/user-activity.interceptor");
+const user_activity_logger_1 = require("./logger/user-activity.logger");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            database_module_1.DatabaseModule,
             config_1.ConfigModule.forRoot(),
             mongoose_1.MongooseModule.forRootAsync({
                 imports: [config_1.ConfigModule],
@@ -54,6 +64,20 @@ AppModule = __decorate([
             newsletter_module_1.NewsletterModule,
             contact_module_1.ContactModule,
             question_module_1.QuestionModule,
+        ],
+        controllers: [
+            app_controller_1.AppController,
+            student_controller_1.StudentController,
+            direktor_controller_1.DirektorController,
+            auth_controller_1.AuthController,
+        ],
+        providers: [
+            app_service_1.AppService,
+            user_activity_logger_1.UserActivityLogger,
+            {
+                provide: core_1.APP_INTERCEPTOR,
+                useClass: user_activity_interceptor_1.UserActivityInterceptor,
+            },
         ],
     })
 ], AppModule);

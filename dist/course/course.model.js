@@ -16,7 +16,7 @@ const user_model_1 = require("../user/user.model");
 let Course = class Course {
 };
 __decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Schema.Types.ObjectId, ref: 'User' }),
+    (0, mongoose_1.Prop)({ type: mongoose_2.Schema.Types.ObjectId, ref: 'User', index: true }),
     __metadata("design:type", user_model_1.User)
 ], Course.prototype, "author", void 0);
 __decorate([
@@ -24,11 +24,11 @@ __decorate([
     __metadata("design:type", Array)
 ], Course.prototype, "sections", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ unique: true, required: true }),
+    (0, mongoose_1.Prop)({ unique: true, required: true, index: true }),
     __metadata("design:type", String)
 ], Course.prototype, "slug", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: Boolean, default: false }),
+    (0, mongoose_1.Prop)({ type: Boolean, default: false, index: true }),
     __metadata("design:type", Boolean)
 ], Course.prototype, "isActive", void 0);
 __decorate([
@@ -52,7 +52,7 @@ __decorate([
     __metadata("design:type", String)
 ], Course.prototype, "level", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ index: true }),
     __metadata("design:type", String)
 ], Course.prototype, "category", void 0);
 __decorate([
@@ -68,7 +68,7 @@ __decorate([
     __metadata("design:type", String)
 ], Course.prototype, "exerpt", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ index: true }),
     __metadata("design:type", String)
 ], Course.prototype, "language", void 0);
 __decorate([
@@ -80,4 +80,7 @@ Course = __decorate([
 ], Course);
 exports.Course = Course;
 exports.CourseSchema = mongoose_1.SchemaFactory.createForClass(Course);
+exports.CourseSchema.index({ category: 1, language: 1 });
+exports.CourseSchema.index({ author: 1, isActive: 1 });
+exports.CourseSchema.index({ isActive: 1, language: 1 });
 //# sourceMappingURL=course.model.js.map
