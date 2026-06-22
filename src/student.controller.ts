@@ -43,7 +43,12 @@ export class StudentController {
     if (districtOrCity) filter.districtOrCity = districtOrCity;
     if (schoolName) filter.schoolName = schoolName;
 
-    return this.studentModel.find(filter).exec();
+    try {
+      return await this.studentModel.find(filter).exec();
+    } catch (err) {
+      console.error('GET /students error:', err);
+      throw new BadRequestException("O'quvchilarni yuklashda xatolik");
+    }
   }
 
   @Get(':id')

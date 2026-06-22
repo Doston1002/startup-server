@@ -36,15 +36,15 @@ import { UserActivityLogger } from './logger/user-activity.logger';
 
 @Module({
   imports: [
-    DatabaseModule,
-
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
 
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: getMongoDBConfig,
     }),
+
+    DatabaseModule,
 
     AuthModule,
     CourseModule,
