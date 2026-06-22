@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Put,
+  Query,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Direktor, DirektorDocument } from './direktor.schema';
@@ -9,38 +20,90 @@ export class DirektorController {
     @InjectModel(Direktor.name) private direktorModel: Model<DirektorDocument>,
   ) {}
 
-  // Admin barcha direktorlarni ko'radi
   @Get()
   async findAll(@Query('role') role?: string) {
-    if (role === 'admin') {
-      return this.direktorModel.find().exec();
+    if (role !== 'admin') {
+      throw new HttpException(
+        'Faqat admin barcha direktorlarni ko‘ra oladi',
+        HttpStatus.FORBIDDEN,
+      );
     }
-    // Default: direktor o'zini ko'radi
-    return { error: 'Faqat admin barcha direktorlarni ko‘ra oladi' };
+
+    try {
+      return await this.direktorModel.find().exec();
+    } catch (err) {
+      console.error('GET /direktors error:', err);
+      throw new HttpException('Direktorlarni yuklashda xatolik', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return this.direktorModel.findById(id).exec();
+    try {
+      const direktor = await this.direktorModel.findById(id).exec();
+      if (!direktor) {
+        throw new HttpException('Direktor topilmadi', HttpStatus.NOT_FOUND);
+      }
+      return direktor;
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      console.error('GET /direktors/:id error:', err);
+      throw new HttpException('Direktorni yuklashda xatolik', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
-  // Admin direktor qo'shadi
   @Post()
   async create(@Body() createDirektorDto: Partial<Direktor>) {
-    if (createDirektorDto.role !== 'direktor') {
-      createDirektorDto.role = 'direktor';
+    try {
+      const payload = {
+        ...createDirektorDto,
+        role: 'direktor' as const,
+        createdAt: createDirektorDto.createdAt || new Date().toISOString(),
+      };
+
+      const created = new this.direktorModel(payload);
+      return await created.save();
+    } catch (err: any) {
+      if (err?.code === 11000) {
+        throw new HttpException('Bu email allaqachon ro‘yxatdan o‘tgan', HttpStatus.CONFLICT);
+      }
+      console.error('POST /direktors error:', err);
+      throw new HttpException(
+        err?.message || 'Direktor yaratishda xatolik',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
-    const created = new this.direktorModel(createDirektorDto);
-    return created.save();
   }
 
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateDirektorDto: Partial<Direktor>) {
-    return this.direktorModel.findByIdAndUpdate(id, updateDirektorDto, { new: true }).exec();
+    try {
+      const updated = await this.direktorModel
+        .findByIdAndUpdate(id, updateDirektorDto, { new: true })
+        .exec();
+      if (!updated) {
+        throw new HttpException('Direktor topilmadi', HttpStatus.NOT_FOUND);
+      }
+      return updated;
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      console.error('PUT /direktors/:id error:', err);
+      throw new HttpException('Direktorni yangilashda xatolik', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    return this.direktorModel.findByIdAndDelete(id).exec();
+    try {
+      const deleted = await this.direktorModel.findByIdAndDelete(id).exec();
+      if (!deleted) {
+        throw new HttpException('Direktor topilmadi', HttpStatus.NOT_FOUND);
+      }
+      return deleted;
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      console.error('DELETE /direktors/:id error:', err);
+      throw new HttpException("Direktorni o'chirishda xatolik", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }
