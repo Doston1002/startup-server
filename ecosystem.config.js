@@ -14,6 +14,8 @@ module.exports = {
         PORT: process.env.PORT || 8000,
         MONGODB_URI: process.env.MONGODB_URI,
       },
+      error_file: path.join(__dirname, 'logs', 'pm2-error.log'),
+      out_file: path.join(__dirname, 'logs', 'pm2-out.log'),
     },
   ],
 };

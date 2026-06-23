@@ -20,6 +20,12 @@ export class AppController {
     return this.appService.getHello();
   }
 
+  /** API server ishlayotganini tekshirish (DB talab qilmaydi) */
+  @Get('health')
+  health() {
+    return { ok: true, service: 'startup-server', ts: new Date().toISOString() };
+  }
+
   /** SIM MongoDB ulanishini tekshirish (production debug) */
   @Get('health/sim')
   async simHealth() {
