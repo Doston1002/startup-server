@@ -33,8 +33,8 @@ export declare class Instructor {
     language: string;
     courses: Course[];
 }
-export declare const InstructorSchema: SchemaMS<Instructor, import("mongoose").Model<Instructor, any, any, any, import("mongoose").Document<unknown, any, Instructor> & Instructor & {
+export declare const InstructorSchema: SchemaMS<Instructor, import("mongoose").Model<Instructor, any, any, any, import("mongoose").Document<unknown, any, Instructor> & Omit<Instructor & {
     _id: import("mongoose").Types.ObjectId;
-}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Instructor, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<Instructor>> & import("mongoose").FlatRecord<Instructor> & {
+}, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Instructor, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<Instructor>> & Omit<import("mongoose").FlatRecord<Instructor> & {
     _id: import("mongoose").Types.ObjectId;
-}>;
+}, never>>;

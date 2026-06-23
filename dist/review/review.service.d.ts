@@ -31,18 +31,18 @@ export declare class ReviewService {
     createReview(dto: CreateReviewDto): Promise<import("mongoose").Types.ObjectId>;
     deleteReview(reviewId: string): Promise<import("mongoose").Types.ObjectId>;
     editReview(reviewId: string, dto: EditReviewDto): Promise<import("mongoose").Types.ObjectId>;
-    getReview(courseId: string): Promise<Omit<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Review> & Review & {
+    getReview(courseId: string): Promise<Omit<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Review> & Omit<Review & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, Review> & Review & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, Review> & Omit<Review & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>, never>[]>;
-    getByUser({ course, user }: GetByUserDto): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Review> & Review & {
+    }>, never>, never>[]>;
+    getByUser({ course, user }: GetByUserDto): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Review> & Omit<Review & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, Review> & Review & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, Review> & Omit<Review & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>>;
+    }>, never>>;
 }

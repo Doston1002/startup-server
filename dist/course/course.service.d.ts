@@ -35,28 +35,28 @@ export declare class CourseService {
     private reviewModel;
     constructor(courseModel: Model<CourseDocument>, instructorModel: Model<InstructorDocument>, userModel: Model<UserDocument>, reviewModel: Model<ReviewDocument>);
     createCourse(dto: CourseBodyDto, id: string): Promise<string>;
-    editCourse(dto: CourseBodyDto, courseId: string, instructorId: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Course> & Course & {
+    editCourse(dto: CourseBodyDto, courseId: string, instructorId: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Course> & Omit<Course & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, Course> & Course & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, Course> & Omit<Course & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>>;
+    }>, never>>;
     deleteCourse(courseId: string, userId: string): Promise<string>;
-    activateCourse(courseId: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Course> & Course & {
+    activateCourse(courseId: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Course> & Omit<Course & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, Course> & Course & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, Course> & Omit<Course & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>>;
-    draftCourse(courseId: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Course> & Course & {
+    }>, never>>;
+    draftCourse(courseId: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Course> & Omit<Course & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, Course> & Course & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, Course> & Omit<Course & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>>;
+    }>, never>>;
     dragCourseSections(courseId: string, sections: string[]): Promise<import("../section/section.model").Section[]>;
     getCourses(language: string, limit: string): Promise<{
         title: string;
@@ -133,12 +133,12 @@ export declare class CourseService {
         reviewAvg: number;
     };
     getTotalHours(course: CourseDocument): string;
-    getAdminCourses(): Promise<(import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Course> & Course & {
+    getAdminCourses(): Promise<(import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Course> & Omit<Course & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, Course> & Course & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, Course> & Omit<Course & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>)[]>;
+    }>, never>)[]>;
     enrollUser(userID: string, courseId: string): Promise<string>;
 }

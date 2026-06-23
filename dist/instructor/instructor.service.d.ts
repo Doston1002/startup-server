@@ -33,20 +33,20 @@ export declare class InstructorService {
     private courseModel;
     constructor(userModel: Model<UserDocument>, instructorModel: Model<InstructorDocument>, courseModel: Model<CourseDocument>);
     applyAsInstructor(dto: InstructorApplyDto): Promise<string>;
-    getAllCourses(author: string): Promise<(import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Course> & Course & {
+    getAllCourses(author: string): Promise<(import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Course> & Omit<Course & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, Course> & Course & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, Course> & Omit<Course & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>)[]>;
-    getDetailedCourse(slug: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Course> & Course & {
+    }>, never>)[]>;
+    getDetailedCourse(slug: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Course> & Omit<Course & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, Course> & Course & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, Course> & Omit<Course & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>>;
+    }>, never>>;
     getInstructors(language: string, limit: string): Promise<{
         avatar: string;
         fullName: string;

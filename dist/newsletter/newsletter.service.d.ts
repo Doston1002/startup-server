@@ -27,13 +27,13 @@ import { Newsletter } from './newsletter.model';
 export declare class NewsletterService {
     private newsletterModel;
     constructor(newsletterModel: Model<Newsletter>);
-    subscribe(email: string): Promise<import("mongoose").Document<unknown, {}, Newsletter> & Newsletter & {
+    subscribe(email: string): Promise<import("mongoose").Document<unknown, {}, Newsletter> & Omit<Newsletter & {
         _id: import("mongoose").Types.ObjectId;
-    }>;
-    getAllSubscribers(): Promise<(import("mongoose").Document<unknown, {}, Newsletter> & Newsletter & {
+    }, never>>;
+    getAllSubscribers(): Promise<(import("mongoose").Document<unknown, {}, Newsletter> & Omit<Newsletter & {
         _id: import("mongoose").Types.ObjectId;
-    })[]>;
-    unsubscribe(email: string): Promise<import("mongoose").Document<unknown, {}, Newsletter> & Newsletter & {
+    }, never>)[]>;
+    unsubscribe(email: string): Promise<import("mongoose").Document<unknown, {}, Newsletter> & Omit<Newsletter & {
         _id: import("mongoose").Types.ObjectId;
-    }>;
+    }, never>>;
 }

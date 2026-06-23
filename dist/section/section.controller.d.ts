@@ -30,8 +30,8 @@ export declare class SectionController {
     constructor(sectionService: SectionService);
     createSection(dto: SectionDto, courseId: string): Promise<import("./section.model").Section[]>;
     deleteSection(sectionId: string, courseId: string): Promise<import("./section.model").Section[]>;
-    editSection(sectionId: string, dto: SectionDto): Promise<import("mongoose").Document<unknown, {}, import("./section.model").Section> & import("./section.model").Section & {
+    editSection(sectionId: string, dto: SectionDto): Promise<import("mongoose").Document<unknown, {}, import("./section.model").Section> & Omit<import("./section.model").Section & {
         _id: import("mongoose").Types.ObjectId;
-    }>;
+    }, never>>;
     getSection(courseId: string): Promise<import("./section.model").Section[]>;
 }

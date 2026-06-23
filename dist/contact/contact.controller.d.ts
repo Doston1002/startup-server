@@ -31,9 +31,9 @@ export declare class ContactController {
     constructor(contactService: ContactService);
     sendMessage(createContactDto: CreateContactDto): Promise<{
         message: string;
-        data: import("mongoose").Document<unknown, {}, import("./contact.model").ContactDocument> & import("./contact.model").Contact & import("mongoose").Document<any, any, any> & {
+        data: import("mongoose").Document<unknown, {}, import("./contact.model").ContactDocument> & Omit<import("./contact.model").Contact & import("mongoose").Document<any, any, any> & {
             _id: import("mongoose").Types.ObjectId;
-        };
+        }, never>;
     }>;
     getMessages(limit?: string, page?: string, type?: 'contact' | 'attendance'): Promise<{
         contacts: {

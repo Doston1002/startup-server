@@ -36,12 +36,12 @@ export declare class JwtStrategy extends JwtStrategy_base {
     validate(request: any, payload: {
         _id: string;
         role?: string;
-    }): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, User> & User & {
+    }): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, User> & Omit<User & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, User> & User & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, User> & Omit<User & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>>;
+    }>, never>>;
 }
 export {};

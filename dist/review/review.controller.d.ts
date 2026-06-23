@@ -31,18 +31,18 @@ export declare class ReviewController {
     createReview(dto: CreateReviewDto): Promise<import("mongoose").Types.ObjectId>;
     deleteReview(reviewId: string): Promise<import("mongoose").Types.ObjectId>;
     editReview(reviewId: string, dto: EditReviewDto): Promise<import("mongoose").Types.ObjectId>;
-    getReview(courseId: string): Promise<Omit<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./review.model").Review> & import("./review.model").Review & {
+    getReview(courseId: string): Promise<Omit<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./review.model").Review> & Omit<import("./review.model").Review & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, import("./review.model").Review> & import("./review.model").Review & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, import("./review.model").Review> & Omit<import("./review.model").Review & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>, never>[]>;
-    getByUser(dto: GetByUserDto): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./review.model").Review> & import("./review.model").Review & {
+    }>, never>, never>[]>;
+    getByUser(dto: GetByUserDto): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./review.model").Review> & Omit<import("./review.model").Review & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, import("./review.model").Review> & import("./review.model").Review & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, import("./review.model").Review> & Omit<import("./review.model").Review & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>>;
+    }>, never>>;
 }

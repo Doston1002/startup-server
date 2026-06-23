@@ -42,8 +42,8 @@ export declare class User {
     courses: Course[];
     isBlocked: boolean;
 }
-export declare const UserSchema: SchemaMS<User, import("mongoose").Model<User, any, any, any, import("mongoose").Document<unknown, any, User> & User & {
+export declare const UserSchema: SchemaMS<User, import("mongoose").Model<User, any, any, any, import("mongoose").Document<unknown, any, User> & Omit<User & {
     _id: import("mongoose").Types.ObjectId;
-}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, User, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<User>> & import("mongoose").FlatRecord<User> & {
+}, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, User, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<User>> & Omit<import("mongoose").FlatRecord<User> & {
     _id: import("mongoose").Types.ObjectId;
-}>;
+}, never>>;

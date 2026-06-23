@@ -42,9 +42,9 @@ export declare class NewsletterController {
     }>;
     getAllSubscribers(): Promise<{
         success: boolean;
-        data: (import("mongoose").Document<unknown, {}, import("./newsletter.model").Newsletter> & import("./newsletter.model").Newsletter & {
+        data: (import("mongoose").Document<unknown, {}, import("./newsletter.model").Newsletter> & Omit<import("./newsletter.model").Newsletter & {
             _id: import("mongoose").Types.ObjectId;
-        })[];
+        }, never>)[];
         error?: undefined;
     } | {
         success: boolean;

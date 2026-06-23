@@ -33,8 +33,8 @@ export declare class Lesson {
     second: number;
     completed: string[];
 }
-export declare const LessonSchema: import("mongoose").Schema<Lesson, import("mongoose").Model<Lesson, any, any, any, import("mongoose").Document<unknown, any, Lesson> & Lesson & {
+export declare const LessonSchema: import("mongoose").Schema<Lesson, import("mongoose").Model<Lesson, any, any, any, import("mongoose").Document<unknown, any, Lesson> & Omit<Lesson & {
     _id: import("mongoose").Types.ObjectId;
-}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Lesson, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<Lesson>> & import("mongoose").FlatRecord<Lesson> & {
+}, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Lesson, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<Lesson>> & Omit<import("mongoose").FlatRecord<Lesson> & {
     _id: import("mongoose").Types.ObjectId;
-}>;
+}, never>>;

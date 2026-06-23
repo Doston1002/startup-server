@@ -29,28 +29,28 @@ export declare class CourseController {
     private readonly courseService;
     constructor(courseService: CourseService);
     createCourse(dto: CourseBodyDto, _id: string): Promise<string>;
-    editCourse(dto: CourseBodyDto, courseId: string, _id: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./course.model").Course> & import("./course.model").Course & {
+    editCourse(dto: CourseBodyDto, courseId: string, _id: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./course.model").Course> & Omit<import("./course.model").Course & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, import("./course.model").Course> & import("./course.model").Course & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, import("./course.model").Course> & Omit<import("./course.model").Course & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>>;
+    }>, never>>;
     deleteCourse(courseId: string, _id: string): Promise<string>;
-    activateCourse(courseId: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./course.model").Course> & import("./course.model").Course & {
+    activateCourse(courseId: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./course.model").Course> & Omit<import("./course.model").Course & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, import("./course.model").Course> & import("./course.model").Course & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, import("./course.model").Course> & Omit<import("./course.model").Course & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>>;
-    draftCourse(courseId: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./course.model").Course> & import("./course.model").Course & {
+    }>, never>>;
+    draftCourse(courseId: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./course.model").Course> & Omit<import("./course.model").Course & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, import("./course.model").Course> & import("./course.model").Course & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, import("./course.model").Course> & Omit<import("./course.model").Course & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>>;
+    }>, never>>;
     dragCourseSections(courseId: string, body: {
         sections: string[];
     }): Promise<import("../section/section.model").Section[]>;
@@ -77,13 +77,13 @@ export declare class CourseController {
         reviewCount: number;
         reviewAvg: number;
     }[]>;
-    getAllAdminCourses(): Promise<(import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./course.model").Course> & import("./course.model").Course & {
+    getAllAdminCourses(): Promise<(import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./course.model").Course> & Omit<import("./course.model").Course & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, import("./course.model").Course> & import("./course.model").Course & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, import("./course.model").Course> & Omit<import("./course.model").Course & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>)[]>;
+    }>, never>)[]>;
     getDetailedCourse(slug: string): Promise<{
         reviewCount: number;
         reviewAvg: number;

@@ -29,20 +29,20 @@ export declare class InstructorController {
     private readonly instructorService;
     constructor(instructorService: InstructorService);
     applyAsInstructor(dto: InstructorApplyDto): Promise<string>;
-    getAllCourses(_id: string): Promise<(import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("../course/course.model").Course> & import("../course/course.model").Course & {
+    getAllCourses(_id: string): Promise<(import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("../course/course.model").Course> & Omit<import("../course/course.model").Course & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, import("../course/course.model").Course> & import("../course/course.model").Course & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, import("../course/course.model").Course> & Omit<import("../course/course.model").Course & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>)[]>;
-    getDetailedCourse(slug: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("../course/course.model").Course> & import("../course/course.model").Course & {
+    }>, never>)[]>;
+    getDetailedCourse(slug: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("../course/course.model").Course> & Omit<import("../course/course.model").Course & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, import("../course/course.model").Course> & import("../course/course.model").Course & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, import("../course/course.model").Course> & Omit<import("../course/course.model").Course & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>>;
+    }>, never>>;
     getInstructors(language: string, limit: string): Promise<{
         avatar: string;
         fullName: string;

@@ -29,8 +29,8 @@ export declare class Section {
     title: string;
     lessons: Lesson[];
 }
-export declare const SectionSchema: SchemaMS<Section, import("mongoose").Model<Section, any, any, any, import("mongoose").Document<unknown, any, Section> & Section & {
+export declare const SectionSchema: SchemaMS<Section, import("mongoose").Model<Section, any, any, any, import("mongoose").Document<unknown, any, Section> & Omit<Section & {
     _id: import("mongoose").Types.ObjectId;
-}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Section, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<Section>> & import("mongoose").FlatRecord<Section> & {
+}, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Section, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<Section>> & Omit<import("mongoose").FlatRecord<Section> & {
     _id: import("mongoose").Types.ObjectId;
-}>;
+}, never>>;

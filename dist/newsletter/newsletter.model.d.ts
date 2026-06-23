@@ -28,8 +28,8 @@ export declare class Newsletter extends Document {
     isActive: boolean;
     subscribedAt: Date;
 }
-export declare const NewsletterSchema: import("mongoose").Schema<Newsletter, import("mongoose").Model<Newsletter, any, any, any, Document<unknown, any, Newsletter> & Newsletter & {
+export declare const NewsletterSchema: import("mongoose").Schema<Newsletter, import("mongoose").Model<Newsletter, any, any, any, Document<unknown, any, Newsletter> & Omit<Newsletter & {
     _id: import("mongoose").Types.ObjectId;
-}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Newsletter, Document<unknown, {}, import("mongoose").FlatRecord<Newsletter>> & import("mongoose").FlatRecord<Newsletter> & {
+}, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Newsletter, Document<unknown, {}, import("mongoose").FlatRecord<Newsletter>> & Omit<import("mongoose").FlatRecord<Newsletter> & {
     _id: import("mongoose").Types.ObjectId;
-}>;
+}, never>>;

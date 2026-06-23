@@ -30,20 +30,20 @@ export declare class LessonService {
     private sectionModel;
     private lessonModel;
     constructor(sectionModel: Model<Section>, lessonModel: Model<Lesson>);
-    createLesson(body: LessonDto, sectionId: string): Promise<import("mongoose").Document<unknown, {}, Section> & Section & {
+    createLesson(body: LessonDto, sectionId: string): Promise<import("mongoose").Document<unknown, {}, Section> & Omit<Section & {
         _id: import("mongoose").Types.ObjectId;
-    }>;
-    editLesson(body: LessonDto, lessonId: string): Promise<import("mongoose").Document<unknown, {}, Lesson> & Lesson & {
+    }, never>>;
+    editLesson(body: LessonDto, lessonId: string): Promise<import("mongoose").Document<unknown, {}, Lesson> & Omit<Lesson & {
         _id: import("mongoose").Types.ObjectId;
-    }>;
-    deleteLesson(sectionId: string, lessonId: string): Promise<import("mongoose").Document<unknown, {}, Section> & Section & {
+    }, never>>;
+    deleteLesson(sectionId: string, lessonId: string): Promise<import("mongoose").Document<unknown, {}, Section> & Omit<Section & {
         _id: import("mongoose").Types.ObjectId;
-    }>;
+    }, never>>;
     getLesson(sectionId: string): Promise<Lesson[]>;
-    completeLesson(userId: string, lessonId: string): Promise<import("mongoose").Document<unknown, {}, Lesson> & Lesson & {
+    completeLesson(userId: string, lessonId: string): Promise<import("mongoose").Document<unknown, {}, Lesson> & Omit<Lesson & {
         _id: import("mongoose").Types.ObjectId;
-    }>;
-    uncompleteLesson(userId: string, lessonId: string): Promise<import("mongoose").Document<unknown, {}, Lesson> & Lesson & {
+    }, never>>;
+    uncompleteLesson(userId: string, lessonId: string): Promise<import("mongoose").Document<unknown, {}, Lesson> & Omit<Lesson & {
         _id: import("mongoose").Types.ObjectId;
-    }>;
+    }, never>>;
 }

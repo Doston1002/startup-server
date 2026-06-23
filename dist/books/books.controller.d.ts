@@ -29,32 +29,32 @@ import { UpdateBookDto } from './dto/update-book.dto';
 export declare class BooksController {
     private readonly booksService;
     constructor(booksService: BooksService);
-    create(createBookDto: CreateBookDto): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./books.model").Books> & import("./books.model").Books & {
+    create(createBookDto: CreateBookDto): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./books.model").Books> & Omit<import("./books.model").Books & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, import("./books.model").Books> & import("./books.model").Books & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, import("./books.model").Books> & Omit<import("./books.model").Books & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>>;
-    findAll(): Promise<(import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./books.model").Books> & import("./books.model").Books & {
+    }>, never>>;
+    findAll(): Promise<(import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./books.model").Books> & Omit<import("./books.model").Books & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, import("./books.model").Books> & import("./books.model").Books & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, import("./books.model").Books> & Omit<import("./books.model").Books & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>)[]>;
-    update(id: string, updateBookDto: UpdateBookDto): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./books.model").Books> & import("./books.model").Books & {
+    }>, never>)[]>;
+    update(id: string, updateBookDto: UpdateBookDto): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./books.model").Books> & Omit<import("./books.model").Books & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, import("./books.model").Books> & import("./books.model").Books & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, import("./books.model").Books> & Omit<import("./books.model").Books & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>>;
-    remove(id: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./books.model").Books> & import("./books.model").Books & {
+    }>, never>>;
+    remove(id: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./books.model").Books> & Omit<import("./books.model").Books & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, import("./books.model").Books> & import("./books.model").Books & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, import("./books.model").Books> & Omit<import("./books.model").Books & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>>;
+    }>, never>>;
 }

@@ -41,13 +41,13 @@ let AppModule = class AppModule {
 AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            database_module_1.DatabaseModule,
-            config_1.ConfigModule.forRoot(),
+            config_1.ConfigModule.forRoot({ isGlobal: true }),
             mongoose_1.MongooseModule.forRootAsync({
                 imports: [config_1.ConfigModule],
                 inject: [config_1.ConfigService],
                 useFactory: mongo_config_1.getMongoDBConfig,
             }),
+            database_module_1.DatabaseModule,
             auth_module_1.AuthModule,
             course_module_1.CourseModule,
             user_module_1.UserModule,

@@ -30,8 +30,8 @@ export declare class Books {
     pdf: string;
     category: string;
 }
-export declare const BooksSchema: import("mongoose").Schema<Books, import("mongoose").Model<Books, any, any, any, import("mongoose").Document<unknown, any, Books> & Books & {
+export declare const BooksSchema: import("mongoose").Schema<Books, import("mongoose").Model<Books, any, any, any, import("mongoose").Document<unknown, any, Books> & Omit<Books & {
     _id: import("mongoose").Types.ObjectId;
-}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Books, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<Books>> & import("mongoose").FlatRecord<Books> & {
+}, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Books, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<Books>> & Omit<import("mongoose").FlatRecord<Books> & {
     _id: import("mongoose").Types.ObjectId;
-}>;
+}, never>>;

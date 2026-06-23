@@ -29,9 +29,9 @@ import { UpdateContactDto } from 'src/contact/dto/update-contact.dto';
 export declare class ContactService {
     private contactModel;
     constructor(contactModel: Model<ContactDocument>);
-    create(createContactDto: CreateContactDto): Promise<import("mongoose").Document<unknown, {}, ContactDocument> & Contact & import("mongoose").Document<any, any, any> & {
+    create(createContactDto: CreateContactDto): Promise<import("mongoose").Document<unknown, {}, ContactDocument> & Omit<Contact & import("mongoose").Document<any, any, any> & {
         _id: import("mongoose").Types.ObjectId;
-    }>;
+    }, never>>;
     findAll(limit?: number, page?: number, type?: 'contact' | 'attendance'): Promise<{
         contacts: {
             id: any;

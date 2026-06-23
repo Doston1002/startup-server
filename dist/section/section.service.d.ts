@@ -32,8 +32,8 @@ export declare class SectionService {
     constructor(sectionModel: Model<Section>, courseModel: Model<Course>);
     createSection({ title }: SectionDto, courseId: string): Promise<Section[]>;
     deleteSection(sectionId: string, courseId: string): Promise<Section[]>;
-    editSection(sectionId: string, { title, lessons }: SectionDto): Promise<import("mongoose").Document<unknown, {}, Section> & Section & {
+    editSection(sectionId: string, { title, lessons }: SectionDto): Promise<import("mongoose").Document<unknown, {}, Section> & Omit<Section & {
         _id: import("mongoose").Types.ObjectId;
-    }>;
+    }, never>>;
     getSection(courseId: string): Promise<Section[]>;
 }

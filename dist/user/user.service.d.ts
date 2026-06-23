@@ -30,21 +30,21 @@ export declare class UserService {
     private userModel;
     private readonly userActivityLogger;
     constructor(userModel: Model<UserDocument>, userActivityLogger: UserActivityLogger);
-    byId(id: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, User> & User & {
+    byId(id: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, User> & Omit<User & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, User> & User & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, User> & Omit<User & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>>;
+    }>, never>>;
     editPassword(dto: InterfaceEmailAndPassword): Promise<string>;
-    updateUser(body: UpdateUserDto, userID: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, User> & User & {
+    updateUser(body: UpdateUserDto, userID: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, User> & Omit<User & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, User> & User & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, User> & Omit<User & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>>;
+    }>, never>>;
     allTransactions(customerId: string): Promise<{}>;
     myCourses(userId: string): Promise<import("../course/course.model").Course[]>;
     changeRole(dto: ChangeRoleDto): Promise<{

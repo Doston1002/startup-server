@@ -32,8 +32,8 @@ export declare class Review {
     author: User;
     course: Course;
 }
-export declare const ReviewSchema: SchemaMS<Review, import("mongoose").Model<Review, any, any, any, import("mongoose").Document<unknown, any, Review> & Review & {
+export declare const ReviewSchema: SchemaMS<Review, import("mongoose").Model<Review, any, any, any, import("mongoose").Document<unknown, any, Review> & Omit<Review & {
     _id: import("mongoose").Types.ObjectId;
-}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Review, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<Review>> & import("mongoose").FlatRecord<Review> & {
+}, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Review, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<Review>> & Omit<import("mongoose").FlatRecord<Review> & {
     _id: import("mongoose").Types.ObjectId;
-}>;
+}, never>>;

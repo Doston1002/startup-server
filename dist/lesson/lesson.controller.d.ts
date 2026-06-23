@@ -28,20 +28,20 @@ import { LessonService } from './lesson.service';
 export declare class LessonController {
     private readonly lessonService;
     constructor(lessonService: LessonService);
-    createLesson(dto: LessonDto, sectionId: string): Promise<import("mongoose").Document<unknown, {}, import("../section/section.model").Section> & import("../section/section.model").Section & {
+    createLesson(dto: LessonDto, sectionId: string): Promise<import("mongoose").Document<unknown, {}, import("../section/section.model").Section> & Omit<import("../section/section.model").Section & {
         _id: import("mongoose").Types.ObjectId;
-    }>;
-    editLesson(dto: LessonDto, lessonId: string): Promise<import("mongoose").Document<unknown, {}, import("./lesson.model").Lesson> & import("./lesson.model").Lesson & {
+    }, never>>;
+    editLesson(dto: LessonDto, lessonId: string): Promise<import("mongoose").Document<unknown, {}, import("./lesson.model").Lesson> & Omit<import("./lesson.model").Lesson & {
         _id: import("mongoose").Types.ObjectId;
-    }>;
-    deleteLesson(lessonId: string, sectionId: string): Promise<import("mongoose").Document<unknown, {}, import("../section/section.model").Section> & import("../section/section.model").Section & {
+    }, never>>;
+    deleteLesson(lessonId: string, sectionId: string): Promise<import("mongoose").Document<unknown, {}, import("../section/section.model").Section> & Omit<import("../section/section.model").Section & {
         _id: import("mongoose").Types.ObjectId;
-    }>;
+    }, never>>;
     getLesson(sectionId: string): Promise<import("./lesson.model").Lesson[]>;
-    completeLesson(_id: string, lessonId: string): Promise<import("mongoose").Document<unknown, {}, import("./lesson.model").Lesson> & import("./lesson.model").Lesson & {
+    completeLesson(_id: string, lessonId: string): Promise<import("mongoose").Document<unknown, {}, import("./lesson.model").Lesson> & Omit<import("./lesson.model").Lesson & {
         _id: import("mongoose").Types.ObjectId;
-    }>;
-    uncompleteLesson(_id: string, lessonId: string): Promise<import("mongoose").Document<unknown, {}, import("./lesson.model").Lesson> & import("./lesson.model").Lesson & {
+    }, never>>;
+    uncompleteLesson(_id: string, lessonId: string): Promise<import("mongoose").Document<unknown, {}, import("./lesson.model").Lesson> & Omit<import("./lesson.model").Lesson & {
         _id: import("mongoose").Types.ObjectId;
-    }>;
+    }, never>>;
 }

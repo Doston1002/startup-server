@@ -28,21 +28,21 @@ import { UserService } from './user.service';
 export declare class UserController {
     private readonly userService;
     constructor(userService: UserService);
-    getProfile(_id: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./user.model").User> & import("./user.model").User & {
+    getProfile(_id: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./user.model").User> & Omit<import("./user.model").User & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, import("./user.model").User> & import("./user.model").User & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, import("./user.model").User> & Omit<import("./user.model").User & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>>;
+    }>, never>>;
     editPassword(dto: InterfaceEmailAndPassword): Promise<string>;
-    updateUser(dto: UpdateUserDto, _id: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./user.model").User> & import("./user.model").User & {
+    updateUser(dto: UpdateUserDto, _id: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./user.model").User> & Omit<import("./user.model").User & {
         _id: import("mongoose").Types.ObjectId;
-    }> & import("mongoose").Document<unknown, {}, import("./user.model").User> & import("./user.model").User & {
+    }, never>> & Omit<import("mongoose").Document<unknown, {}, import("./user.model").User> & Omit<import("./user.model").User & {
         _id: import("mongoose").Types.ObjectId;
-    } & Required<{
+    }, never> & Required<{
         _id: import("mongoose").Types.ObjectId;
-    }>>;
+    }>, never>>;
     allTransactions(customerId: string): Promise<{}>;
     myCourses(_id: string): Promise<import("../course/course.model").Course[]>;
     changeRole(dto: ChangeRoleDto): Promise<{

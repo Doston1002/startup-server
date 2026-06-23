@@ -43,8 +43,8 @@ export declare class Course {
     language: string;
     updatedAt: string;
 }
-export declare const CourseSchema: SchemaMS<Course, import("mongoose").Model<Course, any, any, any, import("mongoose").Document<unknown, any, Course> & Course & {
+export declare const CourseSchema: SchemaMS<Course, import("mongoose").Model<Course, any, any, any, import("mongoose").Document<unknown, any, Course> & Omit<Course & {
     _id: import("mongoose").Types.ObjectId;
-}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Course, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<Course>> & import("mongoose").FlatRecord<Course> & {
+}, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Course, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<Course>> & Omit<import("mongoose").FlatRecord<Course> & {
     _id: import("mongoose").Types.ObjectId;
-}>;
+}, never>>;

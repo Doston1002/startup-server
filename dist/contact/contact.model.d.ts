@@ -42,8 +42,8 @@ export declare class Contact {
     createdAt?: Date;
     updatedAt?: Date;
 }
-export declare const ContactSchema: import("mongoose").Schema<Contact, import("mongoose").Model<Contact, any, any, any, Document<unknown, any, Contact> & Contact & {
+export declare const ContactSchema: import("mongoose").Schema<Contact, import("mongoose").Model<Contact, any, any, any, Document<unknown, any, Contact> & Omit<Contact & {
     _id: import("mongoose").Types.ObjectId;
-}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Contact, Document<unknown, {}, import("mongoose").FlatRecord<Contact>> & import("mongoose").FlatRecord<Contact> & {
+}, never>, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Contact, Document<unknown, {}, import("mongoose").FlatRecord<Contact>> & Omit<import("mongoose").FlatRecord<Contact> & {
     _id: import("mongoose").Types.ObjectId;
-}>;
+}, never>>;
