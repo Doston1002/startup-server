@@ -32,7 +32,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { HttpModule } from '@nestjs/axios'; // OneID va reCAPTCHA uchun
-import { getJWTConfig } from 'src/config/jwt.config';
+import { getJWTConfig } from '../config/jwt.config';
 import { CustomerModule } from 'src/customer/customer.module';
 import { CustomerService } from 'src/customer/customer.service';
 import { User, UserSchema } from 'src/user/user.model';

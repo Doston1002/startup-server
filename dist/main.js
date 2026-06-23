@@ -25,10 +25,16 @@ async function bootstrap() {
     });
     app.enableCors({
         origin: (origin, callback) => {
+            const fromEnv = (process.env.CORS_ORIGINS || '')
+                .split(',')
+                .map(o => o.trim())
+                .filter(Boolean);
             const allowedOrigins = [
                 'https://uydatalim.uzedu.uz',
+                'https://www.uydatalim.uzedu.uz',
                 'http://localhost:3000',
-                'http://localhost:5173'
+                'http://localhost:5173',
+                ...fromEnv,
             ];
             if (!origin || allowedOrigins.includes(origin)) {
                 callback(null, true);
@@ -38,7 +44,9 @@ async function bootstrap() {
             }
         },
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
         credentials: true,
+        optionsSuccessStatus: 204,
     });
     await app.listen(parseInt(process.env.PORT) || 8000, '0.0.0.0');
 }
