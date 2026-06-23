@@ -11,6 +11,7 @@ const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
 const config_1 = require("@nestjs/config");
 const mongoose_1 = require("@nestjs/mongoose");
+const schedule_1 = require("@nestjs/schedule");
 const mongo_config_1 = require("./config/mongo.config");
 const database_module_1 = require("./database.module");
 const auth_module_1 = require("./auth/auth.module");
@@ -36,12 +37,16 @@ const auth_controller_1 = require("./auth.controller");
 const app_service_1 = require("./app.service");
 const user_activity_interceptor_1 = require("./logger/user-activity.interceptor");
 const user_activity_logger_1 = require("./logger/user-activity.logger");
+const telegram_service_1 = require("./telegram/telegram.service");
+const student_expiry_service_1 = require("./student-expiry/student-expiry.service");
+const student_expiry_scheduler_1 = require("./student-expiry/student-expiry.scheduler");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             config_1.ConfigModule.forRoot({ isGlobal: true }),
+            schedule_1.ScheduleModule.forRoot(),
             mongoose_1.MongooseModule.forRootAsync({
                 imports: [config_1.ConfigModule],
                 inject: [config_1.ConfigService],
@@ -74,6 +79,9 @@ AppModule = __decorate([
         providers: [
             app_service_1.AppService,
             user_activity_logger_1.UserActivityLogger,
+            telegram_service_1.TelegramService,
+            student_expiry_service_1.StudentExpiryService,
+            student_expiry_scheduler_1.StudentExpiryScheduler,
             {
                 provide: core_1.APP_INTERCEPTOR,
                 useClass: user_activity_interceptor_1.UserActivityInterceptor,

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import { getMongoDBConfig } from './config/mongo.config';
 
@@ -33,10 +34,14 @@ import { AppService } from './app.service';
 
 import { UserActivityInterceptor } from './logger/user-activity.interceptor';
 import { UserActivityLogger } from './logger/user-activity.logger';
+import { TelegramService } from './telegram/telegram.service';
+import { StudentExpiryService } from './student-expiry/student-expiry.service';
+import { StudentExpiryScheduler } from './student-expiry/student-expiry.scheduler';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    ScheduleModule.forRoot(),
 
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
@@ -74,6 +79,9 @@ import { UserActivityLogger } from './logger/user-activity.logger';
   providers: [
     AppService,
     UserActivityLogger,
+    TelegramService,
+    StudentExpiryService,
+    StudentExpiryScheduler,
 
     {
       provide: APP_INTERCEPTOR,

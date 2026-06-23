@@ -53,6 +53,12 @@ export class Student {
   @Prop()
   conclusionDate?: string;
 
+  @Prop()
+  illnessEndDate?: string;
+
+  @Prop()
+  illnessEndDateMax?: string;
+
   @Prop({ type: [{ originalname: String, filename: String, path: String, mimetype: String, size: Number }] })
   uploadedFiles?: any[];
 
@@ -64,6 +70,9 @@ export class Student {
 
   @Prop({ required: true })
   createdAt: string;
+
+  @Prop()
+  telegramExpiryNotifiedAt?: string;
 }
 
 export const StudentSchema = SchemaFactory.createForClass(Student);

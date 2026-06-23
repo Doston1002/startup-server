@@ -1,0 +1,48 @@
+const ILLNESS_LABELS: Record<string, string> = {
+  'somatik:biriktiruvchi_toqima':
+    'Biriktiruvchi toʻqima tizimli shikastlanishi, yoshlar revmatoid artriti va tugunchali periarteritning ogʻir turlari',
+  'somatik:yurak_kasalligi': 'Yurak va qon aylanish tizimining tugʻma nuqsonlari (II-III daraja)',
+  'somatik:tetrada_fallo': 'Ogʻir darajadagi tetrada Fallo kasalligi',
+  'somatik:opka_bronx': 'Oʻpka-bronx kasalliklari (II-III darajali nafas yetishmovchiligi)',
+  'somatik:asma': 'Astmaning ogʻir darajasi',
+  'somatik:glom': 'Surunkali glomerulonefrit',
+  'somatik:piyelonefrit': 'Surunkali piyelonefrit',
+  'somatik:otkir_glom': 'Oʻtkir glomerulonefrit remissiya davri',
+  'somatik:onkologiya': 'Turli organlarning xavfli oʻsmalari',
+  'somatik:mukovissidoz': 'Mukovissedozning ogʻir turi',
+  'somatik:seliakiya': 'Seliakiyaning ogʻir turi',
+  'somatik:yarali_kolit': 'Nospetsifik yarali kolitning ogʻir turi',
+  'somatik:kron': 'Kron kasalligining ogʻir darajasi',
+  'somatik:jigar_sirrozi': 'Jigar sirrozining dekompensatsiya darajasi',
+  'somatik:oqsil_yetishmovchiligi': 'Oqsil-energetik yetishmovchiligining ogʻir darajasi',
+  'somatik:leykoz': 'Oʻtkir leykoz, aplastik va irsiy kamqonliklar',
+  'somatik:gemorragik': 'Ogʻir gemorragik kriz bilan kechuvchi surunkali kasalliklar',
+  'somatik:immun_tanqisligi': 'Tugʻma va orttirilgan immun tanqisligi holatlari',
+  'psix:ruhiy': 'Ruhiy holati buzilganligi (shizofreniya, psixoz)',
+  'psix:nevroz': 'Ogʻir nevrozlar va nevroz holatlarining zoʻraygan davri',
+  'psix:ensefaloastenik': 'Ensefaloastenik holatlar',
+  'psix:psixopatiya': 'Psixopatiyalar, dekompensatsiya davridagi holatlar',
+  'psix:epilepsiya': 'Epilepsiyaning zoʻraygan davrida',
+  'psix:harakat_buzilishi': 'Tayanch-harakat aʼzolarining buzilishi',
+  'psix:serebral_falaj': 'Bolalar serebral falaji (yengil turi)',
+  'psix:avtizm': 'Bolalar autizmi',
+  'psix:miopatiya': 'Miopatiya / Miasteniyaning tarqalgan shakli',
+  'psix:demiyelin': 'Asab tizimining demiyelinlashtiruvchi kasalliklari',
+  'xir:orqa_miya': 'Orqa miya churrasi',
+  'xir:siydik': 'Siydik tuta olmaslik / ekstrofiya / atoniya',
+  'xir:atreziya': 'Orqa chiqaruv yoʻllarining atreziyasi',
+  'xir:oyoqlar': 'Turli kasalliklarda oyoqlarning falaji',
+  'xir:osteomiyelit': 'Surunkali tayanch-harakat aʼzolari kasalligi',
+  'xir:bosh_miya': 'Bosh miya operatsiyasidan keyingi holatlar',
+  'xir:reabilitatsiya': 'Operatsiyadan keyingi reabilitativ davr',
+  'teri:epidermoliz': 'Tugʻma bullezepidermoliz',
+  'teri:ihtioz': 'Tugʻma ixtiozning zoʻraygan davri',
+  'teri:psoriaz_yiringli': 'Eritrodermiya psoriazining yiringli turi',
+  'teri:psoriaz_artropatik': 'Artropatik psoriazi',
+  'teri:teri_sil': 'Oʻtkir teri sil kasalligi',
+};
+
+export function getIllnessLabel(id?: string): string {
+  if (!id) return '';
+  return ILLNESS_LABELS[id] || id;
+}
