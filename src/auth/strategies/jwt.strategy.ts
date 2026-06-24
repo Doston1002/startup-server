@@ -17,7 +17,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false, // ✅ SECURITY FIX: Token muddati tekshiriladi
-      secretOrKey: configService.get<string>('SECRET_JWT'),
+      secretOrKey:
+        configService.get<string>('SECRET_JWT') ||
+        configService.get<string>('JWT_SECRET'),
       passReqToCallback: true, // Request ni validate metodiga pass qilish uchun
     });
   }
