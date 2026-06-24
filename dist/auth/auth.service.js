@@ -17,8 +17,8 @@ const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const customer_service_1 = require("../customer/customer.service");
-const user_model_1 = require("../user/user.model");
+const customer_service_1 = require("src/customer/customer.service");
+const user_model_1 = require("src/user/user.model");
 const token_blacklist_service_1 = require("./token-blacklist.service");
 let AuthService = class AuthService {
     constructor(userModel, jwtService, customerService, tokenBlacklistService) {

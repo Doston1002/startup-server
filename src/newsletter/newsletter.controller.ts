@@ -43,7 +43,7 @@ export class NewsletterController {
         message: 'Obunaga rahmat!',
         email: trimmedEmail,
       };
-    } catch (error) {
+    } catch (error: any) {
       return {
         success: false,
         error: error.message || 'Serverda xato yuz berdi',

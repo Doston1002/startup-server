@@ -22,7 +22,7 @@ const oneid_service_1 = require("./oneid.service");
 const recaptcha_service_1 = require("./recaptcha.service");
 const jwt_strategy_1 = require("./strategies/jwt.strategy");
 const token_blacklist_service_1 = require("./token-blacklist.service");
-const user_activity_logger_1 = require("../logger/user-activity.logger");
+const user_activity_logger_1 = require("src/logger/user-activity.logger");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([

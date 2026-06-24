@@ -10,7 +10,7 @@ export class OpenaiController {
 async createChatCompletion(@Body() body: CreateChatCompletionRequest) {
   try {
     return await this.openaiService.createChatCompletion(body.messages);
-  } catch (error) {
+  } catch (error: any) {
     throw new HttpException(
       'AI xizmatida muammo yuz berdi: ' + error.message,
       HttpStatus.INTERNAL_SERVER_ERROR

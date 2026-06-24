@@ -285,10 +285,13 @@ export class OneIdService {
             return response.data;
         } catch (error) {
             console.error('OneID logout error:', error);
-            throw new HttpException(
-                error.response?.data?.message || 'OneID logout xatolik yuz berdi',
-                error.response?.status || HttpStatus.BAD_REQUEST,
-            );
+            if (axios.isAxiosError(error)) {
+                throw new HttpException(
+                    error.response?.data?.message || 'OneID logout xatolik yuz berdi',
+                    error.response?.status || HttpStatus.BAD_REQUEST,
+                );
+            }
+            throw new HttpException('OneID logout xatolik yuz berdi', HttpStatus.BAD_REQUEST);
         }
     }
 }

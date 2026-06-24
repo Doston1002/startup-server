@@ -168,7 +168,7 @@ export class AuthController {
         success: true,
         message: 'Muvaffaqiyatli tizimdan chiqildi',
       };
-    } catch (error) {
+    } catch (error: any) {
       throw new HttpException(
         error.message || 'Logout xatolik yuz berdi',
         error.status || HttpStatus.INTERNAL_SERVER_ERROR,
@@ -220,7 +220,7 @@ export class AuthController {
         ...result, // user va tokenlar
         oneIdAccessToken: accessToken, // OneID access_token ni frontendga qaytarish (logout uchun)
       };
-    } catch (error) {
+    } catch (error: any) {
       throw new HttpException(
         error.message || 'OneID authentication failed',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -263,7 +263,7 @@ export class AuthController {
         message: 'Muvaffaqiyatli tizimdan chiqildi',
         data: logoutResult,
       };
-    } catch (error) {
+    } catch (error: any) {
       // Xatolikni log qilish
       this.userActivityLogger.logUserActivity({
         ip: req.ip || (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress,

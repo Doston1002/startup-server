@@ -19,7 +19,7 @@ let FileService = class FileService {
         await (0, fs_extra_1.ensureDir)(uploadFolder);
         const safeFilename = pathModule.basename(file.originalname);
         const filePath = `${uploadFolder}/${uniqueId}-${safeFilename}`;
-        await (0, fs_extra_1.writeFile)(filePath, file.buffer);
+        await (0, fs_extra_1.writeFile)(filePath, Uint8Array.from(file.buffer));
         const response = {
             url: `/uploads/${sanitizedFolder}/${uniqueId}-${safeFilename}`,
             name: safeFilename,
