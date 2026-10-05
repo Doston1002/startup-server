@@ -320,6 +320,8 @@ export class StudentController {
       conclusionDate: body.conclusionDate,
       illnessEndDate: body.illnessEndDate,
       illnessEndDateMax: body.illnessEndDateMax,
+      region: body.region,
+      districtOrCity: body.districtOrCity,
       telegramExpiryNotifiedAt: null,
     };
 

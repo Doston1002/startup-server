@@ -44,8 +44,10 @@ export class StudentExpiryService {
       `🎓 <b>Ta'lim turi:</b> ${educationType}`,
       `📅 <b>O'quv yili:</b> ${this.escapeHtml(student.academicYear)}`,
       `🏥 <b>Kasallik:</b> ${this.escapeHtml(getIllnessLabel(student.illnessType))}`,
-      `📋 <b>Xulosa sanasi:</b> ${this.escapeHtml(student.conclusionDate || '—')}`,
-      `📆 <b>Muddat tugash:</b> ${this.escapeHtml(endDate || '—')}`,
+      student.educationType === 'uyda'
+        ? `📆 <b>Amal qilish muddati:</b> ${this.escapeHtml(endDate || '—')}`
+        : `📋 <b>Xulosa sanasi:</b> ${this.escapeHtml(student.conclusionDate || '—')}`,
+      student.educationType === 'uyda' ? null : `📆 <b>Muddat tugash:</b> ${this.escapeHtml(endDate || '—')}`,
       statusLine,
       `📞 <b>Telefon:</b> ${this.escapeHtml(student.phone)}`,
       `📍 <b>Manzil:</b> ${this.escapeHtml(student.address)}`,
@@ -112,7 +114,8 @@ export class StudentExpiryService {
 
   async checkStudentAfterSave(student: StudentDocument | Student): Promise<void> {
     if (student.createdByRole !== 'direktor') return;
-    if (!student.illnessType || !student.conclusionDate) return;
+    if (!student.illnessType) return;
+    if (!student.conclusionDate && !student.illnessEndDate) return;
     if (!isStudentPeriodExpiringSoon(student)) return;
     if (student.telegramExpiryNotifiedAt) return;
 
