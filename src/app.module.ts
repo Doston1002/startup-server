@@ -3,8 +3,10 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
+import { JwtModule } from '@nestjs/jwt';
 
 import { getMongoDBConfig } from './config/mongo.config';
+import { getJWTConfig } from './config/jwt.config';
 
 import { DatabaseModule } from './database.module';
 
@@ -37,11 +39,17 @@ import { UserActivityLogger } from './logger/user-activity.logger';
 import { TelegramService } from './telegram/telegram.service';
 import { StudentExpiryService } from './student-expiry/student-expiry.service';
 import { StudentExpiryScheduler } from './student-expiry/student-expiry.scheduler';
+import { SimAdminGuard, SimAuthGuard } from './sim-auth.guard';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     ScheduleModule.forRoot(),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: getJWTConfig,
+    }),
 
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
@@ -82,6 +90,8 @@ import { StudentExpiryScheduler } from './student-expiry/student-expiry.schedule
     TelegramService,
     StudentExpiryService,
     StudentExpiryScheduler,
+    SimAuthGuard,
+    SimAdminGuard,
 
     {
       provide: APP_INTERCEPTOR,

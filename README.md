@@ -23,3 +23,19 @@ This project is a real startup. You can see admin, instructor and user professio
 - Jest Test
 - Middlewaries
 - Multer
+
+## Student information management API security
+
+The SIM login and data APIs require `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and
+`SECRET_JWT` (or `JWT_SECRET`) to be configured in the server environment.
+There is no source-code fallback administrator password. Admin and director
+login responses contain a signed access token; protected API requests must send
+it as `Authorization: Bearer <token>`. Tokens expire after one hour.
+
+Director passwords are bcrypt-hashed when created or changed. Existing
+plaintext director passwords are upgraded to bcrypt after a successful login.
+Student medical documents are stored outside the public static directory and
+served only through the authenticated download endpoint.
+Because director credentials were exposed, rotate all affected passwords and
+the administrator password, and rotate `SECRET_JWT`/`JWT_SECRET` to invalidate
+all existing tokens during deployment.

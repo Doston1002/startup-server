@@ -23,6 +23,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('api');
+  app.use(['/uploads/student-info', '/api/uploads/student-info'], (_req, res) => {
+    res.status(404).json({ message: 'File not found' });
+  });
   
   // ✅ SECURITY FIX: Clickjacking + CSP
   app.use((req, res, next) => {
