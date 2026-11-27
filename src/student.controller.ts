@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, Query, BadRequestException, UseInterceptors, UploadedFile, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, Query, BadRequestException, UseInterceptors, UploadedFile, Res, UseGuards, Req, UnauthorizedException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as fs from 'fs';
@@ -10,6 +10,7 @@ import { Student, StudentDocument } from './student.schema';
 import { Direktor, DirektorDocument } from './direktor.schema';
 import { StudentExpiryService } from './student-expiry/student-expiry.service';
 import { TelegramService } from './telegram/telegram.service';
+import { SimAuthGuard, SimAuthRequest } from './auth/guards/sim-auth.guard';
 
 @Controller('students')
 export class StudentController {
@@ -22,30 +23,31 @@ export class StudentController {
 
   // Admin barcha o'quvchilarni ko'radi, direktor faqat o'zini
   @Get()
+  @UseGuards(SimAuthGuard)
   async findAll(
-    @Query('createdBy') createdBy?: string,
-    @Query('role') role?: string,
+    @Req() request: SimAuthRequest,
     @Query('region') region?: string,
     @Query('districtOrCity') districtOrCity?: string,
     @Query('schoolName') schoolName?: string,
   ) {
-    const filter: any = {};
+    const principal = request.simUser;
+    if (!principal) {
+      throw new UnauthorizedException('SIM access token talab qilinadi');
+    }
 
-    if (role === 'admin') {
-      // admin can optionally filter by region/district/school
-    } else if (role === 'direktor' && createdBy) {
-      // find direktor and scope by their school so direktor sees all students
-      // belonging to their school (including those created by admin)
-      const direktor = await this.direktorModel.findOne({ email: createdBy }).exec();
-      if (!direktor) return [];
+    const filter: Record<string, string> = {};
+
+    if (principal.role === 'direktor') {
+      const direktor = await this.direktorModel.findOne({ email: principal.email }).exec();
+      if (!direktor) {
+        throw new UnauthorizedException('Direktor hisobi topilmadi');
+      }
       filter.schoolName = direktor.schoolName;
-    } else {
-      return [];
     }
 
     if (region) filter.region = region;
     if (districtOrCity) filter.districtOrCity = districtOrCity;
-    if (schoolName) filter.schoolName = schoolName;
+    if (principal.role === 'admin' && schoolName) filter.schoolName = schoolName;
 
     try {
       return await this.studentModel.find(filter).exec();

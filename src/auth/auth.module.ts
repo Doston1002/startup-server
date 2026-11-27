@@ -43,6 +43,7 @@ import { RecaptchaService } from './recaptcha.service'; // reCAPTCHA service
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { TokenBlacklistService } from './token-blacklist.service'; // Token blacklist service
 import { UserActivityLogger } from 'src/logger/user-activity.logger';
+import { SimAdminGuard, SimAuthGuard } from './guards/sim-auth.guard';
 
 @Module({
   imports: [
@@ -65,7 +66,9 @@ import { UserActivityLogger } from 'src/logger/user-activity.logger';
     CustomerService,
     TokenBlacklistService, // Token blacklist service
     UserActivityLogger, // User activity logger
+    SimAuthGuard,
+    SimAdminGuard,
   ],
-  exports: [AuthService, OneIdService, RecaptchaService], // Agar boshqa modullarda ishlatish kerak bo'lsa
+  exports: [AuthService, OneIdService, RecaptchaService, JwtModule, SimAuthGuard, SimAdminGuard],
 })
 export class AuthModule {}
