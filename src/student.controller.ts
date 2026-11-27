@@ -1,57 +1,51 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Delete,
-  Put,
-  Query,
-  BadRequestException,
-  ForbiddenException,
-  NotFoundException,
-  UseGuards,
-  UseInterceptors,
-  UploadedFile,
-  Res,
-  Req,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, Query, BadRequestException, UseInterceptors, UploadedFile, Res } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as fs from 'fs';
 import * as path from 'path';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Student, StudentDocument } from './student.schema';
+import { Direktor, DirektorDocument } from './direktor.schema';
 import { StudentExpiryService } from './student-expiry/student-expiry.service';
 import { TelegramService } from './telegram/telegram.service';
-import { SimAdminGuard, SimAuthGuard, SimPrincipal } from './sim-auth.guard';
 
 @Controller('students')
-@UseGuards(SimAuthGuard)
 export class StudentController {
   constructor(
     @InjectModel(Student.name) private studentModel: Model<StudentDocument>,
+    @InjectModel(Direktor.name) private direktorModel: Model<DirektorDocument>,
     private readonly studentExpiryService: StudentExpiryService,
     private readonly telegramService: TelegramService,
   ) {}
 
+  // Admin barcha o'quvchilarni ko'radi, direktor faqat o'zini
   @Get()
   async findAll(
-    @Req() req: Request & { user: SimPrincipal },
+    @Query('createdBy') createdBy?: string,
+    @Query('role') role?: string,
     @Query('region') region?: string,
     @Query('districtOrCity') districtOrCity?: string,
     @Query('schoolName') schoolName?: string,
   ) {
-    const filter: Record<string, string> = {};
+    const filter: any = {};
+
+    if (role === 'admin') {
+      // admin can optionally filter by region/district/school
+    } else if (role === 'direktor' && createdBy) {
+      // find direktor and scope by their school so direktor sees all students
+      // belonging to their school (including those created by admin)
+      const direktor = await this.direktorModel.findOne({ email: createdBy }).exec();
+      if (!direktor) return [];
+      filter.schoolName = direktor.schoolName;
+    } else {
+      return [];
+    }
+
     if (region) filter.region = region;
     if (districtOrCity) filter.districtOrCity = districtOrCity;
-    if (req.user.role === 'admin') {
-      if (schoolName) filter.schoolName = schoolName;
-    } else {
-      filter.schoolName = req.user.schoolName;
-    }
+    if (schoolName) filter.schoolName = schoolName;
 
     try {
       return await this.studentModel.find(filter).exec();
@@ -62,7 +56,6 @@ export class StudentController {
   }
 
   @Get('telegram/status')
-  @UseGuards(SimAdminGuard)
   async telegramStatus() {
     const destinations = this.telegramService.getDestinations();
     const channels = await this.telegramService.discoverChannels();
@@ -81,7 +74,6 @@ export class StudentController {
   }
 
   @Get('telegram/discover-channels')
-  @UseGuards(SimAdminGuard)
   async discoverTelegramChannels() {
     const channels = await this.telegramService.discoverChannels();
     return {
@@ -94,7 +86,6 @@ export class StudentController {
   }
 
   @Post('telegram/test')
-  @UseGuards(SimAdminGuard)
   async testTelegram() {
     const ok = await this.telegramService.sendMessage(
       '✅ <b>Test xabar</b>\n\nUyda ta\'lim tizimi Telegram kanaliga muvaffaqiyatli ulandi.',
@@ -103,7 +94,6 @@ export class StudentController {
   }
 
   @Post('telegram/notify-expiring')
-  @UseGuards(SimAdminGuard)
   async notifyExpiringStudents() {
     const result = await this.studentExpiryService.notifyExpiringStudents();
     return {
@@ -113,25 +103,45 @@ export class StudentController {
   }
 
   @Get('telegram/updates')
-  @UseGuards(SimAdminGuard)
   async telegramUpdates() {
     return this.telegramService.getRecentUpdates();
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string, @Req() req: Request & { user: SimPrincipal }) {
-    return this.findAuthorizedStudent(id, req.user);
+  async findOne(@Param('id') id: string) {
+    return this.studentModel.findById(id).exec();
   }
 
   @Post()
-  async create(
-    @Body() createStudentDto: Partial<Student>,
-    @Req() req: Request & { user: SimPrincipal },
-  ) {
-    if (req.user.role === 'direktor') createStudentDto.schoolName = req.user.schoolName;
-    createStudentDto.createdBy = req.user.email;
-    createStudentDto.createdByRole = req.user.role;
-    createStudentDto.createdAt = new Date().toISOString();
+  async create(@Body() createStudentDto: Partial<Student>) {
+    if (!createStudentDto.createdBy) {
+      throw new BadRequestException('createdBy majburiy');
+    }
+
+    // Determine role of the creator: admin (from env) or direktor (from DB)
+    const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'polatovdoston1002@gmail.com';
+
+    let role: 'admin' | 'direktor' | 'unknown' = 'unknown';
+    if (createStudentDto.createdBy === ADMIN_EMAIL) {
+      role = 'admin';
+    } else {
+      const direktor = await this.direktorModel.findOne({ email: createStudentDto.createdBy }).exec();
+      if (direktor) {
+        role = 'direktor';
+        // If the direktor created the student but did not send school/region/district,
+        // populate those fields from the direktor record so validation passes.
+        if (!createStudentDto.schoolName) createStudentDto.schoolName = direktor.schoolName;
+        if (!createStudentDto.region) createStudentDto.region = direktor.region;
+        if (!createStudentDto.districtOrCity) createStudentDto.districtOrCity = direktor.districtOrCity;
+      }
+    }
+
+    if (role === 'unknown') {
+      throw new BadRequestException('Yaroqsiz createdBy: foydalanuvchi topilmadi');
+    }
+
+    createStudentDto.createdByRole = role;
+    if (!createStudentDto.createdAt) createStudentDto.createdAt = new Date().toISOString();
 
     const created = new this.studentModel(createStudentDto);
     const saved = await created.save();
@@ -143,7 +153,7 @@ export class StudentController {
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
       destination: (req, file, cb) => {
-        const uploadPath = path.join(process.cwd(), 'private-uploads', 'student-info');
+        const uploadPath = path.join(process.cwd(), 'uploads', 'student-info');
         fs.mkdirSync(uploadPath, { recursive: true });
         cb(null, uploadPath);
       },
@@ -158,15 +168,39 @@ export class StudentController {
       },
     }),
   }))
-  async upload(
-    @UploadedFile() file: Express.Multer.File,
-    @Body() body: any,
-    @Req() req: Request & { user: SimPrincipal },
-  ) {
-    if (req.user.role === 'admin' && !body.schoolName) {
+  async upload(@UploadedFile() file: Express.Multer.File, @Body() body: any) {
+    // debug: log incoming multipart fields and file info
+    console.log('[upload] body keys:', Object.keys(body));
+    console.log('[upload] body sample:', { illnessType: body.illnessType, conclusionDate: body.conclusionDate });
+    console.log('[upload] file:', file ? { originalname: file.originalname, filename: file.filename, mimetype: file.mimetype, size: file.size } : null);
+    if (!body.createdBy) {
+      throw new BadRequestException('createdBy majburiy');
+    }
+
+    // Determine role same as create
+    const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'polatovdoston1002@gmail.com';
+
+    let role: 'admin' | 'direktor' | 'unknown' = 'unknown';
+    if (body.createdBy === ADMIN_EMAIL) {
+      role = 'admin';
+    } else {
+      const direktor = await this.direktorModel.findOne({ email: body.createdBy }).exec();
+      if (direktor) {
+        role = 'direktor';
+        if (!body.schoolName) body.schoolName = direktor.schoolName;
+        if (!body.region) body.region = direktor.region;
+        if (!body.districtOrCity) body.districtOrCity = direktor.districtOrCity;
+      }
+    }
+
+    if (role === 'unknown') {
+      throw new BadRequestException('Yaroqsiz createdBy: foydalanuvchi topilmadi');
+    }
+
+    // if admin created but did not provide schoolName, return helpful error
+    if (role === 'admin' && !body.schoolName) {
       throw new BadRequestException('Admin foydalanuvchi uchun `schoolName` majburiy');
     }
-    if (req.user.role === 'direktor') body.schoolName = req.user.schoolName;
 
     const createStudentDto: any = {
       fullName: body.fullName,
@@ -187,13 +221,14 @@ export class StudentController {
       conclusionDate: body.conclusionDate,
       illnessEndDate: body.illnessEndDate,
       illnessEndDateMax: body.illnessEndDateMax,
-      createdBy: req.user.email,
-      createdByRole: req.user.role,
+      createdBy: body.createdBy,
+      createdByRole: role,
       createdAt: new Date().toISOString(),
     };
 
     if (file) {
-      const publicUrl = `/api/students/download/${file.filename}`;
+      // expose public URL via ServeStaticModule serveRoot '/uploads'
+      const publicUrl = `/uploads/student-info/${file.filename}`;
       createStudentDto.uploadedFiles = [{
         originalname: file.originalname,
         filename: file.filename,
@@ -210,31 +245,22 @@ export class StudentController {
   }
 
   @Get('download/:filename')
-  async downloadFile(
-    @Param('filename') filename: string,
-    @Req() req: Request & { user: SimPrincipal },
-    @Res() res: Response,
-  ) {
-    const safeName = path.basename(filename);
-    const student = await this.studentModel.findOne({ 'uploadedFiles.filename': safeName }).exec();
-    if (!student) throw new NotFoundException('Fayl topilmadi');
-    this.assertStudentAccess(student, req.user);
-    const privateFilePath = path.join(process.cwd(), 'private-uploads', 'student-info', safeName);
-    const legacyFilePath = path.join(process.cwd(), 'uploads', 'student-info', safeName);
-    const filePath = fs.existsSync(privateFilePath) ? privateFilePath : legacyFilePath;
-    res.setHeader('Content-Disposition', `inline; filename="${safeName}"`);
-    return res.sendFile(filePath);
+  async downloadFile(@Param('filename') filename: string, @Res() res: Response) {
+    try {
+      const safeName = path.basename(filename);
+      const filePath = path.join(process.cwd(), 'uploads', 'student-info', safeName);
+      // set CORS and disposition
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Content-Disposition', `inline; filename="${safeName}"`);
+      return res.sendFile(filePath);
+    } catch (err) {
+      return res.status(404).json({ message: 'File not found' });
+    }
   }
 
   @Put(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() updateStudentDto: Partial<Student>,
-    @Req() req: Request & { user: SimPrincipal },
-  ) {
-    const existing = await this.findAuthorizedStudent(id, req.user);
+  async update(@Param('id') id: string, @Body() updateStudentDto: Partial<Student>) {
     const { createdBy, createdAt, createdByRole, ...safeUpdate } = updateStudentDto as any;
-    if (req.user.role === 'direktor') safeUpdate.schoolName = existing.schoolName;
 
     if (
       safeUpdate.conclusionDate !== undefined ||
@@ -254,7 +280,7 @@ export class StudentController {
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
       destination: (req, file, cb) => {
-        const uploadPath = path.join(process.cwd(), 'private-uploads', 'student-info');
+        const uploadPath = path.join(process.cwd(), 'uploads', 'student-info');
         fs.mkdirSync(uploadPath, { recursive: true });
         cb(null, uploadPath);
       },
@@ -272,9 +298,11 @@ export class StudentController {
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
     @Body() body: any,
-    @Req() req: Request & { user: SimPrincipal },
   ) {
-    const existing = await this.findAuthorizedStudent(id, req.user);
+    const existing = await this.studentModel.findById(id).exec();
+    if (!existing) {
+      throw new BadRequestException('O\'quvchi topilmadi');
+    }
 
     const update: any = {
       fullName: body.fullName,
@@ -298,7 +326,7 @@ export class StudentController {
     };
 
     if (file) {
-      const publicUrl = `/api/students/download/${file.filename}`;
+      const publicUrl = `/uploads/student-info/${file.filename}`;
       update.uploadedFiles = [
         ...(existing.uploadedFiles || []),
         {
@@ -317,21 +345,7 @@ export class StudentController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string, @Req() req: Request & { user: SimPrincipal }) {
-    await this.findAuthorizedStudent(id, req.user);
+  async remove(@Param('id') id: string) {
     return this.studentModel.findByIdAndDelete(id).exec();
-  }
-
-  private async findAuthorizedStudent(id: string, user: SimPrincipal) {
-    const student = await this.studentModel.findById(id).exec();
-    if (!student) throw new NotFoundException('O‘quvchi topilmadi');
-    this.assertStudentAccess(student, user);
-    return student;
-  }
-
-  private assertStudentAccess(student: StudentDocument, user: SimPrincipal) {
-    if (user.role === 'direktor' && student.schoolName !== user.schoolName) {
-      throw new ForbiddenException('Ushbu o‘quvchi ma’lumotlariga ruxsat yo‘q');
-    }
   }
 }
